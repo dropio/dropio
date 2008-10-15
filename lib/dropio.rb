@@ -2,7 +2,9 @@ dir = File.dirname(__FILE__)
 $:.unshift dir unless $:.include?(dir)
 
 module Dropio
-  class << self; attr_accessor :api_key, :base_url, :api_url end
+  class << self
+    attr_accessor :api_key, :base_url, :api_url
+  end
 end
 
 Dropio.base_url = "http://drop.io"
