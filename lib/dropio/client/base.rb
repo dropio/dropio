@@ -137,8 +137,12 @@ class Dropio::Client
   def save_asset(asset)
     token = get_default_token(asset.drop)
     uri = URI::HTTP.build({:path => asset_path(asset.drop, asset)})
-    form = create_form( { :token => token, :name => asset.name })
-    req = Net::HTTP::Delete.new(uri.request_uri)
+    form = create_form({  :token => token, 
+                          :title => asset.title,
+                          :url => asset.url,
+                          :description => asset.description,
+                          :contents => asset.contents })
+    req = Net::HTTP::Put.new(uri.request_uri)
     req.set_form_data(form)
     complete_request(req) { |body| Mapper.map_assets(asset.drop, body)}
   end
