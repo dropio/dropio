@@ -118,19 +118,19 @@ class Dropio::Client
   # Sends an +Asset+ (of type Document) to a +fax_number+
   def send_to_fax(asset, fax_number)
     params = { :medium => "fax", :fax_number => fax_number }
-    send(asset,params)
+    send_asset(asset,params)
   end
   
   # Sends an email +message+, containing the +asset+ to a list of +emails+
   def send_to_emails(asset, emails = [], message)
     params = { :medium => "drop", :emails => emails.join(","), :message => message }
-    send(asset,params)
+    send_asset(asset,params)
   end
   
   # Sends an +Asset+ to a given +Drop+ with +drop_name+
   def send_to_drop(asset, drop_name)
     params = { :medium => "drop", :drop_name => drop_name }
-    send(asset,params)
+    send_asset(asset,params)
   end
   
   # Saves an +Asset+ back to drop.io
@@ -159,7 +159,7 @@ class Dropio::Client
     { :api_key => Dropio.api_key }.merge(options)
   end
   
-  def send(asset, params = {})
+  def send_asset(asset, params = {})
     token = get_default_token(asset.drop)
     uri = URI::HTTP.build({:path => send_to_path(asset.drop, asset)})
     form = create_form( { :token => token }.merge(params) )
