@@ -3,16 +3,19 @@ class Dropio::Client
   
   protected
   
+  # Creates a path directly to a comment resource or a collection of comments.
   def comment_path(drop, asset, comment = nil)
     comment_id = (comment) ? comment.id.to_s : ''
     return asset_path(drop,asset) + "/comments/" + comment_id
   end
   
+  # Creates a path directly to an asset resource or collection of assets.
   def asset_path(drop, asset = nil)
     asset_name = (asset) ? asset.name : ''
     return drop_path(drop) + "/assets/" + asset_name
   end
   
+  # Creates a path directly to a drop resource or collection of drops.
   def drop_path(drop)
     if drop.is_a?(Dropio::Drop)
       drop_name = drop.name
@@ -25,6 +28,12 @@ class Dropio::Client
     return "/drops/" + drop_name
   end
   
+  # Creates a path for sending an +Asset+
+  def send_to_path(drop, asset)
+    return asset_path(asset) + "/send_to"
+  end
+  
+  # Returns a default set of headers for each request.
   def default_header
     @@http_header ||= {
       'User-Agent' => "Dropio Ruby Library v1.0",
@@ -33,8 +42,10 @@ class Dropio::Client
     @@http_header
   end
   
+  # Starts and completes the given request. Returns or yields the response body.
   def complete_request(request)
     response = Net::HTTP.new(Dropio.api_url).start { |http| http.request(request) }
+    
     case response
     when Net::HTTPSuccess then yield response.body if block_given?
     when Net::HTTPBadRequest then raise Dropio::RequestError, parse_error_message(response)
@@ -46,6 +57,7 @@ class Dropio::Client
     response.body
   end
   
+  # Extracts the error message from the response for the exception.
   def parse_error_message(response)
     error_hash = JSON.parse(response.body) rescue nil
     

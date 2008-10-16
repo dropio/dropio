@@ -12,10 +12,6 @@ class Dropio::Asset < Dropio::Resource
     @comments ||= []
   end         
   
-  def self.find(drop, name)
-    Dropio::Client.instance.find_asset(drop, name)
-  end
-  
   # Adds a comment to the asset with the given +contents+.  Returns the
   # new +Comment+.
   def create_comment(contents)
@@ -42,16 +38,16 @@ class Dropio::Asset < Dropio::Resource
   # first, or +send_to_fax+ will raise an error.
   def send_to_fax(fax_number)
     raise "Can't fax Asset: #{self.inspect} is not faxable" unless faxable?
-    Dropio::Client.instance.send_to_fax(fax_number)
+    Dropio::Client.instance.send_to_fax(self, fax_number)
     nil
   end
   
   def send_to_emails(emails = [], message = nil)
-    Dropio::Client.instance.send_to_email(emails, message)
+    Dropio::Client.instance.send_to_email(self, emails, message)
   end
   
   def send_to_drop(drop_name)
-    Dropio::Client.instance.send_to_drop(drop_name)
+    Dropio::Client.instance.send_to_drop(self, drop_name)
   end
   
 end

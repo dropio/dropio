@@ -9,6 +9,7 @@ end
 
 Dropio.base_url = "http://drop.io"
 Dropio.api_url = "http://api.drop.io"
+Dropio.upload_url = "http://assets.drop.io/upload"
 
 require 'net/http'
 require 'uri'
