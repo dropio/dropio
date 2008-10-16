@@ -1,4 +1,4 @@
-class Dropio::Drop < Dropio::Model
+class Dropio::Drop < Dropio::Resource
   
   attr_accessor :name, :email, :voicemail, :conference, :fax, :rss, :user_token,
                 :admin_token, :expiration_length, :privacy_type, :delete_permission_type, 

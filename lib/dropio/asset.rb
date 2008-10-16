@@ -1,4 +1,4 @@
-class Dropio::Asset < Dropio::Model
+class Dropio::Asset < Dropio::Resource
   
   attr_accessor :drop, :name, :type, :title, :description, :filesize, :created_at,
                 :thumbnail, :status, :file, :converted, :hidden_url, :pages,
@@ -9,7 +9,7 @@ class Dropio::Asset < Dropio::Model
     @comments ||= []
   end         
   
-  def find(drop, name)
+  def self.find(drop, name)
     Dropio::Client.instance.find_asset(drop, name)
   end
   
@@ -33,7 +33,7 @@ class Dropio::Asset < Dropio::Model
     Dropio::Client.instance.send_to_fax(fax_number)
   end
   
-  def send_to_emails(emails = {}, message = nil)
+  def send_to_emails(emails = [], message = nil)
     Dropio::Client.instance.send_to_email(emails, message)
   end
   

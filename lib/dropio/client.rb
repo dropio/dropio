@@ -22,8 +22,41 @@ class Dropio::Client
       drop_name = ''
     end
     
-    return Dropio.api_url + "/drops/" + drop_name
+    return "/drops/" + drop_name
   end
+  
+  def default_header
+    @@http_header ||= {
+      'User-Agent' => "Dropio Ruby Library v1.0",
+      'Accept' => '*/*'
+    }
+    @@http_header
+  end
+  
+  def complete_request(request)
+    request.each_header{|h,v| puts h + "=" + v }
+    response = Net::HTTP.new(Dropio.api_url).start { |http| http.request(request) }
+    case response
+    when Net::HTTPSuccess then yield response.body if block_given?
+    when Net::HTTPBadRequest then raise Dropio::RequestError, parse_error_message(response)
+    when Net::HTTPForbidden then raise Dropio::AuthorizationError, parse_error_message(response)
+    when Net::HTTPNotFound then raise Dropio::MissingResourceError, parse_error_message(response)
+    when Net::HTTPServerError then raise Dropio::ServerError, "There was a problem connecting to Drop.io."
+    end
+    
+    response.body
+  end
+  
+  def parse_error_message(response)
+    error_hash = JSON.parse(response.body) rescue nil
+    
+    if (error_hash && error_hash.is_a?(Hash) && error_hash[:response] && error_hash[:response][:message])
+      return error_hash[:response][:message]
+    else
+      return "There was a problem connecting to Drop.io."
+    end
+  end
+  
 end
 
 dir = File.dirname(__FILE__)

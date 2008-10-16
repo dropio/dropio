@@ -1,4 +1,4 @@
-class Dropio::Comment < Dropio::Model
+class Dropio::Comment < Dropio::Resource
   
   attr_accessor :id, :contents, :created_at, :asset
   
