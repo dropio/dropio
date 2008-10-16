@@ -18,3 +18,16 @@ module Enumerable
     each {|item| item.should_not(*args)}
   end
 end
+
+# Make class mocks and stubs pretend to belong to their given class.
+module Spec::Mocks
+  class Mock
+    def is_a?(klass)
+      if @name.is_a?(Class) and @name <= klass
+        true
+      else
+        super
+      end
+    end
+  end
+end

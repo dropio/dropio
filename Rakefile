@@ -7,7 +7,7 @@ Spec::Rake::SpecTask.new(:spec)
 namespace :spec do
   Spec::Rake::SpecTask.new(:rcov) do |t|
     t.rcov = true
-    t.rcov_opts = %w{ --exclude ^/ --exclude spec_helper.rb }
+    t.rcov_opts = %w{ --exclude ^/ --exclude spec_helper.rb --sort coverage }
   end
   
   namespace :rcov do
