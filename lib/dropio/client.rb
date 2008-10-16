@@ -28,13 +28,12 @@ class Dropio::Client
   def default_header
     @@http_header ||= {
       'User-Agent' => "Dropio Ruby Library v1.0",
-      'Accept' => '*/*'
+      'Accept' => 'application/json'
     }
     @@http_header
   end
   
   def complete_request(request)
-    request.each_header{|h,v| puts h + "=" + v }
     response = Net::HTTP.new(Dropio.api_url).start { |http| http.request(request) }
     case response
     when Net::HTTPSuccess then yield response.body if block_given?
