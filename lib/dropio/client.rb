@@ -36,7 +36,7 @@ class Dropio::Client
   # Returns a default set of headers for each request.
   def default_header
     @@http_header ||= {
-      'User-Agent' => "Dropio Ruby Library v1.0",
+      'User-Agent' => 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3',
       'Accept' => 'application/json'
     }
     @@http_header
@@ -44,7 +44,7 @@ class Dropio::Client
   
   # Starts and completes the given request. Returns or yields the response body.
   def complete_request(request)
-    response = Net::HTTP.new(Dropio.api_url).start { |http| http.request(request) }
+    response = Net::HTTP.new(URI.parse(Dropio.api_url).host).start { |http| http.request(request) }
     
     case response
     when Net::HTTPSuccess then yield response.body if block_given?

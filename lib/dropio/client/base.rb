@@ -4,7 +4,9 @@ class Dropio::Client
   def find_drop(drop_name, token = nil)
     uri = URI::HTTP.build({:path => drop_path(drop_name), :query => get_request_tokens(token)})
     req = Net::HTTP::Get.new(uri.request_uri, default_header)
-    complete_request(req) { |body| Mapper.map_drops(body) }
+    drop = nil
+    complete_request(req) { |body| drop = Mapper.map_drops(body) }
+    drop
   end
   
   # Finds a collection of +Asset+ objects for a given +Drop+.
@@ -12,7 +14,9 @@ class Dropio::Client
     token = get_default_token(drop)
     uri = URI::HTTP.build({:path => asset_path(drop), :query => get_request_tokens(token)})
     req = Net::HTTP::Get.new(uri.request_uri, default_header)
-    complete_request(req) { |body| Mapper.map_assets(drop, body) }
+    assets = nil
+    complete_request(req) { |body| assets = Mapper.map_assets(drop, body) }
+    assets
   end
   
   # Finds a collection of +Comment+ objects for a given +Asset+.
@@ -20,7 +24,9 @@ class Dropio::Client
     token = get_default_token(asset.drop)
     uri = URI::HTTP.build({:path => comment_path(asset.drop, asset), :query => get_request_tokens(token)})
     req = Net::HTTP::Get.new(uri.request_uri, default_header)
-    complete_request(req) { |body| Mapper.map_comments(asset, body) }
+    comments = nil
+    complete_request(req) { |body| comments = Mapper.map_comments(asset, body) }
+    comments
   end
   
   # Creates +Drop+ with +attributes+: :url, :password, :admin_password, :premium_code
@@ -30,7 +36,9 @@ class Dropio::Client
     form = create_form({ :token => token }.merge(attributes))
     req = Net::HTTP::Post.new(uri.request_uri)
     req.set_form_data(form)
-    complete_request(req) { |body| Mapper.map_drops(body) }
+    drop = nil
+    complete_request(req) { |body| drop = Mapper.map_drops(body) }
+    drop
   end
   
   # Saves a +Drop+ back to drop.io
@@ -39,7 +47,9 @@ class Dropio::Client
     form = create_form({ :token => token }.merge(drop.attributes))
     req = Net::HTTP::Put.new(uri.request_uri)
     req.set_form_data(form)
-    complete_request(req) { |body| Mapper.map_drops(body) }
+    drop = nil
+    complete_request(req) { |body| drop = Mapper.map_drops(body) }
+    drop
   end
   
   # Destroys a +Drop+
@@ -50,6 +60,7 @@ class Dropio::Client
     req = Net::HTTP::Delete.new(uri.request_uri)
     req.set_form_data(form)
     complete_request(req)
+    true
   end
   
   # Adds a file to a +Drop+
@@ -63,6 +74,7 @@ class Dropio::Client
       req.multipart_params form
       complete_request(req)
     end
+    true
   end
   
   # Creates a note +Asset+
@@ -72,7 +84,9 @@ class Dropio::Client
     form = create_form( { :token => token, :title => title, :contents => contents })
     req = Net::HTTP::Post.new(uri.request_uri)
     req.set_form_data(form)
-    complete_request(req) { |body| Mapper.map_assets(asset, body) }
+    asset = nil
+    complete_request(req) { |body| asset = Mapper.map_assets(asset, body) }
+    asset
   end
   
   # Creates a link +Asset+
@@ -82,7 +96,9 @@ class Dropio::Client
     form = create_form( { :token => token, :url => url, :title => title, :contents => contents })
     req = Net::HTTP::Post.new(uri.request_uri)
     req.set_form_data(form)
-    complete_request(req) { |body| Mapper.map_assets(asset, body) }
+    asset = nil
+    complete_request(req) { |body| asset = Mapper.map_assets(asset, body) }
+    asset
   end
   
   # Saves a +Comment+, requires admin token.
@@ -92,7 +108,9 @@ class Dropio::Client
     form = create_form( { :token => token, :contents => contents })
     req = Net::HTTP::Put.new(uri.request_uri)
     req.set_form_data(form)
-    complete_request(req) { |body| Mapper.map_comments(asset, body) }
+    comment = nil
+    complete_request(req) { |body| comment = Mapper.map_comments(asset, body) }
+    comment
   end
   
   # Destroys a +Comment+, requires admin token.
@@ -103,6 +121,7 @@ class Dropio::Client
     req = Net::HTTP::Delete.new(uri.request_uri)
     req.set_form_data(form)
     complete_request(req)
+    true
   end
   
   # Creates a +Comment+
@@ -112,7 +131,9 @@ class Dropio::Client
     form = create_form( { :token => token, :contents => contents })
     req = Net::HTTP::Post.new(uri.request_uri)
     req.set_form_data(form)
-    complete_request(req) { |body| Mapper.map_comments(asset, body) }
+    comment = nil
+    complete_request(req) { |body| comment = Mapper.map_comments(asset, body) }
+    comment
   end
   
   # Sends an +Asset+ (of type Document) to a +fax_number+
@@ -122,7 +143,7 @@ class Dropio::Client
   end
   
   # Sends an email +message+, containing the +asset+ to a list of +emails+
-  def send_to_emails(asset, emails = [], message)
+  def send_to_emails(asset, emails = [], message = nil)
     params = { :medium => "drop", :emails => emails.join(","), :message => message }
     send_asset(asset,params)
   end
@@ -137,14 +158,16 @@ class Dropio::Client
   def save_asset(asset)
     token = get_default_token(asset.drop)
     uri = URI::HTTP.build({:path => asset_path(asset.drop, asset)})
-    form = create_form({  :token => token, 
-                          :title => asset.title,
-                          :url => asset.url,
-                          :description => asset.description,
-                          :contents => asset.contents })
+    form = create_form({ :token => token, 
+                         :title => asset.title,
+                         :url => asset.url,
+                         :description => asset.description,
+                         :contents => asset.contents })
     req = Net::HTTP::Put.new(uri.request_uri)
     req.set_form_data(form)
-    complete_request(req) { |body| Mapper.map_assets(asset.drop, body)}
+    asset = nil
+    complete_request(req) { |body| asset = Mapper.map_assets(asset.drop, body)}
+    asset
   end
   
   # Destroys an +Asset+
@@ -155,6 +178,7 @@ class Dropio::Client
     req = Net::HTTP::Delete.new(uri.request_uri)
     req.set_form_data(form)
     complete_request(req)
+    true
   end
   
   protected
@@ -170,6 +194,7 @@ class Dropio::Client
     req = Net::HTTP::Post.new(uri.request_uri)
     req.set_form_data(form)
     complete_request(req)
+    true
   end
   
   def get_default_token(drop)

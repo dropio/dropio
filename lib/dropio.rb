@@ -3,7 +3,7 @@ $:.unshift dir unless $:.include?(dir)
 
 module Dropio
   class << self
-    attr_accessor :api_key, :base_url, :api_url
+    attr_accessor :api_key, :base_url, :api_url, :upload_url
   end
 end
 
