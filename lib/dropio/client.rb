@@ -36,7 +36,7 @@ class Dropio::Client
   # Returns a default set of headers for each request.
   def default_header
     @@http_header ||= {
-      'User-Agent' => 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3',
+      'User-Agent' => 'Drop.io Ruby Library',
       'Accept' => 'application/json'
     }
     @@http_header
