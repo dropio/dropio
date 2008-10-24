@@ -3,9 +3,9 @@ require File.dirname(__FILE__) + '/../spec_helper.rb'
 describe Drop do
   it "should have the attributes of a Drop" do
     Drop.new.should respond_to(:name, :email, :voicemail, :conference, :fax,
-                               :rss, :user_token, :admin_token,
-                               :expiration_length, :privacy_type,
-                               :delete_permission_type, :max_bytes,
+                               :rss, :guest_token, :admin_token,
+                               :expiration_length, :guests_can_comment, :guests_can_comment, 
+                               :guests_can_delete, :max_bytes,
                                :current_bytes, :hidden_upload_url,
                                :upload_url)
   end

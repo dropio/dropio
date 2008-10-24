@@ -11,7 +11,9 @@ describe Client::Mapper do
        "conference":" 218-486-3891 x 915088666",
        "name":"test_drop",
        "upload_url":"http:\/\/assets.drop.io\/upload",
-       "privacy_type":"VIEW_ADD",
+       "guests_can_add":"true",
+       "guests_can_comment":"true",
+       "guests_can_delete":"false",
        "current_bytes":51488,
        "max_bytes":104857600.0,
        "expiration_length":"1_YEAR_FROM_LAST_VIEW",
@@ -27,11 +29,12 @@ describe Client::Mapper do
     test_drop.conference.should             == " 218-486-3891 x 915088666"
     test_drop.name.should                   == "test_drop"
     test_drop.upload_url.should             == "http:\/\/assets.drop.io\/upload"
-    test_drop.privacy_type.should           == "VIEW_ADD"
+    test_drop.guests_can_add.should         == "true"
+    test_drop.guests_can_comment.should         == "true"
+    test_drop.guests_can_delete.should         == "false"
     test_drop.current_bytes.should          == 51488
     test_drop.max_bytes.should              == 104857600.0
     test_drop.expiration_length.should      == "1_YEAR_FROM_LAST_VIEW"
-    test_drop.delete_permission_type.should == "ALLOWED"
   end
   
   it "should parse lists of Drops" do
@@ -44,21 +47,23 @@ describe Client::Mapper do
         "conference":" 218-486-3891 x 915088666",
         "name":"test_drop",
         "upload_url":"http:\/\/assets.drop.io\/upload",
-        "privacy_type":"VIEW_ADD",
+        "guests_can_add":"true",
+        "guests_can_comment":"true",
+        "guests_can_delete":"false",
         "current_bytes":51488,
         "max_bytes":104857600.0,
-        "expiration_length":"1_YEAR_FROM_LAST_VIEW",
-        "delete_permission_type":"ALLOWED"},
+        "expiration_length":"1_YEAR_FROM_LAST_VIEW"},
        {"current_bytes":178857,
         "max_bytes":104857600.0,
         "voicemail":"646-495-9201 x 72025",
         "admin_token":"8a8vfzfvs2",
         "email":"0sdcmz7@drop.io",
         "upload_url":"http:\/\/assets.drop.io\/upload",
-        "delete_permission_type":"ALLOWED",
+        "guests_can_add":"true",
+        "guests_can_comment":"true",
+        "guests_can_delete":"false",
         "conference":" 218-486-3891 x 680277944",
         "name":"0sdcmz7",
-        "privacy_type":"VIEW_ADD",
         "expiration_length":"1_YEAR_FROM_LAST_VIEW",
         "fax":"856-632-1999",
         "rss":"http:\/\/drop.io\/no9mbevuq3ttmfi6kqen\/3ec4f87d720032bae579cca40740e5e4b267e090\/0sdcmz7.rss"}]

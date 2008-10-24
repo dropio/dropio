@@ -46,7 +46,7 @@ describe Asset do
   
   it "should fax itself to a phone number" do
     @asset.type = "Document"
-    @client.should_receive(:send_to_fax).with("234-567-8901")
+    @client.should_receive(:send_to_fax).with(@asset,"234-567-8901")
     @asset.send_to_fax("234-567-8901")
   end
   

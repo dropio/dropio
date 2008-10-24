@@ -1,7 +1,7 @@
 class Dropio::Drop < Dropio::Resource
   
-  attr_accessor :name, :email, :voicemail, :conference, :fax, :rss, :user_token,
-                :admin_token, :expiration_length, :privacy_type, :delete_permission_type, 
+  attr_accessor :name, :email, :voicemail, :conference, :fax, :rss, :guest_token,
+                :admin_token, :expiration_length, :guests_can_comment, :guests_can_add, :guests_can_delete,
                 :max_bytes, :current_bytes, :hidden_upload_url, :upload_url
   
   def assets
