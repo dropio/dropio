@@ -198,7 +198,7 @@ class Dropio::Client
   end
   
   def get_default_token(drop)
-    (drop.admin_token) ? drop.admin_token : drop.user_token
+    (drop.admin_token) ? drop.admin_token : drop.guest_token
   end
   
   def get_admin_token(drop)
