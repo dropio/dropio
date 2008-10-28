@@ -79,7 +79,7 @@ class Dropio::Client
   
   # Creates a note +Asset+
   def create_note(drop, title, contents)
-    token = get_default_token(asset.drop)
+    token = get_default_token(drop)
     uri = URI::HTTP.build({:path => asset_path(drop)})
     form = create_form( { :token => token, :title => title, :contents => contents })
     req = Net::HTTP::Post.new(uri.request_uri)
@@ -91,7 +91,7 @@ class Dropio::Client
   
   # Creates a link +Asset+
   def create_link(drop, url, title = nil, contents = nil)
-    token = get_default_token(asset.drop)
+    token = get_default_token(drop)
     uri = URI::HTTP.build({:path => asset_path(drop)})
     form = create_form( { :token => token, :url => url, :title => title, :contents => contents })
     req = Net::HTTP::Post.new(uri.request_uri)

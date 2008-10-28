@@ -5,9 +5,8 @@ class Dropio::Drop < Dropio::Resource
                 :max_bytes, :current_bytes, :hidden_upload_url, :upload_url
   
   # Gets a list of assets associated with the Drop. Paginated at 
-  def assets
-    @assets = Dropio::Client.instance.find_assets(self) if @assets.nil?
-    @assets ||= []
+  def assets(page = 1)
+    Dropio::Client.instance.find_assets(self, page)
   end
   
   # Finds a drop with +name+ and optional authorization +token+
