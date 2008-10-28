@@ -204,7 +204,7 @@ class Dropio::Client
   end
   
   def create_form(options = {})
-    { :api_key => Dropio.api_key }.merge(options)
+    { :api_key => Dropio.api_key, :format => 'json' }.merge(options)
   end
   
   def send_asset(asset, params = {})
