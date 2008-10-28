@@ -10,9 +10,9 @@ class Dropio::Client
   end
   
   # Finds a collection of +Asset+ objects for a given +Drop+.
-  def find_assets(drop)
+  def find_assets(drop, page = 1)
     token = get_default_token(drop)
-    uri = URI::HTTP.build({:path => asset_path(drop), :query => get_request_tokens(token)})
+    uri = URI::HTTP.build({:path => asset_path(drop), :query => get_request_tokens(token) + "&page=#{page}"})
     req = Net::HTTP::Get.new(uri.request_uri, default_header)
     assets = nil
     complete_request(req) { |body| assets = Mapper.map_assets(drop, body) }
@@ -181,7 +181,27 @@ class Dropio::Client
     true
   end
   
+  # Generates the authenticated +Drop+ url.
+  def generate_drop_url(drop)
+    signed_url(drop)
+  end
+  
+  # Generates the authenticated +Asset+ url.
+  def generate_asset_url(asset)
+    signed_url(asset.drop, asset)
+  end
+  
   protected
+  
+  def signed_url(drop, asset = nil)
+    # 10 minute window.
+    expires = (Time.now.utc + 10*60).to_i
+    token = get_default_token(drop)
+    path = Dropio.base_url + "/#{drop.name}"
+    path += "/asset/#{asset.name}" if asset 
+    sig = Digest::SHA1.hexdigest("#{expires}+#{token}+#{drop.name}")
+    path + "?expires=#{expires}&signature=#{sig}"
+  end
   
   def create_form(options = {})
     { :api_key => Dropio.api_key }.merge(options)

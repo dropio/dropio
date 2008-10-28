@@ -42,12 +42,19 @@ class Dropio::Asset < Dropio::Resource
     nil
   end
   
+  # Sends the asset to the given +emails+ with an optional +message+.
   def send_to_emails(emails = [], message = nil)
     Dropio::Client.instance.send_to_email(self, emails, message)
   end
   
+  # Sends the asset to a Drop by +drop_name+
   def send_to_drop(drop_name)
     Dropio::Client.instance.send_to_drop(self, drop_name)
+  end
+  
+  # Generates an authenticated URL that will bypass any login action.
+  def generate_url
+    Dropio::Client.instance.generate_asset_url(self)
   end
   
 end
