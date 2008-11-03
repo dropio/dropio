@@ -22,12 +22,21 @@ end
 # Make class mocks and stubs pretend to belong to their given class.
 module Spec::Mocks
   class Mock
-    def is_a?(klass)
-      if @name.is_a?(Class) and @name <= klass
+    def kind_of?(klass)
+      if @name.kind_of?(Class) and @name <= klass
         true
       else
         super
       end
     end
+    alias is_a? kind_of?
+  end
+end
+
+# Reimplement Module#=== in Ruby.  Without this, === bypasses message
+# dispatch, so the trick above doesn't wouldn't apply to case statements.
+class Module
+  def ===(arg)
+    arg.kind_of?(self)
   end
 end
