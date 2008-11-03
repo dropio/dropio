@@ -1,5 +1,11 @@
 class Dropio::Client
   include Singleton
+
+  # The default set of headers for each request.
+  DEFAULT_HEADER = {
+      'User-Agent' => 'Drop.io Ruby Library',
+      'Accept' => 'application/json'
+  }
   
   protected
   
@@ -33,16 +39,7 @@ class Dropio::Client
   def send_to_path(drop, asset)
     return asset_path(asset) + "/send_to"
   end
-  
-  # Returns a default set of headers for each request.
-  def default_header
-    @@http_header ||= {
-      'User-Agent' => 'Drop.io Ruby Library',
-      'Accept' => 'application/json'
-    }
-    @@http_header
-  end
-  
+    
   # Starts and completes the given request. Returns or yields the response body.
   def complete_request(request)
     response = Net::HTTP.new(URI.parse(Dropio.api_url).host).start { |http| http.request(request) }

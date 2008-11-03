@@ -3,7 +3,7 @@ class Dropio::Client
   # Takes a drop name and optional token and returns a +Drop+ or errors.
   def find_drop(drop_name, token = nil)
     uri = URI::HTTP.build({:path => drop_path(drop_name), :query => get_request_tokens(token)})
-    req = Net::HTTP::Get.new(uri.request_uri, default_header)
+    req = Net::HTTP::Get.new(uri.request_uri, DEFAULT_HEADER)
     drop = nil
     complete_request(req) { |body| drop = Mapper.map_drops(body) }
     drop
@@ -13,7 +13,7 @@ class Dropio::Client
   def find_assets(drop, page = 1)
     token = get_default_token(drop)
     uri = URI::HTTP.build({:path => asset_path(drop), :query => get_request_tokens(token) + "&page=#{page}"})
-    req = Net::HTTP::Get.new(uri.request_uri, default_header)
+    req = Net::HTTP::Get.new(uri.request_uri, DEFAULT_HEADER)
     assets = nil
     complete_request(req) { |body| assets = Mapper.map_assets(drop, body) }
     assets
@@ -23,7 +23,7 @@ class Dropio::Client
   def find_comments(asset)
     token = get_default_token(asset.drop)
     uri = URI::HTTP.build({:path => comment_path(asset.drop, asset), :query => get_request_tokens(token)})
-    req = Net::HTTP::Get.new(uri.request_uri, default_header)
+    req = Net::HTTP::Get.new(uri.request_uri, DEFAULT_HEADER)
     comments = nil
     complete_request(req) { |body| comments = Mapper.map_comments(asset, body) }
     comments
