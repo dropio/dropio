@@ -34,7 +34,7 @@ class Dropio::Client
   # Descriptions can be found here: http://groups.google.com/group/dropio-api/web/full-api-documentation
   def create_drop(attributes = {})
     uri = URI::HTTP.build({:path => drop_path})
-    form = create_form({ :token => token }.merge(attributes))
+    form = create_form(attributes)
     req = Net::HTTP::Post.new(uri.request_uri, DEFAULT_HEADER)
     req.set_form_data(form)
     drop = nil
@@ -88,7 +88,7 @@ class Dropio::Client
     req = Net::HTTP::Post.new(uri.request_uri, DEFAULT_HEADER)
     req.set_form_data(form)
     asset = nil
-    complete_request(req) { |body| asset = Mapper.map_assets(asset, body) }
+    complete_request(req) { |body| asset = Mapper.map_assets(drop, body) }
     asset
   end
   
@@ -100,7 +100,7 @@ class Dropio::Client
     req = Net::HTTP::Post.new(uri.request_uri, DEFAULT_HEADER)
     req.set_form_data(form)
     asset = nil
-    complete_request(req) { |body| asset = Mapper.map_assets(asset, body) }
+    complete_request(req) { |body| asset = Mapper.map_assets(drop, body) }
     asset
   end
   
@@ -222,7 +222,7 @@ class Dropio::Client
   end
   
   def get_default_token(drop)
-    (drop.admin_token) ? drop.admin_token : drop.guest_token
+    drop.admin_token || drop.guest_token
   end
   
   def get_admin_token(drop)

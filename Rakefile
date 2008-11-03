@@ -25,9 +25,6 @@ end
 ### RDoc
 
 Rake::RDocTask.new(:rdoc) do |rd|
-  #NOCOMMIT
-  # rd.main = "README.rdoc"
-  # rd.rdoc_files.include("README.rdoc", "lib/**/*.rb")
   rd.rdoc_dir = 'doc'
 end
 
