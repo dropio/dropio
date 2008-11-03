@@ -48,11 +48,12 @@ class Dropio::Client
     response = Net::HTTP.new(URI.parse(Dropio.api_url).host).start { |http| http.request(request) }
 
     case response
-    when Net::HTTPSuccess then yield response.body if block_given?
-    when Net::HTTPBadRequest then raise Dropio::RequestError, parse_error_message(response)
-    when Net::HTTPForbidden then raise Dropio::AuthorizationError, parse_error_message(response)
-    when Net::HTTPNotFound then raise Dropio::MissingResourceError, parse_error_message(response)
+    when Net::HTTPSuccess     then yield response.body if block_given?
+    when Net::HTTPBadRequest  then raise Dropio::RequestError, parse_error_message(response)
+    when Net::HTTPForbidden   then raise Dropio::AuthorizationError, parse_error_message(response)
+    when Net::HTTPNotFound    then raise Dropio::MissingResourceError, parse_error_message(response)
     when Net::HTTPServerError then raise Dropio::ServerError, "There was a problem connecting to Drop.io."
+    else                           raise "Received an unexpected HTTP response: #{response}"
     end
     
     response.body
