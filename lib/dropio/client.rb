@@ -16,13 +16,14 @@ class Dropio::Client
   end
   
   # Creates a path directly to a drop resource or collection of drops.
-  def drop_path(drop)
-    if drop.is_a?(Dropio::Drop)
-      drop_name = drop.name
-    elsif drop.is_a?(String)
-      drop_name = drop
-    else
-      drop_name = ''
+  def drop_path(drop = nil)
+    drop_name = case drop
+    when Dropio::Drop
+      drop.name
+    when String
+      drop
+    when nil
+      ''
     end
     
     return "/drops/" + drop_name
