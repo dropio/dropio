@@ -1,3 +1,5 @@
+*(Note: This is very beta.  The code is mostly functional.  The docs are mostly not.  The tests are somewhere in between.  Have fun, be safe, and stay tuned.)*
+
 drop.io API library for Ruby
 ============================
 
