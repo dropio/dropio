@@ -43,7 +43,7 @@ class Dropio::Client
   # Starts and completes the given request. Returns or yields the response body.
   def complete_request(request)
     response = Net::HTTP.new(URI.parse(Dropio.api_url).host).start { |http| http.request(request) }
-
+    
     case response
     when Net::HTTPSuccess     then yield response.body if block_given?
     when Net::HTTPBadRequest  then raise Dropio::RequestError, parse_error_message(response)
@@ -74,3 +74,4 @@ $:.unshift dir unless $:.include?(dir)
 
 require 'client/base.rb'
 require 'client/mapper.rb'
+require 'client/post.rb'
