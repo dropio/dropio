@@ -15,7 +15,8 @@ class Dropio::Drop < Dropio::Resource
   end
   
   # Creates a drop with an +attributes+ hash.
-  # Valid attributes can be found here: http://groups.google.com/group/dropio-api/web/full-api-documentation
+  # Valid attributes: name (string), guests_can_comment (boolean), guests_can_add (boolean), guests_can_delete (boolean), expiration_length (string), password (string), admin_password (string), and premium_code (string)
+  # Descriptions can be found here: http://groups.google.com/group/dropio-api/web/full-api-documentation
   def self.create(attributes = {})
     Dropio::Client.instance.create_drop(attributes)
   end

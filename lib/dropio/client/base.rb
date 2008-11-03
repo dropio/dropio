@@ -29,12 +29,13 @@ class Dropio::Client
     comments
   end
   
-  # Creates +Drop+ with +attributes+: :url, :password, :admin_password, :premium_code
-  # :private_type, :expiration_length, :delete_permission_type
+  # Creates a drop with an +attributes+ hash.
+  # Valid attributes: name (string), guests_can_comment (boolean), guests_can_add (boolean), guests_can_delete (boolean), expiration_length (string), password (string), admin_password (string), and premium_code (string)
+  # Descriptions can be found here: http://groups.google.com/group/dropio-api/web/full-api-documentation
   def create_drop(attributes = {})
     uri = URI::HTTP.build({:path => drop_path})
     form = create_form({ :token => token }.merge(attributes))
-    req = Net::HTTP::Post.new(uri.request_uri)
+    req = Net::HTTP::Post.new(uri.request_uri, DEFAULT_HEADER)
     req.set_form_data(form)
     drop = nil
     complete_request(req) { |body| drop = Mapper.map_drops(body) }
@@ -45,7 +46,7 @@ class Dropio::Client
   def save_drop(drop)
     uri = URI::HTTP.build({:path => drop_path(drop) })
     form = create_form({ :token => token }.merge(drop.attributes))
-    req = Net::HTTP::Put.new(uri.request_uri)
+    req = Net::HTTP::Put.new(uri.request_uri, DEFAULT_HEADER)
     req.set_form_data(form)
     drop = nil
     complete_request(req) { |body| drop = Mapper.map_drops(body) }
@@ -57,7 +58,7 @@ class Dropio::Client
     token = get_admin_token(drop)
     uri = URI::HTTP.build({:path => drop_path(drop)})
     form = create_form( { :token => token })
-    req = Net::HTTP::Delete.new(uri.request_uri)
+    req = Net::HTTP::Delete.new(uri.request_uri, DEFAULT_HEADER)
     req.set_form_data(form)
     complete_request(req)
     true
@@ -82,7 +83,7 @@ class Dropio::Client
     token = get_default_token(drop)
     uri = URI::HTTP.build({:path => asset_path(drop)})
     form = create_form( { :token => token, :title => title, :contents => contents })
-    req = Net::HTTP::Post.new(uri.request_uri)
+    req = Net::HTTP::Post.new(uri.request_uri, DEFAULT_HEADER)
     req.set_form_data(form)
     asset = nil
     complete_request(req) { |body| asset = Mapper.map_assets(asset, body) }
@@ -94,7 +95,7 @@ class Dropio::Client
     token = get_default_token(drop)
     uri = URI::HTTP.build({:path => asset_path(drop)})
     form = create_form( { :token => token, :url => url, :title => title, :contents => contents })
-    req = Net::HTTP::Post.new(uri.request_uri)
+    req = Net::HTTP::Post.new(uri.request_uri, DEFAULT_HEADER)
     req.set_form_data(form)
     asset = nil
     complete_request(req) { |body| asset = Mapper.map_assets(asset, body) }
@@ -106,7 +107,7 @@ class Dropio::Client
     token = get_default_token(asset.drop)
     uri = URI::HTTP.build({:path => comment_path(asset.drop, asset, comment)})
     form = create_form( { :token => token, :contents => contents })
-    req = Net::HTTP::Put.new(uri.request_uri)
+    req = Net::HTTP::Put.new(uri.request_uri, DEFAULT_HEADER)
     req.set_form_data(form)
     comment = nil
     complete_request(req) { |body| comment = Mapper.map_comments(asset, body) }
@@ -118,7 +119,7 @@ class Dropio::Client
     token = get_admin_token(comment.asset.drop)
     uri = URI::HTTP.build({:path => comment_path(comment.asset.drop, comment.asset, comment)})
     form = create_form( { :token => token })
-    req = Net::HTTP::Delete.new(uri.request_uri)
+    req = Net::HTTP::Delete.new(uri.request_uri, DEFAULT_HEADER)
     req.set_form_data(form)
     complete_request(req)
     true
@@ -129,7 +130,7 @@ class Dropio::Client
     token = get_default_token(asset.drop)
     uri = URI::HTTP.build({:path => comment_path(asset.drop, asset)})
     form = create_form( { :token => token, :contents => contents })
-    req = Net::HTTP::Post.new(uri.request_uri)
+    req = Net::HTTP::Post.new(uri.request_uri, DEFAULT_HEADER)
     req.set_form_data(form)
     comment = nil
     complete_request(req) { |body| comment = Mapper.map_comments(asset, body) }
@@ -163,7 +164,7 @@ class Dropio::Client
                          :url => asset.url,
                          :description => asset.description,
                          :contents => asset.contents })
-    req = Net::HTTP::Put.new(uri.request_uri)
+    req = Net::HTTP::Put.new(uri.request_uri, DEFAULT_HEADER)
     req.set_form_data(form)
     asset = nil
     complete_request(req) { |body| asset = Mapper.map_assets(asset.drop, body)}
@@ -175,7 +176,7 @@ class Dropio::Client
     token = get_default_token(asset.drop)
     uri = URI::HTTP.build({:path => asset_path(asset.drop, asset)})
     form = create_form( { :token => token })
-    req = Net::HTTP::Delete.new(uri.request_uri)
+    req = Net::HTTP::Delete.new(uri.request_uri, DEFAULT_HEADER)
     req.set_form_data(form)
     complete_request(req)
     true
@@ -211,7 +212,7 @@ class Dropio::Client
     token = get_default_token(asset.drop)
     uri = URI::HTTP.build({:path => send_to_path(asset.drop, asset)})
     form = create_form( { :token => token }.merge(params) )
-    req = Net::HTTP::Post.new(uri.request_uri)
+    req = Net::HTTP::Post.new(uri.request_uri, DEFAULT_HEADER)
     req.set_form_data(form)
     complete_request(req)
     true
