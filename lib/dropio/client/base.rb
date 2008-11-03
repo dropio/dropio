@@ -199,7 +199,8 @@ class Dropio::Client
     expires = (Time.now.utc + 10*60).to_i
     token = get_default_token(drop)
     path = Dropio.base_url + "/#{drop.name}"
-    path += "/asset/#{asset.name}" if asset 
+    path += "/asset/#{asset.name}" if asset
+    path += "/from_api"
     sig = Digest::SHA1.hexdigest("#{expires}+#{token}+#{drop.name}")
     path + "?expires=#{expires}&signature=#{sig}"
   end
