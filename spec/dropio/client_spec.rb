@@ -29,7 +29,6 @@ describe Client do
     @api_response      = stub(Net::HTTPSuccess, :body => @api_response_body)
 
     @mydrop  = stub(Drop, :name => 'mydrop', :admin_token => '93mydroptoken97')
-    @note    = stub(Asset)
     @asset   = stub(Asset, :name => 'some_video', :drop => @mydrop)
     @comment = stub(Comment)
   end
@@ -50,13 +49,26 @@ describe Client do
   end
   
   it "should create notes" do
+    note = stub(Asset)
     mock_http(:post, "/drops/mydrop/assets/", @api_response, :title    => "Just a Note",
                                                              :contents => "This is just to say",
                                                              :token    => "93mydroptoken97",
                                                              :api_key  => "43myapikey13",
                                                              :format   => "json")
-    Client::Mapper.should_receive(:map_assets).with(@mydrop, @api_response_body).and_return(@note)
-    Client.instance.create_note(@mydrop, "Just a Note", "This is just to say").should == @note
+    Client::Mapper.should_receive(:map_assets).with(@mydrop, @api_response_body).and_return(note)
+    Client.instance.create_note(@mydrop, "Just a Note", "This is just to say").should == note
+  end
+  
+  it "should create links" do
+    link = stub(Asset)
+    mock_http(:post, "/drops/mydrop/assets/", @api_response, :url      => "http://drop.io/",
+                                                             :title    => "Drop.io",
+                                                             :contents => "An awesome sharing site.",
+                                                             :token    => "93mydroptoken97",
+                                                             :api_key  => "43myapikey13",
+                                                             :format   => "json")
+    Client::Mapper.should_receive(:map_assets).with(@mydrop, @api_response_body).and_return(link)
+    Client.instance.create_link(@mydrop, "http://drop.io/", "Drop.io", "An awesome sharing site.").should == link
   end
   
   it "should find drops" do

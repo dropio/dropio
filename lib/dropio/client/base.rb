@@ -99,7 +99,7 @@ class Dropio::Client
     req = Net::HTTP::Post.new(uri.request_uri, DEFAULT_HEADER)
     req.set_form_data(form)
     asset = nil
-    complete_request(req) { |body| asset = Mapper.map_assets(asset, body) }
+    complete_request(req) { |body| asset = Mapper.map_assets(drop, body) }
     asset
   end
   
