@@ -45,6 +45,7 @@ class Dropio::Client
   # Saves a +Drop+ back to drop.io
   def save_drop(drop)
     uri = URI::HTTP.build({:path => drop_path(drop) })
+    token = get_admin_token(drop)
     form = create_form({ :token => token }.merge(drop.attributes))
     req = Net::HTTP::Put.new(uri.request_uri, DEFAULT_HEADER)
     req.set_form_data(form)
