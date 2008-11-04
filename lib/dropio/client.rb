@@ -72,9 +72,6 @@ class Dropio::Client
   
 end
 
-dir = File.dirname(__FILE__)
-$:.unshift dir unless $:.include?(dir)
-
-require 'client/base.rb'
-require 'client/mapper.rb'
-require 'client/post.rb'
+require 'dropio/client/base'
+require 'dropio/client/mapper'
+require 'dropio/client/post'
