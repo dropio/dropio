@@ -2,7 +2,10 @@ require File.dirname(__FILE__) + '/../spec_helper'
 
 describe Client do
   def mock_http(method, path, response, form_data = nil)
-    request_klass = {:get => Net::HTTP::Get, :post => Net::HTTP::Post}[method]
+    request_klass = { :get  => Net::HTTP::Get,
+                      :post => Net::HTTP::Post,
+                      :put  => Net::HTTP::Put }[method]
+    raise "Don't know how to mock a #{method.inspect} HTTP call." if request_klass.nil?
     request = mock(request_klass)
     request.should_receive(:set_form_data).with(form_data) if form_data
     request_klass.stub!(:new).with(path, Client::DEFAULT_HEADER).and_return(request)
@@ -16,7 +19,7 @@ describe Client do
   before(:each) do
     # Don't allow HTTPRequests to be created without being
     # specifically stubbed, typically with mock_http above.
-    [Net::HTTP::Get, Net::HTTP::Post].each do |request_klass|
+    [Net::HTTP::Get, Net::HTTP::Post, Net::HTTP::Put].each do |request_klass|
       request_klass.stub!(:new).with do |*args|
         raise "Created an unexpected #{request_klass}!\n#{request_klass}.new(#{args.map { |e| e.inspect }.join(", ")})"
       end
@@ -100,5 +103,33 @@ describe Client do
     mock_http(:get, %r|^/drops/mydrop/assets/some_video/comments/\?api_key=43myapikey13&token=93mydroptoken97&version=1.0&format=json|, @api_response)
     Client::Mapper.stub!(:map_comments).with(@asset, @api_response_body).and_return([@comment])
     Client.instance.find_comments(@asset).should == [@comment]
+  end
+  
+  it "should save drops" do
+    @mydrop.stub!(:guests_can_comment => true,
+                  :guests_can_add     => false,
+                  :guests_can_delete  => false,
+                  :expiration_length  => "1_WEEK_FROM_LAST_VIEW",
+                  :password           => "mazda",
+                  :admin_password     => "foo64bar",
+                  :premium_code       => "yeswecan",
+                  :token              => "93mydroptoken97",
+                  :api_key            => "43myapikey13",
+                  :format             => "json")
+    
+    mock_http(:put, "/drops/mydrop", @api_response,
+                                     :guests_can_comment => true,
+                                     :guests_can_add     => false,
+                                     :guests_can_delete  => false,
+                                     :expiration_length  => "1_WEEK_FROM_LAST_VIEW",
+                                     :password           => "mazda",
+                                     :admin_password     => "foo64bar",
+                                     :premium_code       => "yeswecan",
+                                     :token              => "93mydroptoken97",
+                                     :api_key            => "43myapikey13",
+                                     :format             => "json")
+    
+    Client::Mapper.stub!(:map_drops).with(@api_response_body).and_return(@mydrop)
+    Client.instance.save_drop(@mydrop).should == @mydrop
   end
 end
