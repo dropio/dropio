@@ -162,7 +162,7 @@ class Dropio::Client
   
   # Sends an email +message+, containing the +asset+ to a list of +emails+
   def send_to_emails(asset, emails = [], message = nil)
-    params = { :medium => "drop", :emails => emails.join(","), :message => message }
+    params = { :medium => "email", :emails => emails.join(","), :message => message }
     send_asset(asset,params)
   end
   
