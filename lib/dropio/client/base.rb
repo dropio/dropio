@@ -68,16 +68,17 @@ class Dropio::Client
   # Adds a file to a +Drop+
   def add_file(drop, file_path)
     token = get_default_token(drop)
+    asset = nil
     
     File.open(file_path, 'r') do |file|
       uri = URI.parse(Dropio.upload_url)
       req = Net::HTTP::Post.new(uri.path)
       form = create_form( { :drop_name => drop.name, :token => token , :file => file } )
-      req.multipart_params = form
-      complete_request(req, uri.host)
+      req.multipart_params = form  
+      complete_request(req, uri.host) { |body| asset = Mapper.map_assets(drop, body) }
     end
     
-    true
+    asset
   end
   
   # Creates a note +Asset+
