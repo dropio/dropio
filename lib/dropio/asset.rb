@@ -44,7 +44,7 @@ class Dropio::Asset < Dropio::Resource
   
   # Sends the asset to the given +emails+ with an optional +message+.
   def send_to_emails(emails = [], message = nil)
-    Dropio::Client.instance.send_to_email(self, emails, message)
+    Dropio::Client.instance.send_to_emails(self, emails, message)
   end
   
   # Sends the asset to a Drop by +drop_name+
