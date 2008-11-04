@@ -277,7 +277,7 @@ class Dropio::Client
   
   # Creates a path for sending an +Asset+
   def send_to_path(drop, asset)
-    return asset_path(asset) + "/send_to"
+    return asset_path(drop, asset) + "/send_to"
   end
     
   # Starts and completes the given request. Returns or yields the response body.
