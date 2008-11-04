@@ -31,9 +31,9 @@ class Dropio::Drop < Dropio::Resource
     Dropio::Client.instance.destroy_drop(self)
   end
   
-  # Adds a file to the Drop given the +file+ path.
-  def add_file(file)
-    Dropio::Client.instance.add_file(self, file)
+  # Adds a file to the Drop given the +file_path+.
+  def add_file(file_path)
+    Dropio::Client.instance.add_file(self, file_path)
   end
   
   # Creates a note with a +title+ and +contents+
