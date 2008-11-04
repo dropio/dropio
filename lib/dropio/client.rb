@@ -63,8 +63,8 @@ class Dropio::Client
   def parse_error_message(response)
     error_hash = JSON.parse(response.body) rescue nil
     
-    if (error_hash && error_hash.is_a?(Hash) && error_hash[:response] && error_hash[:response][:message])
-      return error_hash[:response][:message]
+    if (error_hash && error_hash.is_a?(Hash) && error_hash["response"] && error_hash["response"]["message"])
+      return error_hash["response"]["message"]
     else
       return "There was a problem connecting to Drop.io."
     end
