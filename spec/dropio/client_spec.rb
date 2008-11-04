@@ -73,6 +73,17 @@ describe Client do
     Client.instance.create_link(@mydrop, "http://drop.io/", "Drop.io", "An awesome sharing site.").should == link
   end
   
+  it "should create comments" do
+    comment = stub(Comment)
+    mock_http(:post, "/drops/mydrop/assets/some_video/comments/", @api_response,
+                                                                 :contents => "What a cool video!",
+                                                                 :token    => "93mydroptoken97",
+                                                                 :api_key  => "43myapikey13",
+                                                                 :format   => "json")
+    Client::Mapper.stub!(:map_comments).with(@asset, @api_response_body).and_return(comment)
+    Client.instance.create_comment(@asset, "What a cool video!").should == comment
+  end
+  
   it "should find drops" do
     mock_http(:get, "/drops/mydrop?api_key=43myapikey13&token=93mydroptoken97&version=1.0&format=json", @api_response)
     Client::Mapper.stub!(:map_drops).with(@api_response_body).and_return(@mydrop)
