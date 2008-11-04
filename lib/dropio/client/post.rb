@@ -7,7 +7,7 @@ class Net::HTTP::Post
       unless param_value.nil?
         boundary_marker + case param_value
         when String
-          text_to_multipart(param_name, param_value)
+          text_to_multipart(param_name, param_value.to_s)
         when File
           file_to_multipart(param_name, param_value)
         end
@@ -22,7 +22,7 @@ class Net::HTTP::Post
     mime_type = mime_types.empty? ? "application/octet-stream" : mime_types.first.content_type
     part = "Content-Disposition: form-data; name=\"#{key}\"; filename=\"#{filename}\"\r\n"
     part += "Content-Transfer-Encoding: binary\r\n"
-    part += "Content-Type: #{mime_type}\r\n\r\n#{file.read}"
+    part += "Content-Type: #{mime_type}\r\n\r\n#{file.read}\r\n"
   end
 
   def text_to_multipart(key,value)

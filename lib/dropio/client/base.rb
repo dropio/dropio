@@ -74,7 +74,7 @@ class Dropio::Client
       req = Net::HTTP::Post.new(uri.path)
       form = create_form( { :drop_name => drop.name, :token => token , :file => file } )
       req.multipart_params = form
-      complete_request(req)
+      complete_request(req, uri.host)
     end
     
     true

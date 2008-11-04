@@ -41,9 +41,12 @@ class Dropio::Client
   end
     
   # Starts and completes the given request. Returns or yields the response body.
-  def complete_request(request)
-    response = Net::HTTP.new(URI.parse(Dropio.api_url).host).start { |http| http.request(request) }
-    
+  def complete_request(request, host = URI.parse(Dropio.api_url).host)
+    http = Net::HTTP.new(host)
+    # Set to debug http output.
+    # http.set_debug_output $stderr
+    response = http.start { |http| http.request(request) }
+
     case response
     when Net::HTTPSuccess     then yield response.body if block_given?
     when Net::HTTPBadRequest  then raise Dropio::RequestError, parse_error_message(response)
