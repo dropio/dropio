@@ -1,4 +1,4 @@
-class Net::HTTP::Post
+module Dropio::Client::MultipartPost
   def multipart_params=(param_hash={})
     boundary_token = [Array.new(8) {rand(256)}].join
     self.content_type = "multipart/form-data; boundary=#{boundary_token}"
@@ -28,4 +28,8 @@ class Net::HTTP::Post
   def text_to_multipart(key,value)
     "Content-Disposition: form-data; name=\"#{key}\"\r\n\r\n#{value}\r\n"
   end
+end
+
+class Net::HTTP::Post
+  include Dropio::Client::MultipartPost
 end
