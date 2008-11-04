@@ -46,7 +46,8 @@ class Dropio::Client
   def save_drop(drop)
     uri = URI::HTTP.build({:path => drop_path(drop) })
     token = get_admin_token(drop)
-    form = create_form({ :token => token, :expiration_length => drop.expiration_length, :guests_can_comment => drop.guests_can_comment, :guests_can_add => drop.guests_can_add, :guests_can_delete => drop.guests_can_delete })
+    form = create_form({ :token => token, :expiration_length => drop.expiration_length, :guests_can_comment => drop.guests_can_comment, :premium_code => drop.premium_code,
+      :guests_can_add => drop.guests_can_add, :guests_can_delete => drop.guests_can_delete, :password => drop.password, :admin_password => drop.admin_password})
     req = Net::HTTP::Put.new(uri.request_uri, DEFAULT_HEADER)
     req.set_form_data(form)
     drop = nil

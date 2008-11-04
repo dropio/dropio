@@ -82,7 +82,8 @@ describe Client do
                                                                  :contents => "What a cool video!",
                                                                  :token    => "93mydroptoken97",
                                                                  :api_key  => "43myapikey13",
-                                                                 :format   => "json")
+                                                                 :format   => "json",
+                                                                 :version  => "1.0")
     Client::Mapper.stub!(:map_comments).with(@asset, @api_response_body).and_return(comment)
     Client.instance.create_comment(@asset, "What a cool video!").should == comment
   end
@@ -127,7 +128,8 @@ describe Client do
                                      :premium_code       => "yeswecan",
                                      :token              => "93mydroptoken97",
                                      :api_key            => "43myapikey13",
-                                     :format             => "json")
+                                     :format             => "json",
+                                     :version            => "1.0")
     
     Client::Mapper.stub!(:map_drops).with(@api_response_body).and_return(@mydrop)
     Client.instance.save_drop(@mydrop).should == @mydrop

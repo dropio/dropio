@@ -7,7 +7,7 @@ describe Drop do
                                :expiration_length, :guests_can_comment, :guests_can_comment, 
                                :guests_can_delete, :max_bytes,
                                :current_bytes, :hidden_upload_url,
-                               :upload_url)
+                               :upload_url, :password, :admin_password, :premium_code)
   end
   
   it "should find drops by name" do

@@ -2,7 +2,7 @@ class Dropio::Drop < Dropio::Resource
   
   attr_accessor :name, :email, :voicemail, :conference, :fax, :rss, :guest_token,
                 :admin_token, :expiration_length, :guests_can_comment, :guests_can_add, :guests_can_delete,
-                :max_bytes, :current_bytes, :hidden_upload_url, :upload_url
+                :max_bytes, :current_bytes, :hidden_upload_url, :upload_url, :password, :admin_password, :premium_code
   
   # Gets a list of assets associated with the Drop. Paginated at 
   def assets(page = 1)
