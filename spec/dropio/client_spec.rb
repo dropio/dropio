@@ -44,7 +44,7 @@ describe Client do
                 :premium_code       => "yeswecan"}
     
     mock_http(:post, "/drops/", @api_response, settings.merge(:api_key => "43myapikey13", :format => "json", :version => "1.0"))
-    Client::Mapper.should_receive(:map_drops).with(@api_response_body).and_return(@mydrop)
+    Client::Mapper.stub!(:map_drops).with(@api_response_body).and_return(@mydrop)
     Client.instance.create_drop(settings).should == @mydrop
   end
   
@@ -56,7 +56,7 @@ describe Client do
                                                              :api_key  => "43myapikey13",
                                                              :format   => "json",
                                                              :version  => "1.0")
-    Client::Mapper.should_receive(:map_assets).with(@mydrop, @api_response_body).and_return(note)
+    Client::Mapper.stub!(:map_assets).with(@mydrop, @api_response_body).and_return(note)
     Client.instance.create_note(@mydrop, "Just a Note", "This is just to say").should == note
   end
   
@@ -68,26 +68,26 @@ describe Client do
                                                              :token    => "93mydroptoken97",
                                                              :api_key  => "43myapikey13",
                                                              :format   => "json",
-                                                              :version  => "1.0")
-    Client::Mapper.should_receive(:map_assets).with(@mydrop, @api_response_body).and_return(link)
+                                                             :version  => "1.0")
+    Client::Mapper.stub!(:map_assets).with(@mydrop, @api_response_body).and_return(link)
     Client.instance.create_link(@mydrop, "http://drop.io/", "Drop.io", "An awesome sharing site.").should == link
   end
   
   it "should find drops" do
     mock_http(:get, "/drops/mydrop?api_key=43myapikey13&token=93mydroptoken97&version=1.0&format=json", @api_response)
-    Client::Mapper.should_receive(:map_drops).with(@api_response_body).and_return(@mydrop)
+    Client::Mapper.stub!(:map_drops).with(@api_response_body).and_return(@mydrop)
     Client.instance.find_drop("mydrop", "93mydroptoken97").should == @mydrop
   end
   
   it "should find assets" do
     mock_http(:get, %r|^/drops/mydrop/assets/\?api_key=43myapikey13&token=93mydroptoken97&version=1.0&format=json|, @api_response)
-    Client::Mapper.should_receive(:map_assets).with(@mydrop, @api_response_body).and_return([@asset])
+    Client::Mapper.stub!(:map_assets).with(@mydrop, @api_response_body).and_return([@asset])
     Client.instance.find_assets(@mydrop).should == [@asset]
   end
   
   it "should find comments" do
     mock_http(:get, %r|^/drops/mydrop/assets/some_video/comments/\?api_key=43myapikey13&token=93mydroptoken97&version=1.0&format=json|, @api_response)
-    Client::Mapper.should_receive(:map_comments).with(@asset, @api_response_body).and_return([@comment])
+    Client::Mapper.stub!(:map_comments).with(@asset, @api_response_body).and_return([@comment])
     Client.instance.find_comments(@asset).should == [@comment]
   end
 end
