@@ -253,6 +253,23 @@ describe Client do
                      :api_key    => "43myapikey13",
                      :format     => "json",
                      :version    => "1.0")
+    
     Client.instance.send_to_fax(@file_asset, "12345678901").should be_true
+  end
+  
+  it "should send assets by email" do
+    mock_http(:post, "/drops/mydrop/assets/some-video/send_to",
+                     @api_response,
+                     :medium  => "email",
+                     :emails  => "joe@broomtown.com,bill@vaccsrus.com",
+                     :message => "Check this out!",
+                     :token   => "93mydroptoken97",
+                     :api_key => "43myapikey13",
+                     :format  => "json",
+                     :version => "1.0")
+    
+    Client.instance.send_to_emails(@file_asset,
+                                   ["joe@broomtown.com", "bill@vaccsrus.com"],
+                                   "Check this out!").should be_true
   end
 end
