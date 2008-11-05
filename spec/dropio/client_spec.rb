@@ -2,9 +2,10 @@ require File.dirname(__FILE__) + '/../spec_helper'
 
 describe Client do
   def mock_http(method, path, response, form_data = nil)
-    request_klass = { :get  => Net::HTTP::Get,
-                      :post => Net::HTTP::Post,
-                      :put  => Net::HTTP::Put }[method]
+    request_klass = { :get    => Net::HTTP::Get,
+                      :post   => Net::HTTP::Post,
+                      :put    => Net::HTTP::Put,
+                      :delete => Net::HTTP::Delete }[method]
     raise "Don't know how to mock a #{method.inspect} HTTP call." if request_klass.nil?
     request = mock(request_klass)
     request.should_receive(:set_form_data).with(form_data) if form_data
@@ -26,7 +27,7 @@ describe Client do
   before(:each) do
     # Don't allow HTTPRequests to be created without being
     # specifically stubbed, typically with mock_http above.
-    [Net::HTTP::Get, Net::HTTP::Post, Net::HTTP::Put].each do |request_klass|
+    [Net::HTTP::Get, Net::HTTP::Post, Net::HTTP::Put, Net::HTTP::Delete].each do |request_klass|
       request_klass.stub!(:new).with do |*args|
         raise "Created an unexpected #{request_klass}!\n#{request_klass}.new(#{args.map { |e| e.inspect }.join(", ")})"
       end
@@ -211,5 +212,14 @@ describe Client do
     new_comment = stub(Comment)
     Client::Mapper.stub!(:map_comments).with(@mydrop, @api_response_body).and_return(new_comment)
     Client.instance.save_comment(@comments).should == new_comment
+  end
+  
+  it "should destroy drops" do
+    mock_http(:delete, "/drops/mydrop", @api_response, :token    => "93mydroptoken97",
+                                                       :api_key  => "43myapikey13",
+                                                       :format   => "json",
+                                                       :version  => "1.0")
+    
+    Client.instance.destroy_drop(@mydrop).should be_true
   end
 end
