@@ -243,4 +243,16 @@ describe Client do
     
     Client.instance.destroy_comment(@comment).should be_true
   end
+  
+  it "should send assets by fax" do
+    mock_http(:post, "/drops/mydrop/assets/some-video/send_to",
+                     @api_response,
+                     :medium     => "fax",
+                     :fax_number => "12345678901",
+                     :token      => "93mydroptoken97",
+                     :api_key    => "43myapikey13",
+                     :format     => "json",
+                     :version    => "1.0")
+    Client.instance.send_to_fax(@file_asset, "12345678901").should be_true
+  end
 end
