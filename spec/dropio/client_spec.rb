@@ -84,6 +84,32 @@ describe Client do
     Client.instance.create_link(@mydrop, "http://drop.io/", "Drop.io", "An awesome sharing site.").should == @link
   end
   
+  it "should add files" do
+    file = stub(File)
+    File.stub!(:open).with("/path/to/video.avi", "r").and_yield(file)
+    
+    path = "/upload"
+    form_data = {:drop_name => "mydrop",
+                 :file      => file,
+                 :token     => "93mydroptoken97",
+                 :api_key   => "43myapikey13",
+                 :format    => "json",
+                 :version   => "1.0"}
+    
+    # We can't use mock_http here because the host is different and we're using multipart.
+    request = mock(Net::HTTP::Post)
+    request.should_receive(:multipart_params=).with(form_data) if form_data
+    Net::HTTP::Post.stub!(:new).with(path, Client::DEFAULT_HEADER).and_return(request)
+    
+    http = mock(Net::HTTP)
+    Net::HTTP.stub!(:new).with("assets.drop.io").and_return(http)
+    http.stub!(:start).and_yield(http)
+    http.stub!(:request).with(request).and_return(@api_response)
+    
+    Client::Mapper.stub!(:map_assets).with(@mydrop, @api_response_body).and_return(@file_asset)
+    Client.instance.add_file(@mydrop, "/path/to/video.avi").should == @file_asset
+  end
+  
   it "should create comments" do
     comment = stub(Comment)
     mock_http(:post, "/drops/mydrop/assets/some-video/comments/", @api_response,

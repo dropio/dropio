@@ -86,7 +86,7 @@ class Dropio::Client
     
     File.open(file_path, 'r') do |file|
       uri = URI.parse(Dropio.upload_url)
-      req = Net::HTTP::Post.new(uri.path)
+      req = Net::HTTP::Post.new(uri.path, DEFAULT_HEADER)
       form = create_form( { :drop_name => drop.name, :token => token , :file => file } )
       req.multipart_params = form  
       complete_request(req, uri.host) { |body| asset = Mapper.map_assets(drop, body) }
