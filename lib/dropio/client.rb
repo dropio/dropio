@@ -183,7 +183,6 @@ class Dropio::Client
                          :contents => asset.contents })
     req = Net::HTTP::Put.new(uri.request_uri, DEFAULT_HEADER)
     req.set_form_data(form)
-    asset = nil
     complete_request(req) { |body| asset = Mapper.map_assets(asset.drop, body)}
     asset
   end
