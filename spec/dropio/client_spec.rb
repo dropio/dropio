@@ -146,7 +146,7 @@ describe Client do
                                                        :format      => "json",
                                                        :version     => "1.0")
     
-    Client::Mapper.stub!(:map_asset).with(@mydrop, @api_response_body).and_return(@asset)
+    Client::Mapper.stub!(:map_assets).with(@mydrop, @api_response_body).and_return(@asset)
     Client.instance.save_asset(@asset).should == @asset
   end
 end
