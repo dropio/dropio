@@ -222,4 +222,14 @@ describe Client do
     
     Client.instance.destroy_drop(@mydrop).should be_true
   end
+  
+  it "should destroy assets" do
+    mock_http(:delete, "/drops/mydrop/assets/some-video", @api_response,
+                                                          :token    => "93mydroptoken97",
+                                                          :api_key  => "43myapikey13",
+                                                          :format   => "json",
+                                                          :version  => "1.0")
+    
+    Client.instance.destroy_asset(@file_asset).should be_true
+  end
 end
