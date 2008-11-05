@@ -197,4 +197,19 @@ describe Client do
     Client::Mapper.stub!(:map_assets).with(@mydrop, @api_response_body).and_return(new_file_asset)
     Client.instance.save_asset(@file_asset).should == new_file_asset
   end
+  
+  it "should save comments" do
+    @file_asset.stub!(:contents => "I remember that day.")
+    
+    mock_http(:put, "/drops/mydrop/assets/some-video/comments/1", @api_response,
+                                                                  :contents => "I remember that day.",
+                                                                  :token    => "93mydroptoken97",
+                                                                  :api_key  => "43myapikey13",
+                                                                  :format   => "json",
+                                                                  :version  => "1.0")
+     
+    new_comment = stub(Comment)
+    Client::Mapper.stub!(:map_comments).with(@mydrop, @api_response_body).and_return(new_comment)
+    Client.instance.save_comment(@comments).should == new_comment
+  end
 end
