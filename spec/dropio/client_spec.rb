@@ -272,4 +272,12 @@ describe Client do
                                    ["joe@broomtown.com", "bill@vaccsrus.com"],
                                    "Check this out!").should be_true
   end
+  
+  it "should generate drop urls" do
+    Client.instance.generate_drop_url(@mydrop).should =~ %r|http://drop.io/mydrop/from_api\?expires=\d+&signature=[0-9a-f]+|
+  end
+  
+  it "should generate asset urls" do
+    Client.instance.generate_asset_url(@file_asset).should =~ %r|http://drop.io/mydrop/asset/some-video/from_api\?expires=\d+&signature=[0-9a-f]+|
+  end
 end
