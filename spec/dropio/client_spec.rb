@@ -200,7 +200,7 @@ describe Client do
   end
   
   it "should save comments" do
-    @file_asset.stub!(:contents => "I remember that day.")
+    @comment.stub!(:contents => "I remember that day.")
     
     mock_http(:put, "/drops/mydrop/assets/some-video/comments/1", @api_response,
                                                                   :contents => "I remember that day.",
