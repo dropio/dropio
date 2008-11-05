@@ -299,6 +299,19 @@ describe Client do
                                    "Check this out!").should be_true
   end
   
+  it "should send assets to drops" do
+    mock_http(:post, "/drops/mydrop/assets/some-video/send_to",
+                     @api_response,
+                     :medium    => "drop",
+                     :drop_name => "myotherdrop",
+                     :token     => "93mydroptoken97",
+                     :api_key   => "43myapikey13",
+                     :format    => "json",
+                     :version   => "1.0")
+    
+    Client.instance.send_to_drop(@file_asset, "myotherdrop").should be_true
+  end
+  
   it "should generate drop urls" do
     Client.instance.generate_drop_url(@mydrop).should =~ %r|http://drop.io/mydrop/from_api\?expires=\d+&signature=[0-9a-f]+|
   end
