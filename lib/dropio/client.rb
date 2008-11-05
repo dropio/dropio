@@ -270,6 +270,8 @@ class Dropio::Client
       drop
     when nil
       ''
+    else
+      raise ArgumentError, "Client#drop_path takes a Drop or a String, got #{drop.inspect}"
     end
     
     return "/drops/" + drop_name

@@ -32,7 +32,7 @@ describe Client do
     @api_response      = stub(Net::HTTPSuccess, :body => @api_response_body)
 
     @mydrop  = stub(Drop, :name => 'mydrop', :admin_token => '93mydroptoken97')
-    @asset   = stub(Asset, :name => 'some_video', :drop => @mydrop)
+    @asset   = stub(Asset, :name => 'some-video', :drop => @mydrop, :url => nil, :contents => nil)
     @comment = stub(Comment)
   end
   
@@ -78,7 +78,7 @@ describe Client do
   
   it "should create comments" do
     comment = stub(Comment)
-    mock_http(:post, "/drops/mydrop/assets/some_video/comments/", @api_response,
+    mock_http(:post, "/drops/mydrop/assets/some-video/comments/", @api_response,
                                                                   :contents => "What a cool video!",
                                                                   :token    => "93mydroptoken97",
                                                                   :api_key  => "43myapikey13",
@@ -101,7 +101,7 @@ describe Client do
   end
   
   it "should find comments" do
-    mock_http(:get, %r|^/drops/mydrop/assets/some_video/comments/\?api_key=43myapikey13&token=93mydroptoken97&version=1.0&format=json|, @api_response)
+    mock_http(:get, %r|^/drops/mydrop/assets/some-video/comments/\?api_key=43myapikey13&token=93mydroptoken97&version=1.0&format=json|, @api_response)
     Client::Mapper.stub!(:map_comments).with(@asset, @api_response_body).and_return([@comment])
     Client.instance.find_comments(@asset).should == [@comment]
   end
@@ -113,10 +113,7 @@ describe Client do
                   :expiration_length  => "1_WEEK_FROM_LAST_VIEW",
                   :password           => "mazda",
                   :admin_password     => "foo64bar",
-                  :premium_code       => "yeswecan",
-                  :token              => "93mydroptoken97",
-                  :api_key            => "43myapikey13",
-                  :format             => "json")
+                  :premium_code       => "yeswecan")
     
     mock_http(:put, "/drops/mydrop", @api_response,
                                      :guests_can_comment => true,
@@ -133,5 +130,23 @@ describe Client do
     
     Client::Mapper.stub!(:map_drops).with(@api_response_body).and_return(@mydrop)
     Client.instance.save_drop(@mydrop).should == @mydrop
+  end
+  
+  it "should save file assets" do
+    @asset.stub!(:title       => "Snowboarding in March",
+                 :description => "This was really fun.")
+    
+    mock_http(:put, "/drops/mydrop/assets/some-video", @api_response,
+                                                       :title       =>  "Snowboarding in March",
+                                                       :description => "This was really fun.",
+                                                       :url         => nil,
+                                                       :contents    => nil,
+                                                       :token       => "93mydroptoken97",
+                                                       :api_key     => "43myapikey13",
+                                                       :format      => "json",
+                                                       :version     => "1.0")
+    
+    Client::Mapper.stub!(:map_asset).with(@mydrop, @api_response_body).and_return(@asset)
+    Client.instance.save_asset(@asset).should == @asset
   end
 end
