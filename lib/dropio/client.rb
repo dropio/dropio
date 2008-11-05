@@ -108,10 +108,10 @@ class Dropio::Client
   end
   
   # Creates a link +Asset+
-  def create_link(drop, url, title = nil, contents = nil)
+  def create_link(drop, url, title = nil, description = nil)
     token = get_default_token(drop)
     uri = URI::HTTP.build({:path => asset_path(drop)})
-    form = create_form( { :token => token, :url => url, :title => title, :contents => contents })
+    form = create_form( { :token => token, :url => url, :title => title, :description => description })
     req = Net::HTTP::Post.new(uri.request_uri, DEFAULT_HEADER)
     req.set_form_data(form)
     asset = nil
