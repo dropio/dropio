@@ -42,7 +42,7 @@ describe Client do
     @note       = stub_asset(:drop => @mydrop, :name => 'a-note', :contents => "My thoughts on life.")
     @link       = stub_asset(:drop => @mydrop, :name => 'a-link', :url => "http://google.com/")
     @file_asset = stub_asset(:drop => @mydrop, :name => 'some-video')
-    @comment    = stub(Comment)
+    @comment    = stub(Comment, :asset => @file_asset, :contents => "I remember that day.")
   end
   
   it "should create drops" do
@@ -201,7 +201,7 @@ describe Client do
   it "should save comments" do
     @file_asset.stub!(:contents => "I remember that day.")
     
-    mock_http(:put, "/drops/mydrop/assets/some-video/comments/1", @api_response,
+    mock_http(:put, "/drops/mydrop/assets/some-video/comments/#{@comment.id}", @api_response,
                                                                   :contents => "I remember that day.",
                                                                   :token    => "93mydroptoken97",
                                                                   :api_key  => "43myapikey13",
@@ -209,7 +209,8 @@ describe Client do
                                                                   :version  => "1.0")
      
     new_comment = stub(Comment)
-    Client::Mapper.stub!(:map_comments).with(@mydrop, @api_response_body).and_return(new_comment)
-    Client.instance.save_comment(@comments).should == new_comment
+    
+    Client::Mapper.stub!(:map_comments).with(@file_asset, @api_response_body).and_return(new_comment)
+    Client.instance.save_comment(@comment).should == new_comment
   end
 end
