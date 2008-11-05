@@ -43,7 +43,7 @@ describe Client do
     @note       = stub_asset(:drop => @mydrop, :name => 'a-note', :contents => "My thoughts on life.")
     @link       = stub_asset(:drop => @mydrop, :name => 'a-link', :url => "http://google.com/")
     @file_asset = stub_asset(:drop => @mydrop, :name => 'some-video')
-    @comment    = stub(Comment)
+    @comment    = stub(Comment, :asset => @file_asset, :id => 1)
   end
   
   it "should create drops" do
@@ -231,5 +231,15 @@ describe Client do
                                                           :version  => "1.0")
     
     Client.instance.destroy_asset(@file_asset).should be_true
+  end
+  
+  it "should destroy comments" do
+    mock_http(:delete, "/drops/mydrop/assets/some-video/comments/1", @api_response,
+                                                                     :token    => "93mydroptoken97",
+                                                                     :api_key  => "43myapikey13",
+                                                                     :format   => "json",
+                                                                     :version  => "1.0")
+    
+    Client.instance.destroy_comment(@comment).should be_true
   end
 end
