@@ -34,15 +34,15 @@ describe Client do
     
     Dropio.api_url = "http://api.drop.io"
     Dropio.api_key = "43myapikey13"
-
+    
     @api_response_body = stub("API Response Body")
     @api_response      = stub(Net::HTTPSuccess, :body => @api_response_body)
-
-    @mydrop  = stub(Drop, :name => 'mydrop', :admin_token => '93mydroptoken97')
-    @note    = stub_asset(:drop => @mydrop, :name => 'a-note', :contents => "My thoughts on life.")
-    @link    = stub_asset(:drop => @mydrop, :name => 'a-link', :url => "http://google.com/")
-    @file_asset   = stub_asset(:drop => @mydrop, :name => 'some-video')
-    @comment = stub(Comment)
+    
+    @mydrop     = stub(Drop, :name => 'mydrop', :admin_token => '93mydroptoken97')
+    @note       = stub_asset(:drop => @mydrop, :name => 'a-note', :contents => "My thoughts on life.")
+    @link       = stub_asset(:drop => @mydrop, :name => 'a-link', :url => "http://google.com/")
+    @file_asset = stub_asset(:drop => @mydrop, :name => 'some-video')
+    @comment    = stub(Comment)
   end
   
   it "should create drops" do
@@ -181,7 +181,7 @@ describe Client do
 
   it "should save file assets" do
     @file_asset.stub!(:title       => "Snowboarding in March",
-                 :description => "This was really fun.")
+                      :description => "This was really fun.")
     
     mock_http(:put, "/drops/mydrop/assets/some-video", @api_response,
                                                        :title       => "Snowboarding in March",
