@@ -12,6 +12,8 @@ begin
     echoe.url = "http://github.com/whoisjake/dropio_api_ruby"
     echoe.changelog = "History.txt"
     echoe.ignore_pattern = "tmtags"
+    
+    # Comment out this line when building docs locally or publishing docs.
     echoe.rdoc_pattern = "*.rdoc"
   end
   

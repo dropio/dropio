@@ -1,9 +1,17 @@
+require 'rbconfig'
+
 class Dropio::Client
   include Singleton
-
+  
+  # Generates a user agent string.
+  def self.user_agent_string
+    ruby_version = %w{MAJOR MINOR TEENY}.map { |k| Config::CONFIG[k] }.join(".")
+    "DropioAPI-Ruby/#{Dropio::VERSION} (Ruby #{ruby_version} #{Config::CONFIG["host"]}; +http://dropio.rubyforge.org/)"
+  end
+  
   # The default set of headers for each request.
   DEFAULT_HEADER = {
-      'User-Agent' => 'Drop.io Ruby Library',
+      'User-Agent' => user_agent_string,
       'Accept' => 'application/json'
   }
   
