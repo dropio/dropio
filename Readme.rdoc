@@ -1,0 +1,17 @@
+(Note: This is very beta.  The code is mostly functional.  The docs are mostly not.  The tests are somewhere in between.  Have fun, be safe, and stay tuned.)
+
+= drop.io API library for Ruby
+
+Before using the Dropio library, the application must set an API key.  This key will be used for all requests to the server.  To get an API key, go to http://api.drop.io.  Then make sure you set the API key before you use the API:
+
+  Dropio.api_key = "83a05513ddddb73e75c9d8146c115f7fd8e90de6"
+
+
+== The Drop object
+
+There are two ways to get a +Drop+ object.  The first is to access an existing drop:
+
+       drop = Dropio::Drop.find("mystuff")
+  auth_drop = Dropio::Drop.find("mystuff", "b9b2c8f2b8e655679d2fb62b83f8efec4fb4c8af")
+
+<tt>Drop#find</tt> takes two arguments: the name of the drop to get, and a credential token.  This can be an admin token, a user token, an admin password, or a guest password.  The drop's capabilities will be limited by the token, and the token is optional.  If the drop is authenticated with the admin token, it will be able to do anything.  If the drop is not authenticated with a token, it will have the same capabilities as any user visiting the drop.  If the drop is not found or the token is not accepted, <tt>#find</tt> will return +nil+.

@@ -1,0 +1,5 @@
+== For 1.0
+* Bring spec coverage up to 100%.
+
+== Beyond
+* Provide subclasses of Asset?

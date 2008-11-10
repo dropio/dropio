@@ -1,7 +1,32 @@
-require 'spec/rake/spectask'
-require 'rake/rdoctask'
+$: << 'lib'
+require 'dropio'
+
+### Echoe
+begin
+  require 'echoe'
+
+  Echoe.new('dropio', Dropio::VERSION) do |echoe|
+    echoe.summary = "A Ruby client library for the Drop.io API (http://api.drop.io)"
+    echoe.author = ["Jake Good", "Peter Jaros"]
+    echoe.email = ["jake@dropio.com", "peeja@dropio.com"]
+    echoe.url = "http://github.com/whoisjake/dropio_api_ruby"
+    echoe.changelog = "History.txt"
+    echoe.ignore_pattern = "tmtags"
+    echoe.rdoc_pattern = "*.rdoc"
+  end
+  
+  # Until we find a way to undefine rake tasks...
+  %w{coverage clobber_coverage}.each { |name| Rake::Task[name].comment = "(don't use)" }
+  
+  # default depends on test, but we don't have a test task.  Define a trivial one.
+  task :test
+rescue LoadError
+  puts "(Note: Echoe not found.  Install echoe gem for package management tasks.)"
+end
+
 
 ### RSpec
+require 'spec/rake/spectask'
 
 task :default => :spec
 Spec::Rake::SpecTask.new(:spec)
@@ -23,15 +48,13 @@ end
 
 
 ### RDoc
+require 'rake/rdoctask'
 
-Rake::RDocTask.new(:rdoc) do |rd|
-  rd.rdoc_dir = 'doc'
-end
-
-namespace :rdoc do
+namespace :docs do
   desc "Generate and view RDoc documentation"
-  task :view => :rdoc do
+  task :view => :docs do
     doc_index = File.expand_path(File.join(File.dirname(__FILE__), 'doc', 'index.html'))
     sh "open file://#{doc_index}"
   end
 end
+
