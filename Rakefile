@@ -10,11 +10,13 @@ begin
     echoe.author = ["Jake Good", "Peter Jaros"]
     echoe.email = ["jake@dropio.com", "peeja@dropio.com"]
     echoe.url = "http://github.com/whoisjake/dropio_api_ruby"
-    echoe.changelog = "History.txt"
+    echoe.changelog = "History.rdoc"
     echoe.ignore_pattern = "tmtags"
+    echoe.runtime_dependencies = ["mime-types", "json"]
     
-    # Comment out this line when building docs locally or publishing docs.
-    echoe.rdoc_pattern = "*.rdoc"
+    # Use this rdoc_pattern when building docs locally or publishing docs.
+    # echoe.rdoc_pattern = Regexp.union(echoe.rdoc_pattern, /\.rdoc$/)
+    echoe.rdoc_pattern = /\.rdoc$/
   end
   
   # Until we find a way to undefine rake tasks...
