@@ -31,7 +31,7 @@ class Dropio::Asset < Dropio::Resource
   
   # Returns true if the Asset can be faxed.
   def faxable?
-    return type == "Document"
+    return type.downcase == "document"
   end
   
   # Fax the asset to the given +fax_number+.  Make sure the Asset is +faxable?+
