@@ -6,7 +6,7 @@ class Dropio::Client
   # Generates a user agent string.
   def self.user_agent_string
     ruby_version = %w{MAJOR MINOR TEENY}.map { |k| Config::CONFIG[k] }.join(".")
-    "DropioAPI-Ruby/#{Dropio::VERSION} (Ruby #{ruby_version} #{Config::CONFIG["host"]}; +http://dropio.rubyforge.org/)"
+    "DropioAPI-Ruby/#{Dropio::VERSION} (Ruby #{ruby_version} #{Config::CONFIG["host"]}; +http://github.com/dropio/dropio/tree/)"
   end
   
   # The default set of headers for each request.

@@ -7,9 +7,9 @@ begin
 
   Echoe.new('dropio', Dropio::VERSION) do |echoe|
     echoe.summary = "A Ruby client library for the Drop.io API (http://api.drop.io)"
-    echoe.author = ["Jake Good", "Peter Jaros"]
-    echoe.email = ["jake@dropio.com", "peeja@dropio.com"]
-    echoe.url = "http://github.com/whoisjake/dropio_api_ruby"
+    echoe.author = ["Jake Good"]
+    echoe.email = ["jake@dropio.com"]
+    echoe.url = "http://github.com/dropio/dropio"
     echoe.changelog = "History.rdoc"
     echoe.ignore_pattern = "tmtags"
     echoe.runtime_dependencies = ["mime-types", "json"]
