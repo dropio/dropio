@@ -16,6 +16,10 @@ class Dropio::Api
   def drop(drop_name, token = nil)
     self.class.get("/drops/#{drop_name}", :query => {:token => token})
   end
+  
+  def generate_drop_url(drop_name, token)
+    signed_url(drop_name,token)
+  end
 
   def create_drop(params = {})
     self.class.post("/drops",:body => params)
@@ -62,6 +66,10 @@ class Dropio::Api
 
   def asset(drop_name, asset_name, token = nil)
     self.class.get("/drops/#{drop_name}/assets/#{asset_name}", :query => {:token => token})
+  end
+  
+  def generate_asset_url(drop_name, asset_name, token)
+    signed_url(drop_name, token, asset_name)
   end
 
   def embed_code(drop_name, asset_name, token = nil)
@@ -112,5 +120,17 @@ class Dropio::Api
 
   def delete_comment(drop_name, asset_name, comment_id, token = nil)
     self.class.delete("/drops/#{drop_name}/assets/#{asset_name}/comments/#{comment_id}", :body => {:token => token})
+  end
+  
+  private
+  
+  def signed_url(drop_name, token, asset_name = nil)
+    # 10 minute window.
+    expires = (Time.now.utc + 10*60).to_i
+    path = Dropio::Config.base_url + "/#{drop_name}"
+    path += "/asset/#{asset_name}" if asset_name
+    path += "/from_api"
+    sig = Digest::SHA1.hexdigest("#{expires}+#{token}+#{drop_name}")
+    path + "?expires=#{expires}&signature=#{sig}"
   end
 end

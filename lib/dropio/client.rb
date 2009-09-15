@@ -8,6 +8,10 @@ class Dropio::Client
   def drop(drop_name, token = nil)
     handle(:drop, self.service.drop(drop_name, token))
   end
+  
+  def generate_drop_url(drop)
+    self.service.generate_drop_url(drop.name,drop.default_token)
+  end
 
   def create_drop(params = {})
     handle(:drop, self.service.create_drop(params))
@@ -45,6 +49,10 @@ class Dropio::Client
 
   def asset(drop, asset_name)
     handle(:asset, self.service.assets(drop.name,asset_name))
+  end
+  
+  def generate_asset_url(asset)
+    self.service.generate_drop_url(asset.drop.name, asset.name, drop.default_token)
   end
 
   def embed_code(asset)
