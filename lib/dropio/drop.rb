@@ -22,6 +22,21 @@ class Dropio::Drop < Dropio::Resource
     self.client.create_drop(attributes)
   end
   
+  # Gets the drop's embeddable uploader code
+  def upload_code
+    self.client.drop_upload_code(self)
+  end
+  
+  # Empties the drop, including it's assets.
+  def empty
+    self.client.empty_drop(self)
+  end
+  
+  # Promotes a nickname in the drop chat to admin.
+  def promote(nick)
+    self.client.promote_nick(nick)
+  end
+  
   # Saves the Drop.
   def save
     self.client.save_drop(self)
@@ -30,6 +45,10 @@ class Dropio::Drop < Dropio::Resource
   # Deletes the Drop from the system including all associated assets.
   def destroy
     self.client.destroy_drop(self)
+  end
+  
+  def add_from_from_url(url)
+    self.client.add_from_from_url(self,url)
   end
   
   # Adds a file to the Drop given the +file_path+.
@@ -47,14 +66,19 @@ class Dropio::Drop < Dropio::Resource
     self.client.create_link(self, url, title, description)
   end
   
-  # Creates a Twitter subscription
+  # Creates a Twitter Subscription
   def create_twitter_subscription(username,password)
     self.client.create_twitter_subscription(self,username,password)
   end
   
-  # Creates a Twitter subscription
+  # Creates an email Subscription
   def create_email_subscription(email)
     self.client.create_email_subscription(self,email)
+  end
+  
+  # Gets a list of Subscription objects.
+  def subscriptions
+    self.client.find_subscriptions(self)
   end
   
   # Generates an authenticated URL that will bypass any login action.

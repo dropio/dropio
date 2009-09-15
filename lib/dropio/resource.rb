@@ -9,4 +9,5 @@ class Dropio::Resource
     @@client ||= Dropio::Api.new
     @@client
   end
+  
 end
