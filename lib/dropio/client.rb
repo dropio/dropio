@@ -109,7 +109,28 @@ class Dropio::Client
     when :assets then return response.collect{|a| Asset.new(a)}
     when :comment then return Comment.new(response)
     when :comments then return response.collect{|c| Comment.new(c)}
-    when :response
+    when :response then return parse_response(response)
+    end
+  end
+  
+  def parse_response(response)
+    case response.code
+    when 200 then return response["reponse"]["result"] == "Success", response["reponse"]["message"]
+    when 400 then raise Dropio::RequestError, parse_error_message(response)
+    when 403 then raise Dropio::AuthorizationError, parse_error_message(response)
+    when 404 then raise Dropio::MissingResourceError, parse_error_message(response)
+    when 500 then raise Dropio::ServerError, "There was a problem connecting to Drop.io."
+    else
+      raise "Received an unexpected HTTP response: #{response.code} #{response.body}"
+    end
+  end
+  
+  # Extracts the error message from the response for the exception.
+  def parse_error_message(error_hash)
+    if (error_hash && error_hash.is_a?(Hash) && error_hash["response"] && error_hash["response"]["message"])
+      return error_hash["response"]["message"]
+    else
+      return "There was a problem connecting to Drop.io."
     end
   end
   

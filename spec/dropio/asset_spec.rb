@@ -6,8 +6,8 @@ describe Asset do
     @asset = Asset.new
     @asset.drop = @drop
     
-    @client = stub(Api)
-    Api.stub!(:new).and_return(@client)
+    @client = stub(Client)
+    Dropio::Resource.stub!(:client).and_return(@client)
   end
   
   it "should have the attributes of an Asset" do

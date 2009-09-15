@@ -3,8 +3,8 @@ require File.dirname(__FILE__) + '/../spec_helper'
 describe Comment do
   before(:each) do
     @comment = Comment.new
-    @service = stub(Api)
-    Api.stub!(:new).and_return(@service)
+    @client = stub(Client)
+    Dropio::Resource.stub!(:client).and_return(@client)
   end
   
   it "should have the attributes of an Comment" do
