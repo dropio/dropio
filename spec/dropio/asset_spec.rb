@@ -20,7 +20,7 @@ describe Asset do
   
   it "should have comments" do
     @comment = stub(Comment)
-    @client.stub!(:find_comments).with(@asset).and_return([@comment])
+    @client.stub!(:comments).with(@asset).and_return([@comment])
     @asset.comments.should == [@comment]
   end
   
@@ -31,12 +31,12 @@ describe Asset do
   end
   
   it "should save itself" do
-    @client.should_receive(:save_asset).with(@asset)
+    @client.should_receive(:update_asset).with(@asset)
     @asset.save
   end
   
   it "should destroy itself" do
-    @client.should_receive(:destroy_asset).with(@asset)
+    @client.should_receive(:delete_asset).with(@asset)
     @asset.destroy!
   end
   
@@ -49,13 +49,13 @@ describe Asset do
   
   it "should fax itself to a phone number" do
     @asset.type = "Document"
-    @client.should_receive(:send_to_fax).with(@asset,"234-567-8901")
+    @client.should_receive(:send_asset_to_fax).with(@asset,"234-567-8901")
     @asset.send_to_fax("234-567-8901")
   end
   
   it "should not fax itself if it's not faxable" do
     @asset.type = "Video"
-    @client.should_not_receive(:send_to_fax)
+    @client.should_not_receive(:send_asset_to_fax)
     # TODO: Make this a specific error.
     lambda { @asset.send_to_fax("234-567-8901") }.should raise_error
   end
