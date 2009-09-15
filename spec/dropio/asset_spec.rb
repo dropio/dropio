@@ -3,8 +3,8 @@ require File.dirname(__FILE__) + '/../spec_helper'
 describe Asset do
   before(:each) do
     @asset = Asset.new
-    @client = stub(Client)
-    Client.stub!(:instance).and_return(@client)
+    @client = stub(Api)
+    Api.stub!(:new).and_return(@client)
   end
   
   it "should have the attributes of an Asset" do

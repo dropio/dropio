@@ -1,3 +1,7 @@
+=== 1.0.0 / 2009-09-14
+
+* Moved to API version 2.0
+
 === 0.9.5 / 2009-09-09
 
 * Move gem to github.

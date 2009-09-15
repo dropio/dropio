@@ -12,13 +12,17 @@ describe Drop do
   
   it "should find drops by name" do
     mydrop = stub(Drop)
-    Client.instance.should_receive(:find_drop).with("mydrop", nil).and_return(mydrop)
+    @client = stub(Api)
+    Api.stub!(:new).and_return(@client)
+    @client.should_receive(:find).with("mydrop", nil).and_return(mydrop)
     Drop.find("mydrop").should == mydrop
   end
 
   it "should find drops by name and token" do
     mydrop = stub(Drop)
-    Client.instance.should_receive(:find_drop).with("mydrop", "d85a6").and_return(mydrop)
+    @client = stub(Api)
+    Api.stub!(:new).and_return(@client)
+    @client.should_receive(:find).with("mydrop", "d85a6").and_return(mydrop)
     Drop.find("mydrop", "d85a6").should == mydrop
   end
 end
