@@ -2,7 +2,10 @@ require File.dirname(__FILE__) + '/../spec_helper'
 
 describe Asset do
   before(:each) do
+    @drop = Drop.new
     @asset = Asset.new
+    @asset.drop = @drop
+    
     @client = stub(Api)
     Api.stub!(:new).and_return(@client)
   end
@@ -12,7 +15,7 @@ describe Asset do
                              :created_at, :thumbnail, :status, :file,
                              :converted, :hidden_url, :pages, :duration,
                              :artist, :track_title, :height, :width,
-                             :contents, :url)
+                             :contents, :url, :drop)
   end
   
   it "should have comments" do

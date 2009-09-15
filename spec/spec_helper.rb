@@ -1,5 +1,8 @@
 require 'rubygems'
 require 'spec'
+require 'fakeweb'
+
+FakeWeb.allow_net_connect = false
 
 lib_dir = File.dirname(__FILE__) + '/../lib'
 $:.unshift lib_dir unless $:.include?(lib_dir)

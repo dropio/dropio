@@ -3,8 +3,8 @@ require File.dirname(__FILE__) + '/../spec_helper'
 describe Comment do
   before(:each) do
     @comment = Comment.new
-    @client = stub(Api)
-    Api.stub!(:new).and_return(@client)
+    @service = stub(Api)
+    Api.stub!(:new).and_return(@service)
   end
   
   it "should have the attributes of an Comment" do

@@ -3,12 +3,12 @@ class Dropio::Subscription < Dropio::Resource
   
   # Fetches a single Subscription
   def self.find(id)
-    self.client.find_subscription(id)
+    Resource.client.subscription(id)
   end
   
   # Destroys the given subscription. Admin +token+ required
   def destroy!(token)
-    self.client.destroy_subscription(self,token)
+    Resource.client.delete_subscription(self,token)
     nil
   end
   

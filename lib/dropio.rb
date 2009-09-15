@@ -26,6 +26,7 @@ Dropio::Config.upload_url = "http://assets.drop.io/upload"
 Dropio::Config.version = "2.0"
 
 require 'dropio/api'
+require 'dropio/client'
 require 'dropio/resource'
 require 'dropio/drop'
 require 'dropio/asset'

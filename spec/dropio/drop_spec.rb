@@ -25,4 +25,5 @@ describe Drop do
     @client.should_receive(:find).with("mydrop", "d85a6").and_return(mydrop)
     Drop.find("mydrop", "d85a6").should == mydrop
   end
+  
 end

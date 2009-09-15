@@ -13,20 +13,20 @@ class Dropio::Api
     self.class.base_uri Dropio::Config.api_url
   end
 
-  def find(drop_name, token = nil)
+  def drop(drop_name, token = nil)
     self.class.get("/drops/#{drop_name}", :query => {:token => token})
   end
 
-  def create(params = {})
+  def create_drop(params = {})
     self.class.post("/drops",:body => params)
   end
 
-  def update(drop_name, params = {}, token = nil)
+  def update_drop(drop_name, params = {}, token = nil)
     params[:token] = token
     self.class.put("/drops/#{drop_name}", :body => params)
   end
 
-  def delete(drop_name, admin_token)
+  def delete_drop(drop_name, admin_token)
     params = {:token => admin_token}
     self.class.delete("/drops/#{drop_name}", :query => params)
   end
@@ -56,8 +56,8 @@ class Dropio::Api
     (r.nil? or r.body.nil? or r.body.empty?) ? [] : Crack::JSON.parse(r.body)
   end
 
-  def assets(drop_name, token = nil)
-    self.class.get("/drops/#{drop_name}/assets", :query => {:token => token})
+  def assets(drop_name, page = 1, token = nil)
+    self.class.get("/drops/#{drop_name}/assets", :query => {:token => token, :page => page})
   end
 
   def asset(drop_name, asset_name, token = nil)
@@ -77,8 +77,18 @@ class Dropio::Api
     self.class.delete("/drops/#{drop_name}/assets/#{asset_name}", :body => {:token => token})
   end
 
-  def send_asset_to_drop(drop_name, asset_name, target_drop, token = nil)
-    params = {:drop_name => target_drop, :token => token}
+  def send_asset_to_drop(drop_name, asset_name, target_drop, drop_token = nil, token = nil)
+    params = {:medium => "drop", :drop_name => target_drop, :token => token, :drop_token => drop_token}
+    self.class.post("/drops/#{drop_name}/assets/#{asset_name}/send_to", :body => params)
+  end
+  
+  def send_asset_to_fax(drop_name, asset_name, fax_number, token = nil)
+    params = {:medium => "fax", :fax_number => fax_number, :token => token}
+    self.class.post("/drops/#{drop_name}/assets/#{asset_name}/send_to", :body => params)
+  end
+  
+  def send_asset_to_emails(drop_name, asset_name, emails, message = nil, token = nil)
+    params = {:medium => "emails", :emails => emails, message => message, :token => token}
     self.class.post("/drops/#{drop_name}/assets/#{asset_name}/send_to", :body => params)
   end
 
