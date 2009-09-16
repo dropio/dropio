@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.description = %q{A Ruby client library for the Drop.io API (http://api.drop.io)}
   s.email = ["jake@dropio.com"]
   s.extra_rdoc_files = ["History.rdoc", "Readme.rdoc", "Todo.rdoc"]
-  s.files = ["History.rdoc", "lib/dropio/asset.rb", "lib/dropio/comment.rb", "lib/dropio/drop.rb", "lib/dropio/resource.rb", "lib/dropio.rb", "LICENSE.txt", "Manifest", "Rakefile", "Readme.rdoc", "spec/dropio/asset_spec.rb", "spec/dropio/comment_spec.rb", "spec/dropio/drop_spec.rb", "spec/dropio_spec.rb", "spec/spec.opts", "spec/spec_helper.rb", "Todo.rdoc", "dropio.gemspec"]
+  s.files = ["History.rdoc", "lib/dropio/api.rb", "lib/dropio/asset.rb", "lib/dropio/client.rb", "lib/dropio/comment.rb", "lib/dropio/drop.rb", "lib/dropio/resource.rb", "lib/dropio.rb", "LICENSE.txt", "Manifest", "Rakefile", "Readme.rdoc", "spec/dropio/api_spec.rb", "spec/dropio/asset_spec.rb", "spec/dropio/client_spec.rb", "spec/dropio/comment_spec.rb", "spec/dropio/drop_spec.rb","spec/dropio/subscription_spec.rb", "spec/dropio_spec.rb", "spec/spec.opts", "spec/spec_helper.rb", "Todo.rdoc", "dropio.gemspec"]
   s.has_rdoc = true
   s.homepage = %q{http://github.com/dropio/dropio}
   s.rdoc_options = ["--line-numbers", "--inline-source", "--title", "Dropio", "--main", "Readme.rdoc"]
