@@ -2,8 +2,8 @@ class Dropio::Drop < Dropio::Resource
   
   attr_accessor :name, :email, :voicemail, :conference, :fax, :rss, :guest_token, :description,
                 :admin_token, :expires_at, :expiration_length, :guests_can_comment, :guests_can_add, :guests_can_delete,
-                :max_bytes, :current_bytes, :hidden_upload_url, :asset_count, :chat_passowrd, :default_view, :upload_url, 
-                :password, :admin_password, :premium_code
+                :max_bytes, :current_bytes, :hidden_upload_url, :asset_count, :chat_password, :default_view, :upload_url, 
+                :password, :admin_password, :premium_code, :admin_email, :email_key
      
   # Gets the default token to be used, prefers the admin token.           
   def default_token
@@ -78,8 +78,8 @@ class Dropio::Drop < Dropio::Resource
   end
   
   # Creates an email Subscription
-  def create_email_subscription(email,welcome_message = nil)
-    Resource.client.create_email_subscription(self,email,welcome_message)
+  def create_email_subscription(email,welcome_message = nil, welcome_subject = nil, welcome_from = nil)
+    Resource.client.create_email_subscription(self,email,welcome_message,welcome_subject,welcome_from)
   end
   
   # Gets a list of Subscription objects.

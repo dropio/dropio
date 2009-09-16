@@ -25,19 +25,29 @@ class Dropio::Api
     self.class.post("/drops",:body => params)
   end
 
-  def update_drop(drop_name, params = {}, token = nil)
-    params[:token] = token
+  def update_drop(drop_name, admin_token, params = {})
+    params[:token] = admin_token
     self.class.put("/drops/#{drop_name}", :body => params)
+  end
+  
+  def empty_drop(drop_name, admin_token)
+    self.class.put("/drops/#{drop_name}/empty", :query => {:token => admin_token})
   end
 
   def delete_drop(drop_name, admin_token)
-    params = {:token => admin_token}
-    self.class.delete("/drops/#{drop_name}", :query => params)
+    self.class.delete("/drops/#{drop_name}", :query => {:token => admin_token})
+  end
+  
+  def promote_nick(drop_name, nick, admin_token)
+    self.class.post("/drops/#{drop_name}", :query => {:nick => nick, :token => admin_token})
+  end
+  
+  def drop_upload_code(drop_name, token = nil)
+    self.class.get("/drops/#{drop_name}/upload_code", :query => {:token => token})
   end
 
   def create_link(drop_name, url, title = nil, description = nil, token = nil)
-    params = {:url => url, :title => title, :description => description, :token => token}
-    self.class.post("/drops/#{drop_name}/assets", :body => params)
+    self.class.post("/drops/#{drop_name}/assets", :body => {:url => url, :title => title, :description => description, :token => token})
   end
 
   def create_note(drop_name, contents, title = nil, token = nil)
@@ -59,6 +69,10 @@ class Dropio::Api
 
     (r.nil? or r.body.nil? or r.body.empty?) ? [] : Crack::JSON.parse(r.body)
   end
+  
+  def add_file_from_url(drop_name, url, token = nil)
+    self.class.post("/drops/#{drop_name}/assets", :body => {:token => token, :file_url => url})
+  end
 
   def assets(drop_name, page = 1, token = nil)
     self.class.get("/drops/#{drop_name}/assets", :query => {:token => token, :page => page})
@@ -72,7 +86,7 @@ class Dropio::Api
     signed_url(drop_name, token, asset_name)
   end
 
-  def embed_code(drop_name, asset_name, token = nil)
+  def asset_embed_code(drop_name, asset_name, token = nil)
     self.class.get("/drops/#{drop_name}/assets/#{asset_name}/embed_code", :query => {:token => token})
   end
 
@@ -86,18 +100,15 @@ class Dropio::Api
   end
 
   def send_asset_to_drop(drop_name, asset_name, target_drop, drop_token = nil, token = nil)
-    params = {:medium => "drop", :drop_name => target_drop, :token => token, :drop_token => drop_token}
-    self.class.post("/drops/#{drop_name}/assets/#{asset_name}/send_to", :body => params)
+    self.class.post("/drops/#{drop_name}/assets/#{asset_name}/send_to", :body => {:medium => "drop", :drop_name => target_drop, :token => token, :drop_token => drop_token})
   end
   
   def send_asset_to_fax(drop_name, asset_name, fax_number, token = nil)
-    params = {:medium => "fax", :fax_number => fax_number, :token => token}
-    self.class.post("/drops/#{drop_name}/assets/#{asset_name}/send_to", :body => params)
+    self.class.post("/drops/#{drop_name}/assets/#{asset_name}/send_to", :body => {:medium => "fax", :fax_number => fax_number, :token => token})
   end
   
   def send_asset_to_emails(drop_name, asset_name, emails, message = nil, token = nil)
-    params = {:medium => "emails", :emails => emails, message => message, :token => token}
-    self.class.post("/drops/#{drop_name}/assets/#{asset_name}/send_to", :body => params)
+    self.class.post("/drops/#{drop_name}/assets/#{asset_name}/send_to", :body => {:medium => "emails", :emails => emails, message => message, :token => token})
   end
 
   def comments(drop_name, asset_name, token = nil)
@@ -105,22 +116,34 @@ class Dropio::Api
   end
 
   def create_comment(drop_name, asset_name, contents, token = nil)
-    params = {:contents => contents, :token => token}
-    self.class.post("/drops/#{drop_name}/assets/#{asset_name}/comments",:body => params)
+    self.class.post("/drops/#{drop_name}/assets/#{asset_name}/comments",:body => {:contents => contents, :token => token})
   end
 
   def comment(drop_name, asset_name, comment_id, token = nil)
     self.class.get("/drops/#{drop_name}/assets/#{asset_name}/comments/#{comment_id}", :query => {:token => token})
   end
 
-  def update_comment(drop_name, asset_name, comment_id, contents, token = nil)
-    params = {:contents => contents, :token => token}
-    self.class.put("/drops/#{drop_name}/assets/#{asset_name}/comments/#{comment_id}", :body => params)
+  def update_comment(drop_name, asset_name, comment_id, contents, admin_token)
+    self.class.put("/drops/#{drop_name}/assets/#{asset_name}/comments/#{comment_id}", :body => {:contents => contents, :token => admin_token})
   end
 
-  def delete_comment(drop_name, asset_name, comment_id, token = nil)
-    self.class.delete("/drops/#{drop_name}/assets/#{asset_name}/comments/#{comment_id}", :body => {:token => token})
+  def delete_comment(drop_name, asset_name, comment_id, admin_token)
+    self.class.delete("/drops/#{drop_name}/assets/#{asset_name}/comments/#{comment_id}", :body => {:token => admin_token})
   end
+
+  def create_twitter_subscription(drop_name, username, password, token = nil)
+    self.class.post("/drops/#{drop_name}/subscriptions", :body => { :token => token, :type => "twitter", :username => username, :password => password})
+  end
+  
+  def create_email_subscription(drop_name, emails, welcome_message = nil, welcome_subject = nil, welcome_from = nil, token = nil)
+    params = {:token => token, :type => "email", :emails => emails, :welcome_from => welcome_from , :welcome_subject => welcome_subject, :welcome_message => welcome_message }
+    self.class.post("/drops/#{drop_name}/subscriptions", :body => params)
+  end
+  
+  def subscriptions(drop_name, admin_token)
+    self.class.get("/drops/#{drop_name}/subscriptions", :query => {:token => admin_token})
+  end
+  
   
   private
   

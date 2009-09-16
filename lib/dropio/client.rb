@@ -24,11 +24,23 @@ class Dropio::Client
                :guests_can_add => drop.guests_can_add, :guests_can_delete => drop.guests_can_delete,
                :expiration_length => drop.expiration_length, :password => drop.password,
                :admin_password => drop.admin_password, :premium_code => drop.premium_code }
-    handle(:drop, self.service.update_drop(drop.name,params,drop.admin_token))
+    handle(:drop, self.service.update_drop(drop.name,drop.admin_token,params))
+  end
+  
+  def empty_drop(drop)
+    handle(:response, self.service.empty_drop(drop.name,drop.admin_token))
   end
 
   def delete_drop(drop)
     handle(:response, self.service.delete_drop(drop.name,drop.admin_token))
+  end
+  
+  def promote_nick(drop,nick)
+    handle(:response, self.service.promote_nick(drop.name,nick,drop.admin_token))
+  end
+  
+  def drop_upload_code(drop)
+    handle(:response, self.service.drop_upload_code(drop.name,drop.default_token))
   end
 
   def create_link(drop, url, title = nil, description = nil)
@@ -36,11 +48,15 @@ class Dropio::Client
   end
 
   def create_note(drop, contents, title = nil)
-    handle(:asset, self.service.create_link(drop.name, contents, title, drop.default_token))
+    handle(:asset, self.service.create_note(drop.name, contents, title, drop.default_token))
   end
 
   def add_file(drop, file_path)
     handle(:asset, self.service.add_file(drop.name, file_path, drop.default_token))
+  end
+  
+  def add_file_from_url(drop, url)
+    handle(:asset, self.service.add_file_from_url(drop.name, url, drop.default_token))
   end
 
   def assets(drop,page = 1)
@@ -48,14 +64,14 @@ class Dropio::Client
   end
 
   def asset(drop, asset_name)
-    handle(:asset, self.service.assets(drop.name,asset_name))
+    handle(:asset, self.service.assets(drop.name,asset_name,drop.default_token))
   end
   
   def generate_asset_url(asset)
     self.service.generate_drop_url(asset.drop.name, asset.name, drop.default_token)
   end
 
-  def embed_code(asset)
+  def asset_embed_code(asset)
     handle(:response, self.service.asset_embed_code(asset.drop.name,asset.name,asset.drop.default_token))
   end
 
@@ -65,7 +81,7 @@ class Dropio::Client
   end
 
   def delete_asset(asset)
-    handle(:response, self.service.delete_asset(asset.drop.name,asset.name,asset.drop.admin_token))
+    handle(:response, self.service.delete_asset(asset.drop.name,asset.name,asset.drop.default_token))
   end
 
   def send_asset_to_drop(asset, target_drop)
@@ -100,6 +116,18 @@ class Dropio::Client
     handle(:response, self.service.delete_comment(comment.asset.drop.name,comment.asset.name,comment.id,comment.asset.drop.admin_token))
   end
   
+  def create_twitter_subscription(drop, username,password)
+    handle(:subscription, self.service.create_twitter_subscription(drop.name, username, password, drop.default_token))
+  end
+  
+  def create_email_subscription(drop, emails, welcome_message = nil, welcome_subject = nil, welcome_from = nil)
+    handle(:subscription, self.service.create_email_subscription(drop.name, emails, welcome_message, welcome_subject, welcome_from, drop.default_token))
+  end
+  
+  def subscriptions(drop)
+    handle(:subscriptions, self.service.subscriptions(drop.name, drop.admin_token))
+  end
+  
   private
   
   def handle(type, response)
@@ -109,6 +137,8 @@ class Dropio::Client
     when :assets then return response.collect{|a| Asset.new(a)}
     when :comment then return Comment.new(response)
     when :comments then return response.collect{|c| Comment.new(c)}
+    when :subscription then return Subscription.new(response)
+    when :subscriptions then return response.collect{|s| Subscription.new(s)}
     when :response then return parse_response(response)
     end
   end
