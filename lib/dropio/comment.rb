@@ -8,7 +8,7 @@ class Dropio::Comment < Dropio::Resource
   end
   
   # Destroys the comment on drop.io.  Don't try to use an Comment after destroying it.
-  def destroy
+  def destroy!
     Resource.client.delete_comment(self)
   end
   

@@ -1,31 +1,32 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
-describe Asset do
+describe Dropio::Asset do
   before(:each) do
-    @drop = Drop.new
-    @asset = Asset.new
+    @drop = Dropio::Drop.new
+    @asset = Dropio::Asset.new
     @asset.drop = @drop
     
-    @client = stub(Client)
+    @client = Dropio::Client.new
+    @api = stub(Dropio::Api)
+    @client.service = @api
+    
     Dropio::Resource.stub!(:client).and_return(@client)
   end
   
   it "should have the attributes of an Asset" do
-    @asset.should respond_to(:name, :type, :title, :description, :filesize,
-                             :created_at, :thumbnail, :status, :file,
-                             :converted, :hidden_url, :pages, :duration,
-                             :artist, :track_title, :height, :width,
-                             :contents, :url, :drop)
+    @asset.should respond_to(:drop, :name, :type, :title, :description, :filesize, :created_at,
+                  :thumbnail, :status, :file, :converted, :hidden_url, :pages, :fax_status,
+                  :duration, :artist, :track_title, :height, :width, :contents, :url)
   end
   
   it "should have comments" do
-    @comment = stub(Comment)
+    @comment = stub(Dropio::Comment)
     @client.stub!(:comments).with(@asset).and_return([@comment])
     @asset.comments.should == [@comment]
   end
   
   it "should create comments" do
-    @comment = stub(Comment)
+    @comment = stub(Dropio::Comment)
     @client.should_receive(:create_comment).with(@asset, "Totally rad asset, bro!").and_return(@comment)
     @asset.create_comment("Totally rad asset, bro!").should == @comment
   end

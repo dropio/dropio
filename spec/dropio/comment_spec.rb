@@ -1,9 +1,13 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
-describe Comment do
+describe Dropio::Comment do
   before(:each) do
-    @comment = Comment.new
-    @client = stub(Client)
+    @comment = Dropio::Comment.new
+    
+    @client = Dropio::Client.new
+    @api = stub(Dropio::Api)
+    @client.service = @api
+    
     Dropio::Resource.stub!(:client).and_return(@client)
     
     @client.stub!(:update_comment).and_return(@comment)
@@ -21,6 +25,6 @@ describe Comment do
   
   it "should destroy itself" do
     @client.should_receive(:delete_comment).with(@comment)
-    @comment.destroy
+    @comment.destroy!
   end
 end

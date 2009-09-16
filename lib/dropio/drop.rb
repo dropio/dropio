@@ -39,21 +39,22 @@ class Dropio::Drop < Dropio::Resource
   
   # Promotes a nickname in the drop chat to admin.
   def promote(nick)
-    Resource.client.promote_nick(nick)
+    Resource.client.promote_nick(self,nick)
   end
   
   # Saves the Drop.
   def save
-    Resource.client.save_drop(self)
+    Resource.client.update_drop(self)
   end
   
   # Deletes the Drop from the system including all associated assets.
-  def destroy
+  def destroy!
     Resource.client.delete_drop(self)
   end
   
-  def add_from_from_url(url)
-    Resource.client.add_from_from_url(self,url)
+  # Adds a file to the Drop from a given +url+
+  def add_file_from_url(url)
+    Resource.client.add_file_from_url(self,url)
   end
   
   # Adds a file to the Drop given the +file_path+.
@@ -77,8 +78,8 @@ class Dropio::Drop < Dropio::Resource
   end
   
   # Creates an email Subscription
-  def create_email_subscription(email)
-    Resource.client.create_email_subscription(self,email)
+  def create_email_subscription(email,welcome_message = nil)
+    Resource.client.create_email_subscription(self,email,welcome_message)
   end
   
   # Gets a list of Subscription objects.
