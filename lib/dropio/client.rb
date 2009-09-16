@@ -139,6 +139,10 @@ class Dropio::Client
   private
   
   def handle(type, response)
+    if response.code != 200
+      parse_response(response)
+    end
+    
     case type
     when :drop then return Drop.new(response)
     when :asset then return Asset.new(response)
@@ -153,7 +157,6 @@ class Dropio::Client
   
   def parse_response(response)
     case response.code
-    when 200 then return response["reponse"]["result"] == "Success", response["reponse"]["message"]
     when 400 then raise Dropio::RequestError, parse_error_message(response)
     when 403 then raise Dropio::AuthorizationError, parse_error_message(response)
     when 404 then raise Dropio::MissingResourceError, parse_error_message(response)
