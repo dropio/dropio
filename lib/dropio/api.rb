@@ -110,6 +110,16 @@ class Dropio::Api
   def send_asset_to_emails(drop_name, asset_name, emails, message = nil, token = nil)
     self.class.post("/drops/#{drop_name}/assets/#{asset_name}/send_to", :body => {:medium => "emails", :emails => emails, message => message, :token => token})
   end
+  
+  def copy_asset(drop_name, asset_name, target_drop, target_drop_token, token = nil)
+    params = {:token => token, :drop_name => target_drop, :drop_token => target_drop_token}
+    self.class.post("/drops/#{drop_name}/assets/#{asset_name}/copy", :body => params)
+  end
+  
+  def move_asset(drop_name, asset_name, target_drop, target_drop_token, token = nil)
+    params = {:token => token, :drop_name => target_drop, :drop_token => target_drop_token}
+    self.class.post("/drops/#{drop_name}/assets/#{asset_name}/move", :body => params)
+  end
 
   def comments(drop_name, asset_name, token = nil)
     self.class.get("/drops/#{drop_name}/assets/#{asset_name}/comments", :query => {:token => token})

@@ -64,11 +64,11 @@ class Dropio::Client
   end
 
   def asset(drop, asset_name)
-    handle(:asset, self.service.assets(drop.name,asset_name,drop.default_token))
+    handle(:asset, self.service.asset(drop.name,asset_name,drop.default_token))
   end
   
   def generate_asset_url(asset)
-    self.service.generate_drop_url(asset.drop.name, asset.name, drop.default_token)
+    self.service.generate_drop_url(asset.drop.name, asset.name, asset.drop.default_token)
   end
 
   def asset_embed_code(asset)
@@ -95,13 +95,21 @@ class Dropio::Client
   def send_asset_to_emails(asset, emails, message)
     handle(:response, self.service.send_asset_to_emails(asset.drop.name, asset.name, emails, message, asset.drop.default_token))
   end
+  
+  def copy_asset(asset,target_drop)
+    handle(:response, self.service.copy_asset(asset.drop.name,asset.name,target_drop.name,target_drop.default_token,asset.drop.default_token))
+  end
+
+  def move_asset(asset,target_drop)
+    handle(:response, self.service.move_asset(asset.drop.name,asset.name,target_drop.name,target_drop.default_token,asset.drop.default_token))
+  end
 
   def comments(asset)
     handle(:comments, self.service.comments(asset.drop.name,asset.name,asset.drop.default_token))
   end
 
   def create_comment(asset, contents)
-    handle(:comments, self.service.create_comment(asset.drop.name,asset.name,contents,asset.drop.default_token))
+    handle(:comment, self.service.create_comment(asset.drop.name,asset.name,contents,asset.drop.default_token))
   end
 
   def comment(asset, comment_id)
