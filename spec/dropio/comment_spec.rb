@@ -9,6 +9,8 @@ describe Dropio::Comment do
     @client.service = @api
     
     Dropio::Resource.stub!(:client).and_return(@client)
+    Dropio::Resource.client.should == @client
+    Dropio::Resource.client.service.should == @api
     
     @client.stub!(:update_comment).and_return(@comment)
     @client.stub!(:delete_comment).and_return(@comment)

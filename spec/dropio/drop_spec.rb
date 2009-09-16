@@ -8,8 +8,10 @@ describe Drop do
     @client.service = @api
     
     Dropio::Resource.stub!(:client).and_return(@client)
+    Dropio::Resource.client.should == @client
+    Dropio::Resource.client.service.should == @api
     
-    @mydrop = Drop.new
+    @mydrop = Dropio::Drop.new
   end
   
   it "should have the attributes of a Drop" do

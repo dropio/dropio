@@ -11,6 +11,8 @@ describe Dropio::Asset do
     @client.service = @api
     
     Dropio::Resource.stub!(:client).and_return(@client)
+    Dropio::Resource.client.should == @client
+    Dropio::Resource.client.service.should == @api
   end
   
   it "should have the attributes of an Asset" do
