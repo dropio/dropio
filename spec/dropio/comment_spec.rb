@@ -26,8 +26,6 @@ describe Dropio::Comment do
   it "should save itself" do
     @client.should_receive(:handle).with(:comment,{}).and_return(@comment)
     @api.should_receive(:update_comment).with(@drop.name, @asset.name, @comment.id, "My new content", @drop.default_token).and_return({})
-    
-    @client.should_receive(:update_comment).with(@comment)
     @comment.contents = "My new content"
     @comment.save
   end
@@ -35,8 +33,6 @@ describe Dropio::Comment do
   it "should destroy itself" do
     @client.should_receive(:handle).with(:response,{})
     @api.should_receive(:delete_comment).with(@drop.name, @asset.name, @comment.id, @drop.admin_token).and_return({})
-    
-    @client.should_receive(:delete_comment).with(@comment)
     @comment.destroy!
   end
 end
