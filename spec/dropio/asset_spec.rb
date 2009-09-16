@@ -53,10 +53,51 @@ describe Asset do
     @asset.send_to_fax("234-567-8901")
   end
   
+  it "should email itself to a comma separated list of emails with an optional message" do
+    @asset.type = "Document"
+    @client.should_receive(:send_asset_to_emails).with(@asset,"jake@dropio.com, jacob@dropio.com", "Awesome stuff!")
+    @asset.send_to_emails("jake@dropio.com, jacob@dropio.com","Awesome stuff!")
+    
+    @client.should_receive(:send_asset_to_emails).with(@asset,"jake@dropio.com, jacob@dropio.com", nil)
+    @asset.send_to_emails("jake@dropio.com, jacob@dropio.com")
+  end
+  
+  it "should send itself to another drop." do
+    @client.should_receive(:send_asset_to_drop).with(@asset,@asset.drop)
+    @asset.send_to_drop(@asset.drop)
+  end
+  
+  it "should copy itself to another drop." do
+    @client.should_receive(:copy_asset).with(@asset,@asset.drop)
+    @asset.copy_to(@asset.drop)
+  end
+  
+  it "should move itself to another drop." do
+    @client.should_receive(:move_asset).with(@asset,@asset.drop)
+    @asset.move_to(@asset.drop)
+  end
+  
   it "should not fax itself if it's not faxable" do
     @asset.type = "Video"
     @client.should_not_receive(:send_asset_to_fax)
     # TODO: Make this a specific error.
     lambda { @asset.send_to_fax("234-567-8901") }.should raise_error
   end
+  
+  it "should find itself" do
+    @client.stub!(:asset).and_return(@asset)
+    @client.should_receive(:asset).with(@asset.drop,@asset.name)
+    Asset.find(@drop,@asset.name).should == @asset
+  end
+  
+  it "should generate a signed url" do
+    @client.should_receive(:generate_asset_url).with(@asset)    
+    @asset.generate_url
+  end
+  
+  it "should get it's embed_code" do
+    @client.should_receive(:asset_embed_code).with(@asset)
+    @asset.embed_code
+  end
+  
 end

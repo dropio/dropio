@@ -40,13 +40,13 @@ class Dropio::Asset < Dropio::Resource
   end
   
   # Copies the Asset to the given drop. The +token+ is the target drop's token if required to add files.
-  def copy(target_drop, token = nil)
-    Resource.client.copy_asset(self, drop_name, token)
+  def copy_to(target_drop)
+    Resource.client.copy_asset(self, target_drop)
   end
   
   # Moves the Asset to the given drop. The +token+ is the target drop's token if required to add files.
-  def move(target_drop, token = nil)
-    Resource.client.move_asset(self, drop_name, token)
+  def move_to(target_drop)
+    Resource.client.move_asset(self, target_drop)
   end
   
   # Returns true if the Asset can be faxed.
@@ -68,8 +68,8 @@ class Dropio::Asset < Dropio::Resource
   end
   
   # Sends the Asset to a Drop by +drop_name+
-  def send_to_drop(drop_name, token = nil)
-    Resource.client.send_asset_to_drop(self, drop_name, token)
+  def send_to_drop(drop)
+    Resource.client.send_asset_to_drop(self, drop)
   end
   
   # Generates an authenticated URL that will bypass any login action.
