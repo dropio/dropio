@@ -62,12 +62,12 @@ class Dropio::Api
       mime_type = (MIME::Types.type_for(file_path)[0] || MIME::Types["application/octet-stream"][0])
       req = Net::HTTP::Post::Multipart.new url.path,
       { 'api_key' => self.class.default_params[:api_key], 'drop_name' => drop_name, 'format' => 'json',
-        'token' => token, 'version' => '1.0', 'file' => UploadIO.new(file, mime_type, File.basename(file_path)) }
+        'token' => token, 'version' => '1.0', 'file' => UploadIO.new(file, mime_type, file_path) }
       http = Net::HTTP.new(url.host, url.port)
       r = http.start{|http| http.request(req)}
     end
 
-    (r.nil? or r.body.nil? or r.body.empty?) ? [] : Crack::JSON.parse(r.body)
+    (r.nil? or r.body.nil? or r.body.empty?) ? [] : HTTParty::Response.new(Crack::JSON.parse(r.body), r.body, r.code, r.message, r.to_hash)
   end
   
   def add_file_from_url(drop_name, url, token = nil)
