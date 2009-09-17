@@ -12,84 +12,84 @@ class Dropio::Drop < Dropio::Resource
   
   # Gets a list of assets associated with the Drop. Paginated at 
   def assets(page = 1)
-    Resource.client.assets(self, page)
+    Dropio::Resource.client.assets(self, page)
   end
   
   # Finds a drop with +name+ and optional authorization +token+
   def self.find(name, token = nil)
-    Resource.client.drop(name, token)
+    Dropio::Resource.client.drop(name, token)
   end
   
   # Creates a drop with an +attributes+ hash.
   # Valid attributes: name (string), default_view (string), guests_can_comment (boolean), guests_can_add (boolean), guests_can_delete (boolean), expiration_length (string), password (string), admin_password (string), and premium_code (string)
   # Descriptions can be found here: http://groups.google.com/group/dropio-api/web/full-api-documentation
   def self.create(attributes = {})
-    Resource.client.create_drop(attributes)
+    Dropio::Resource.client.create_drop(attributes)
   end
   
   # Gets the drop's embeddable uploader code
   def upload_code
-    Resource.client.drop_upload_code(self)
+    Dropio::Resource.client.drop_upload_code(self)
   end
   
   # Empties the drop, including it's assets.
   def empty
-    Resource.client.empty_drop(self)
+    Dropio::Resource.client.empty_drop(self)
   end
   
   # Promotes a nickname in the drop chat to admin.
   def promote(nick)
-    Resource.client.promote_nick(self,nick)
+    Dropio::Resource.client.promote_nick(self,nick)
   end
   
   # Saves the Drop.
   def save
-    Resource.client.update_drop(self)
+    Dropio::Resource.client.update_drop(self)
   end
   
   # Deletes the Drop from the system including all associated assets.
   def destroy!
-    Resource.client.delete_drop(self)
+    Dropio::Resource.client.delete_drop(self)
   end
   
   # Adds a file to the Drop from a given +url+
   def add_file_from_url(url)
-    Resource.client.add_file_from_url(self,url)
+    Dropio::Resource.client.add_file_from_url(self,url)
   end
   
   # Adds a file to the Drop given the +file_path+.
   def add_file(file_path)
-    Resource.client.add_file(self, file_path)
+    Dropio::Resource.client.add_file(self, file_path)
   end
   
   # Creates a note with a +title+ and +contents+
   def create_note(title,contents)
-    Resource.client.create_note(self, title, contents)
+    Dropio::Resource.client.create_note(self, title, contents)
   end
   
   # Creates a link with a +url+, +title+, and +description+.
   def create_link(url, title = nil, description = nil)
-    Resource.client.create_link(self, url, title, description)
+    Dropio::Resource.client.create_link(self, url, title, description)
   end
   
   # Creates a Twitter Subscription
   def create_twitter_subscription(username,password)
-    Resource.client.create_twitter_subscription(self,username,password)
+    Dropio::Resource.client.create_twitter_subscription(self,username,password)
   end
   
   # Creates an email Subscription
   def create_email_subscription(email,welcome_message = nil, welcome_subject = nil, welcome_from = nil)
-    Resource.client.create_email_subscription(self,email,welcome_message,welcome_subject,welcome_from)
+    Dropio::Resource.client.create_email_subscription(self,email,welcome_message,welcome_subject,welcome_from)
   end
   
   # Gets a list of Subscription objects.
   def subscriptions
-    Resource.client.subscriptions(self)
+    Dropio::Resource.client.subscriptions(self)
   end
   
   # Generates an authenticated URL that will bypass any login action.
   def generate_url
-    Resource.client.generate_drop_url(self)
+    Dropio::Resource.client.generate_drop_url(self)
   end
   
 end

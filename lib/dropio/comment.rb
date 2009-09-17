@@ -4,12 +4,12 @@ class Dropio::Comment < Dropio::Resource
   
   # Saves the comment back to drop.io
   def save
-    Resource.client.update_comment(self)
+    Dropio::Resource.client.update_comment(self)
   end
   
   # Destroys the comment on drop.io.  Don't try to use an Comment after destroying it.
   def destroy!
-    Resource.client.delete_comment(self)
+    Dropio::Resource.client.delete_comment(self)
   end
   
 end

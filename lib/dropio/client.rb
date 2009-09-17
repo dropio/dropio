@@ -144,13 +144,13 @@ class Dropio::Client
     end
     
     case type
-    when :drop then return Drop.new(response)
-    when :asset then return Asset.new(response)
-    when :assets then return response.collect{|a| Asset.new(a)}
+    when :drop then return Dropio::Drop.new(response)
+    when :asset then return Dropio::Asset.new(response)
+    when :assets then return response.collect{|a| Dropio::Asset.new(a)}
     when :comment then return Comment.new(response)
-    when :comments then return response.collect{|c| Comment.new(c)}
-    when :subscription then return Subscription.new(response)
-    when :subscriptions then return response.collect{|s| Subscription.new(s)}
+    when :comments then return response.collect{|c| Dropio::Comment.new(c)}
+    when :subscription then return Dropio::Subscription.new(response)
+    when :subscriptions then return response.collect{|s| Dropio::Subscription.new(s)}
     when :response then return parse_response(response)
     end
   end
