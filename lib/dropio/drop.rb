@@ -63,8 +63,8 @@ class Dropio::Drop < Dropio::Resource
   end
   
   # Creates a note with a +title+ and +contents+
-  def create_note(title,contents)
-    Dropio::Resource.client.create_note(self, title, contents)
+  def create_note(contents, title => nil)
+    Dropio::Resource.client.create_note(self, contents, title)
   end
   
   # Creates a link with a +url+, +title+, and +description+.

@@ -102,8 +102,8 @@ describe Drop do
   it "should create notes from title and contents" do
     @asset = stub(Asset)
     @client.should_receive(:handle).with(:asset,{}).and_return(@asset)
-    @api.should_receive(:create_note).with(@mydrop.name,"title","contents",@mydrop.default_token).and_return({})
-    @mydrop.create_note("title","contents").should == @asset
+    @api.should_receive(:create_note).with(@mydrop.name,"contents", "title",@mydrop.default_token).and_return({})
+    @mydrop.create_note("contents","title").should == @asset
   end
   
   it "should create links from a url, title, and description" do
