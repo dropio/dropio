@@ -2,7 +2,7 @@ class Dropio::Drop < Dropio::Resource
   
   attr_accessor :name, :email, :voicemail, :conference, :fax, :rss, :guest_token, :description,
                 :admin_token, :expires_at, :expiration_length, :guests_can_comment, :guests_can_add, :guests_can_delete,
-                :max_bytes, :current_bytes, :hidden_upload_url, :asset_count, :chat_password, :default_view, :upload_url, 
+                :max_bytes, :current_bytes, :hidden_upload_url, :asset_count, :chat_password, :default_view,
                 :password, :admin_password, :premium_code, :admin_email, :email_key
      
   # Gets the default token to be used, prefers the admin token.           
