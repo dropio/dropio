@@ -51,8 +51,8 @@ class Dropio::Client
     handle(:asset, self.service.create_note(drop.name, contents, title, drop.default_token))
   end
 
-  def add_file(drop, file_path)
-    handle(:asset, self.service.add_file(drop.name, file_path, drop.default_token))
+  def add_file(drop, file_path, comment = nil)
+    handle(:asset, self.service.add_file(drop.name, file_path, drop.default_token, comment))
   end
   
   def add_file_from_url(drop, url)

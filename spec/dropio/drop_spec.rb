@@ -95,7 +95,7 @@ describe Drop do
   it "should add files from a path" do
     @asset = stub(Asset)
     @client.should_receive(:handle).with(:asset,{}).and_return(@asset)
-    @api.should_receive(:add_file).with(@mydrop.name,"/mypath/myfile.txt",@mydrop.default_token).and_return({})
+    @api.should_receive(:add_file).with(@mydrop.name,"/mypath/myfile.txt",@mydrop.default_token, nil).and_return({})
     @mydrop.add_file("/mypath/myfile.txt").should == @asset
   end
   

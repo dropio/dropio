@@ -58,12 +58,12 @@ class Dropio::Drop < Dropio::Resource
   end
   
   # Adds a file to the Drop given the +file_path+.
-  def add_file(file_path)
-    Dropio::Resource.client.add_file(self, file_path)
+  def add_file(file_path, comment = nil)
+    Dropio::Resource.client.add_file(self, file_path, comment)
   end
   
   # Creates a note with a +title+ and +contents+
-  def create_note(contents, title => nil)
+  def create_note(contents, title = nil)
     Dropio::Resource.client.create_note(self, contents, title)
   end
   

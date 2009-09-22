@@ -55,14 +55,14 @@ class Dropio::Api
     self.class.post("/drops/#{drop_name}/assets", :body => params)
   end
 
-  def add_file(drop_name, file_path, token = nil)
+  def add_file(drop_name, file_path, comment = nil, token = nil)
     url = URI.parse("http://assets.drop.io/upload/")
     r = nil
     File.open(file_path) do |file|
       mime_type = (MIME::Types.type_for(file_path)[0] || MIME::Types["application/octet-stream"][0])
       req = Net::HTTP::Post::Multipart.new url.path,
       { 'api_key' => self.class.default_params[:api_key], 'drop_name' => drop_name, 'format' => 'json',
-        'token' => token, 'version' => '1.0', 'file' => UploadIO.new(file, mime_type, file_path) }
+        'token' => token, 'version' => '2.0', 'comment' => comment, 'file' => UploadIO.new(file, mime_type, file_path) }
       http = Net::HTTP.new(url.host, url.port)
       r = http.start{|http| http.request(req)}
     end
