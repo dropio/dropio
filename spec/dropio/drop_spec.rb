@@ -116,14 +116,14 @@ describe Drop do
   it "should be able to create a twitter subscription" do
     @sub = stub(Subscription)
     @client.should_receive(:handle).with(:subscription,{}).and_return(@sub)
-    @api.should_receive(:create_twitter_subscription).with(@mydrop.name,"mytwitter","pass", @mydrop.default_token).and_return({})
+    @api.should_receive(:create_twitter_subscription).with(@mydrop.name,"mytwitter","pass",nil,{},@mydrop.default_token).and_return({})
     @mydrop.create_twitter_subscription("mytwitter","pass")
   end
 
   it "should be able to create email subscriptions" do
     @sub = stub(Subscription)
     @client.should_receive(:handle).with(:subscription,{}).and_return(@sub)
-    @api.should_receive(:create_email_subscription).with(@mydrop.name,"jake@dropio.com","My welcome message",nil,nil,@mydrop.default_token).and_return({})
+    @api.should_receive(:create_email_subscription).with(@mydrop.name,"jake@dropio.com","My welcome message",nil,nil,nil,{},@mydrop.default_token).and_return({})
     @mydrop.create_email_subscription("jake@dropio.com","My welcome message")
   end
   

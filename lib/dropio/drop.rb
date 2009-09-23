@@ -73,13 +73,13 @@ class Dropio::Drop < Dropio::Resource
   end
   
   # Creates a Twitter Subscription
-  def create_twitter_subscription(username,password)
-    Dropio::Resource.client.create_twitter_subscription(self,username,password)
+  def create_twitter_subscription(username,password,message = nil, events = {})
+   Dropio::Resource.client.create_twitter_subscription(self,username,password,message,events)
   end
   
   # Creates an email Subscription
-  def create_email_subscription(email,welcome_message = nil, welcome_subject = nil, welcome_from = nil)
-    Dropio::Resource.client.create_email_subscription(self,email,welcome_message,welcome_subject,welcome_from)
+  def create_email_subscription(email, message = nil, welcome_message = nil, welcome_subject = nil, welcome_from = nil, events = {})
+    Dropio::Resource.client.create_email_subscription(self,email,message,welcome_message,welcome_subject,welcome_from, events)
   end
   
   # Gets a list of Subscription objects.

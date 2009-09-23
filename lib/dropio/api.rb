@@ -141,12 +141,12 @@ class Dropio::Api
     self.class.delete("/drops/#{drop_name}/assets/#{asset_name}/comments/#{comment_id}", :body => {:token => admin_token})
   end
 
-  def create_twitter_subscription(drop_name, username, password, token = nil)
-    self.class.post("/drops/#{drop_name}/subscriptions", :body => { :token => token, :type => "twitter", :username => username, :password => password})
+  def create_twitter_subscription(drop_name, username, password, message = nil, events = {}, token = nil)
+    self.class.post("/drops/#{drop_name}/subscriptions", :body => { :token => token, :type => "twitter", :username => username, :password => password, :message => message}.merge(events))
   end
   
-  def create_email_subscription(drop_name, emails, welcome_message = nil, welcome_subject = nil, welcome_from = nil, token = nil)
-    params = {:token => token, :type => "email", :emails => emails, :welcome_from => welcome_from , :welcome_subject => welcome_subject, :welcome_message => welcome_message }
+  def create_email_subscription(drop_name, emails, welcome_message = nil, welcome_subject = nil, welcome_from = nil, message = nil, events = {}, token = nil)
+    params = {:token => token, :type => "email", :emails => emails, :welcome_from => welcome_from , :welcome_subject => welcome_subject, :welcome_message => welcome_message }.merge(events)
     self.class.post("/drops/#{drop_name}/subscriptions", :body => params)
   end
   

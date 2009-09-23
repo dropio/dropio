@@ -124,12 +124,12 @@ class Dropio::Client
     handle(:response, self.service.delete_comment(comment.asset.drop.name,comment.asset.name,comment.id,comment.asset.drop.admin_token))
   end
   
-  def create_twitter_subscription(drop, username,password)
-    handle(:subscription, self.service.create_twitter_subscription(drop.name, username, password, drop.default_token))
+  def create_twitter_subscription(drop, username,password, message, events)
+    handle(:subscription, self.service.create_twitter_subscription(drop.name, username, password, message, events, drop.default_token))
   end
   
-  def create_email_subscription(drop, emails, welcome_message = nil, welcome_subject = nil, welcome_from = nil)
-    handle(:subscription, self.service.create_email_subscription(drop.name, emails, welcome_message, welcome_subject, welcome_from, drop.default_token))
+  def create_email_subscription(drop, emails, welcome_message, welcome_subject, welcome_from, message, events)
+    handle(:subscription, self.service.create_email_subscription(drop.name, emails, welcome_message, welcome_subject, welcome_from, message, events, drop.default_token))
   end
   
   def subscriptions(drop)
