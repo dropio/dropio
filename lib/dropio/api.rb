@@ -74,12 +74,12 @@ class Dropio::Api
     self.class.post("/drops/#{drop_name}/assets", :body => {:token => token, :file_url => url})
   end
 
-  def assets(drop_name, page = 1, token = nil)
-    self.class.get("/drops/#{drop_name}/assets", :query => {:token => token, :page => page})
+  def assets(drop_name, page = 1, order = :oldest, token = nil)
+    self.class.get("/drops/#{drop_name}/assets", :query => {:token => token, :page => page, :order => order.to_s})
   end
 
-  def asset(drop_name, asset_name, order = :oldest, token = nil)
-    self.class.get("/drops/#{drop_name}/assets/#{asset_name}", :query => {:token => token, :order => order.to_s})
+  def asset(drop_name, asset_name, token = nil)
+    self.class.get("/drops/#{drop_name}/assets/#{asset_name}", :query => {:token => token})
   end
   
   def generate_asset_url(drop_name, asset_name, token)
