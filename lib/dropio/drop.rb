@@ -11,8 +11,8 @@ class Dropio::Drop < Dropio::Resource
   end
   
   # Gets a list of assets associated with the Drop. Paginated at 
-  def assets(page = 1)
-    Dropio::Resource.client.assets(self, page)
+  def assets(page = 1, order = :oldest)
+    Dropio::Resource.client.assets(self, page, order)
   end
   
   # Finds a drop with +name+ and optional authorization +token+

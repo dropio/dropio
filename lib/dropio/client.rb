@@ -59,8 +59,8 @@ class Dropio::Client
     handle(:asset, self.service.add_file_from_url(drop.name, url, drop.default_token))
   end
 
-  def assets(drop,page = 1)
-    handle(:assets, self.service.assets(drop.name,page,drop.default_token))
+  def assets(drop,page = 1, order = :oldest)
+    handle(:assets, self.service.assets(drop.name,page,order,drop.default_token))
   end
 
   def asset(drop, asset_name)

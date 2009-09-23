@@ -41,7 +41,7 @@ describe Drop do
   it "should find a set of related assets" do
     @asset = stub(Asset)
     @client.should_receive(:handle).with(:assets,{}).and_return([@asset])
-    @api.stub!(:assets).with(@mydrop.name,1,@mydrop.default_token).and_return({})
+    @api.stub!(:assets).with(@mydrop.name,1,:oldest,@mydrop.default_token).and_return({})
     @mydrop.assets.should == [@asset]
   end
   
