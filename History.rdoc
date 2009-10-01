@@ -1,6 +1,10 @@
-=== 1.0.0 / 2009-09-14
+=== 1.0.0 / 2009-10-02
 
 * Moved to API version 2.0
+
+=== 0.9.6 / 2009-10-01
+
+* Removed original file attribute from gem.
 
 === 0.9.5 / 2009-09-09
 

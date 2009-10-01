@@ -95,7 +95,7 @@ class Dropio::Client
   def update_asset(asset)
     params = { :title => asset.title, :description => asset.description, :url => asset.url, :contents => asset.contents }
     a = handle(:asset, self.service.update_asset(asset.drop.name,asset.name,params,asset.drop.default_token))
-    a.drop = drop
+    a.drop = asset.drop
     a
   end
 
@@ -149,7 +149,7 @@ class Dropio::Client
 
   def update_comment(comment)
     c = handle(:comment, self.service.update_comment(comment.asset.drop.name,comment.asset.name,comment.id,comment.contents,comment.asset.drop.admin_token))
-    c.asset = asset
+    c.asset = comment.asset
     c
   end
 

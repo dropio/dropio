@@ -1,7 +1,7 @@
 class Dropio::Asset < Dropio::Resource
   
   attr_accessor :drop, :name, :type, :title, :description, :filesize, :created_at,
-                :thumbnail, :status, :file, :converted, :hidden_url, :pages, :fax_status,
+                :thumbnail, :status, :converted, :hidden_url, :pages, :fax_status,
                 :duration, :artist, :track_title, :height, :width, :contents, :url
      
   # Finds a particular Asset by drop and asset name.

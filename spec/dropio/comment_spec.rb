@@ -31,7 +31,7 @@ describe Dropio::Comment do
   end
   
   it "should destroy itself" do
-    @client.should_receive(:handle).with(:response,{})
+    @client.should_receive(:handle).with(:response,{}).and_return({"result" => "Success"})
     @api.should_receive(:delete_comment).with(@drop.name, @asset.name, @comment.id, @drop.admin_token).and_return({})
     @comment.destroy!
   end

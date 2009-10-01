@@ -40,6 +40,7 @@ describe Drop do
   
   it "should find a set of related assets" do
     @asset = stub(Asset)
+    @asset.should_receive(:drop=).once
     @client.should_receive(:handle).with(:assets,{}).and_return([@asset])
     @api.stub!(:assets).with(@mydrop.name,1,:oldest,@mydrop.default_token).and_return({})
     @mydrop.assets.should == [@asset]
@@ -52,7 +53,7 @@ describe Drop do
   end
   
   it "should fetch the upload embed code" do
-    @client.should_receive(:handle).with(:response,{})
+    @client.should_receive(:handle).with(:response,{}).and_return({"result" => "Success"})
     @api.should_receive(:drop_upload_code).with(@mydrop.name,@mydrop.default_token).and_return({})
     @mydrop.upload_code
   end
@@ -64,7 +65,7 @@ describe Drop do
   end
   
   it "should be able to promote a nick" do
-    @client.should_receive(:handle).with(:response,{})
+    @client.should_receive(:handle).with(:response,{}).and_return({"result" => "Success"})
     @api.should_receive(:promote_nick).with(@mydrop.name,"jake",@mydrop.admin_token).and_return({})
     @mydrop.promote("jake")
   end
@@ -80,13 +81,14 @@ describe Drop do
   end
   
   it "should destroy itself" do
-    @client.should_receive(:handle).with(:response,{})
+    @client.should_receive(:handle).with(:response,{}).and_return({"result" => "Success"})
     @api.should_receive(:delete_drop).with(@mydrop.name,@mydrop.admin_token).and_return({})
     @mydrop.destroy!
   end
   
   it "should add files from a url" do
     @asset = stub(Asset)
+    @asset.should_receive(:drop=).once
     @client.should_receive(:handle).with(:asset,{}).and_return(@asset)
     @api.should_receive(:add_file_from_url).with(@mydrop.name,"http://myurl.com/myfile.txt",@mydrop.default_token).and_return({})
     @mydrop.add_file_from_url("http://myurl.com/myfile.txt").should == @asset
@@ -94,6 +96,7 @@ describe Drop do
   
   it "should add files from a path" do
     @asset = stub(Asset)
+    @asset.should_receive(:drop=).once
     @client.should_receive(:handle).with(:asset,{}).and_return(@asset)
     @api.should_receive(:add_file).with(@mydrop.name,"/mypath/myfile.txt",@mydrop.default_token, nil).and_return({})
     @mydrop.add_file("/mypath/myfile.txt").should == @asset
@@ -101,6 +104,7 @@ describe Drop do
   
   it "should create notes from title and contents" do
     @asset = stub(Asset)
+    @asset.should_receive(:drop=).once
     @client.should_receive(:handle).with(:asset,{}).and_return(@asset)
     @api.should_receive(:create_note).with(@mydrop.name,"contents", "title",@mydrop.default_token).and_return({})
     @mydrop.create_note("contents","title").should == @asset
@@ -108,6 +112,7 @@ describe Drop do
   
   it "should create links from a url, title, and description" do
     @asset = stub(Asset)
+    @asset.should_receive(:drop=).once
     @client.should_receive(:handle).with(:asset,{}).and_return(@asset)
     @api.should_receive(:create_link).with(@mydrop.name,"http://drop.io","drop.io","The best!",@mydrop.default_token).and_return({})
     @mydrop.create_link("http://drop.io","drop.io","The best!").should == @asset
@@ -115,6 +120,7 @@ describe Drop do
   
   it "should be able to create a twitter subscription" do
     @sub = stub(Subscription)
+    @sub.should_receive(:drop=).once
     @client.should_receive(:handle).with(:subscription,{}).and_return(@sub)
     @api.should_receive(:create_twitter_subscription).with(@mydrop.name,"mytwitter","pass",nil,{},@mydrop.default_token).and_return({})
     @mydrop.create_twitter_subscription("mytwitter","pass")
@@ -122,6 +128,7 @@ describe Drop do
 
   it "should be able to create email subscriptions" do
     @sub = stub(Subscription)
+    @sub.should_receive(:drop=).once
     @client.should_receive(:handle).with(:subscription,{}).and_return(@sub)
     @api.should_receive(:create_email_subscription).with(@mydrop.name,"jake@dropio.com","My welcome message",nil,nil,nil,{},@mydrop.default_token).and_return({})
     @mydrop.create_email_subscription("jake@dropio.com","My welcome message")
@@ -129,6 +136,7 @@ describe Drop do
   
   it "should be able to get a list of subscriptions back" do
     @sub = stub(Subscription)
+    @sub.should_receive(:drop=).once
     @client.should_receive(:handle).with(:subscriptions,{}).and_return([@sub])
     @api.stub!(:subscriptions).with(@mydrop.name, @mydrop.admin_token).and_return({})
     @mydrop.subscriptions.should == [@sub]
