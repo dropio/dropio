@@ -1,7 +1,7 @@
 class Dropio::Asset < Dropio::Resource
   
   attr_accessor :drop, :name, :type, :title, :description, :filesize, :created_at,
-                :thumbnail, :status, :file, :converted, :hidden_url, :pages,
+                :thumbnail, :status, :converted, :hidden_url, :pages,
                 :duration, :artist, :track_title, :height, :width, :contents, :url
   
   # Returns the comments on this asset.  Comments are loaded lazily.  The first

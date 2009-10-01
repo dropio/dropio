@@ -1,3 +1,7 @@
+=== 0.9.6 / 2009-10-01
+
+* Removed original file attribute from gem.
+
 === 0.9.5 / 2009-09-09
 
 * Move gem to github.

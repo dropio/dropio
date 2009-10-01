@@ -9,7 +9,7 @@ describe Asset do
   
   it "should have the attributes of an Asset" do
     @asset.should respond_to(:name, :type, :title, :description, :filesize,
-                             :created_at, :thumbnail, :status, :file,
+                             :created_at, :thumbnail, :status,
                              :converted, :hidden_url, :pages, :duration,
                              :artist, :track_title, :height, :width,
                              :contents, :url)
