@@ -98,8 +98,16 @@ describe Drop do
     @asset = stub(Asset)
     @asset.should_receive(:drop=).once
     @client.should_receive(:handle).with(:asset,{}).and_return(@asset)
-    @api.should_receive(:add_file).with(@mydrop.name,"/mypath/myfile.txt",@mydrop.default_token, nil).and_return({})
+    @api.should_receive(:add_file).with(@mydrop.name,"/mypath/myfile.txt", nil, nil, nil, @mydrop.default_token).and_return({})
     @mydrop.add_file("/mypath/myfile.txt").should == @asset
+  end
+  
+  it "should add files from a path with pingback url and convertsion target" do
+    @asset = stub(Asset)
+    @asset.should_receive(:drop=).once
+    @client.should_receive(:handle).with(:asset,{}).and_return(@asset)
+    @api.should_receive(:add_file).with(@mydrop.name,"/mypath/myfile.txt", 'H264_HIGH_RES', 'http://drop.io/test/pinged', nil, @mydrop.default_token).and_return({})
+    @mydrop.add_file("/mypath/myfile.txt", 'H264_HIGH_RES', 'http://drop.io/test/pinged').should == @asset
   end
   
   it "should create notes from title and contents" do
