@@ -83,8 +83,8 @@ class Dropio::Drop < Dropio::Resource
   end
   
   # Gets a list of Subscription objects.
-  def subscriptions
-    Dropio::Resource.client.subscriptions(self)
+  def subscriptions(page = 1)
+    Dropio::Resource.client.subscriptions(self, page)
   end
   
   # Generates an authenticated URL that will bypass any login action.

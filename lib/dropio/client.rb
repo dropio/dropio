@@ -129,8 +129,8 @@ class Dropio::Client
     r["result"]
   end
 
-  def comments(asset)
-    comments = handle(:comments, self.service.comments(asset.drop.name,asset.name,asset.drop.default_token))
+  def comments(asset, page = 1)
+    comments = handle(:comments, self.service.comments(asset.drop.name,asset.name,page,asset.drop.default_token))
     comments.each{|c| c.asset = asset}
     comments
   end
@@ -170,8 +170,8 @@ class Dropio::Client
     s
   end
   
-  def subscriptions(drop)
-    subscriptions = handle(:subscriptions, self.service.subscriptions(drop.name, drop.admin_token))
+  def subscriptions(drop, page = 1)
+    subscriptions = handle(:subscriptions, self.service.subscriptions(drop.name,page,drop.admin_token))
     subscriptions.each{|s| s.drop = drop}
     subscriptions
   end

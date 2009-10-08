@@ -122,8 +122,8 @@ class Dropio::Api
     self.class.post("/drops/#{drop_name}/assets/#{asset_name}/move", :body => params)
   end
 
-  def comments(drop_name, asset_name, token = nil)
-    self.class.get("/drops/#{drop_name}/assets/#{asset_name}/comments", :query => {:token => token})
+  def comments(drop_name, asset_name, page = 1, token = nil)
+    self.class.get("/drops/#{drop_name}/assets/#{asset_name}/comments", :query => {:token => token, :page => page})
   end
 
   def create_comment(drop_name, asset_name, contents, token = nil)
@@ -151,8 +151,8 @@ class Dropio::Api
     self.class.post("/drops/#{drop_name}/subscriptions", :body => params)
   end
   
-  def subscriptions(drop_name, admin_token)
-    self.class.get("/drops/#{drop_name}/subscriptions", :query => {:token => admin_token})
+  def subscriptions(drop_name, page, admin_token)
+    self.class.get("/drops/#{drop_name}/subscriptions", :query => {:token => admin_token, :page => page})
   end
   
   

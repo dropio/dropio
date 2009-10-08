@@ -12,9 +12,8 @@ class Dropio::Asset < Dropio::Resource
   # Returns the comments on this Asset.  Comments are loaded lazily.  The first
   # call to +comments+ will fetch the comments from the server.  They are then
   # cached until the Asset is reloaded.
-  def comments
-    @comments = Dropio::Resource.client.comments(self) if @comments.nil?
-    @comments ||= []
+  def comments(page = 1)
+    @comments = Dropio::Resource.client.comments(self, page)
   end
   
   # Gets the Assets's embed code

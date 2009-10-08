@@ -146,7 +146,7 @@ describe Drop do
     @sub = stub(Subscription)
     @sub.should_receive(:drop=).once
     @client.should_receive(:handle).with(:subscriptions,{}).and_return([@sub])
-    @api.stub!(:subscriptions).with(@mydrop.name, @mydrop.admin_token).and_return({})
+    @api.stub!(:subscriptions).with(@mydrop.name, 1, @mydrop.admin_token).and_return({})
     @mydrop.subscriptions.should == [@sub]
   end
   

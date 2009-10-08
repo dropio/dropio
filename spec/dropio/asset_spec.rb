@@ -27,7 +27,7 @@ describe Dropio::Asset do
     @comment = stub(Comment)
     @comment.should_receive(:asset=).once
     @client.should_receive(:handle).with(:comments,{}).and_return([@comment])
-    @api.stub!(:comments).with(@drop.name, @asset.name, @drop.default_token).and_return({})
+    @api.stub!(:comments).with(@drop.name, @asset.name, 1, @drop.default_token).and_return({})
     @asset.comments.should == [@comment]
   end
   
