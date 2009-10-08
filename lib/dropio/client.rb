@@ -65,8 +65,8 @@ class Dropio::Client
     a
   end
   
-  def add_file_from_url(drop, url)
-    a = handle(:asset, self.service.add_file_from_url(drop.name, url, drop.default_token))
+  def add_file_from_url(drop, url, convert_to = nil, pingback_url = nil)
+    a = handle(:asset, self.service.add_file_from_url(drop.name, url, convert_to, pingback_url, drop.default_token))
     a.drop = drop
     a
   end

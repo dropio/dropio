@@ -53,8 +53,8 @@ class Dropio::Drop < Dropio::Resource
   end
   
   # Adds a file to the Drop from a given +url+
-  def add_file_from_url(url)
-    Dropio::Resource.client.add_file_from_url(self,url)
+  def add_file_from_url(url, convert_to = nil, pingback_url = nil)
+    Dropio::Resource.client.add_file_from_url(self,url, convert_to, pingback_url)
   end
   
   # Adds a file to the Drop given the +file_path+.

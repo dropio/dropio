@@ -90,8 +90,16 @@ describe Drop do
     @asset = stub(Asset)
     @asset.should_receive(:drop=).once
     @client.should_receive(:handle).with(:asset,{}).and_return(@asset)
-    @api.should_receive(:add_file_from_url).with(@mydrop.name,"http://myurl.com/myfile.txt",@mydrop.default_token).and_return({})
+    @api.should_receive(:add_file_from_url).with(@mydrop.name,"http://myurl.com/myfile.txt", nil, nil, @mydrop.default_token).and_return({})
     @mydrop.add_file_from_url("http://myurl.com/myfile.txt").should == @asset
+  end
+  
+  it "should add files from a url with conversion and pingback url" do
+    @asset = stub(Asset)
+    @asset.should_receive(:drop=).once
+    @client.should_receive(:handle).with(:asset,{}).and_return(@asset)
+    @api.should_receive(:add_file_from_url).with(@mydrop.name,"http://myurl.com/myfile.txt", 'H264_HIGH_RES', 'http://drop.io/test/pinged', @mydrop.default_token).and_return({})
+    @mydrop.add_file_from_url("http://myurl.com/myfile.txt", 'H264_HIGH_RES', 'http://drop.io/test/pinged').should == @asset
   end
   
   it "should add files from a path" do

@@ -71,8 +71,8 @@ class Dropio::Api
     (r.nil? or r.body.nil? or r.body.empty?) ? [] : HTTParty::Response.new(Crack::JSON.parse(r.body), r.body, r.code, r.message, r.to_hash)
   end
   
-  def add_file_from_url(drop_name, url, token = nil)
-    self.class.post("/drops/#{drop_name}/assets", :body => {:token => token, :file_url => url})
+  def add_file_from_url(drop_name, url, convert_to = nil, pingback_url = nil, token = nil)
+    self.class.post("/drops/#{drop_name}/assets", :body => {:token => token, :file_url => url, :convert_to => convert_to, :pingback_url => pingback_url})
   end
 
   def assets(drop_name, page = 1, order = :oldest, token = nil)
