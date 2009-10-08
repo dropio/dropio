@@ -1,3 +1,9 @@
+=== 1.0.1 - 1.0.5 / 2009-10-08
+
+* Final button ups.
+* Addition of pingback urls and convert to parameters.
+* Pagination of comments and subscriptions
+
 === 1.0.0 / 2009-10-02
 
 * Moved to API version 2.0
