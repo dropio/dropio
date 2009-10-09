@@ -1,7 +1,7 @@
 class Dropio::Comment < Dropio::Resource
   
   attr_accessor :id, :contents, :created_at, :asset
-  
+
   # Saves the comment back to drop.io
   def save
     Dropio::Resource.client.update_comment(self)
