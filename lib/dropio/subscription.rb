@@ -1,5 +1,5 @@
 class Dropio::Subscription < Dropio::Resource
-  attr_accessor :id, :username, :message, :type
+  attr_accessor :id, :username, :message, :type, :drop
   
   # Fetches a single Subscription
   def self.find(id)
