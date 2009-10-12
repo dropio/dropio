@@ -72,6 +72,7 @@ class Dropio::Drop < Dropio::Resource
     Dropio::Resource.client.create_link(self, url, title, description)
   end
   
+  # Creates a subscription to receive POSTs from drop.io.
   def create_pingback_subscription(url, events = {})
     Dropio::Resource.client.create_pingback_subscription(self,url,events)
   end
