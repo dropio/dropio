@@ -150,6 +150,14 @@ describe Drop do
     @mydrop.create_email_subscription("jake@dropio.com","My welcome message")
   end
   
+  it "should be able to create pingback subscriptions" do
+    @sub = stub(Subscription)
+    @sub.should_receive(:drop=).once
+    @client.should_receive(:handle).with(:subscription,{}).and_return(@sub)
+    @api.should_receive(:create_pingback_subscription).with(@mydrop.name,"http://drop.io",{},@mydrop.default_token).and_return({})
+    @mydrop.create_pingback_subscription("http://drop.io")
+  end
+  
   it "should be able to get a list of subscriptions back" do
     @sub = stub(Subscription)
     @sub.should_receive(:drop=).once

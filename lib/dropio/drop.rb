@@ -72,6 +72,10 @@ class Dropio::Drop < Dropio::Resource
     Dropio::Resource.client.create_link(self, url, title, description)
   end
   
+  def create_pingback_subscription(url, events = {})
+    Dropio::Resource.client.create_pingback_subscription(self,url,events)
+  end
+  
   # Creates a Twitter Subscription
   def create_twitter_subscription(username,password,message = nil, events = {})
    Dropio::Resource.client.create_twitter_subscription(self,username,password,message,events)

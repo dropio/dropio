@@ -146,6 +146,10 @@ class Dropio::Api
     self.class.post("/drops/#{drop_name}/subscriptions", :body => { :token => token, :type => "twitter", :username => username, :password => password, :message => message}.merge(events))
   end
   
+  def create_pingback_subscription(drop_name, url, events = {}, token = nil)
+    self.class.post("/drops/#{drop_name}/subscriptions", :body => { :token => token, :type => "pingback", :url => url}.merge(events))
+  end
+  
   def create_email_subscription(drop_name, emails, welcome_message = nil, welcome_subject = nil, welcome_from = nil, message = nil, events = {}, token = nil)
     params = {:token => token, :type => "email", :emails => emails, :welcome_from => welcome_from , :welcome_subject => welcome_subject, :welcome_message => welcome_message }.merge(events)
     self.class.post("/drops/#{drop_name}/subscriptions", :body => params)

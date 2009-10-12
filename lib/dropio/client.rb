@@ -170,6 +170,12 @@ class Dropio::Client
     s
   end
   
+  def create_pingback_subscription(drop, url, events)
+    s = handle(:subscription, self.service.create_pingback_subscription(drop.name, url, events, drop.default_token))
+    s.drop = drop
+    s
+  end
+  
   def subscriptions(drop, page = 1)
     subscriptions = handle(:subscriptions, self.service.subscriptions(drop.name,page,drop.admin_token))
     subscriptions.each{|s| s.drop = drop}
