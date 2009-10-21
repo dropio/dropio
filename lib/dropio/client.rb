@@ -53,20 +53,20 @@ class Dropio::Client
     a
   end
 
-  def create_note(drop, contents, title = nil)
-    a = handle(:asset, self.service.create_note(drop.name, contents, title, drop.default_token))
+  def create_note(drop, contents, title = nil, description = nil)
+    a = handle(:asset, self.service.create_note(drop.name, contents, title, description, drop.default_token))
     a.drop = drop
     a
   end
 
-  def add_file(drop, file_path, convert_to = nil, pingback_url = nil, comment = nil)
-    a = handle(:asset, self.service.add_file(drop.name, file_path, convert_to, pingback_url, comment, drop.default_token))
+  def add_file(drop, file_path, description = nil, convert_to = nil, pingback_url = nil, comment = nil)
+    a = handle(:asset, self.service.add_file(drop.name, file_path, description, convert_to, pingback_url, comment, drop.default_token))
     a.drop = drop
     a
   end
   
-  def add_file_from_url(drop, url, convert_to = nil, pingback_url = nil)
-    a = handle(:asset, self.service.add_file_from_url(drop.name, url, convert_to, pingback_url, drop.default_token))
+  def add_file_from_url(drop, url, description = nil, convert_to = nil, pingback_url = nil)
+    a = handle(:asset, self.service.add_file_from_url(drop.name, url, description, convert_to, pingback_url, drop.default_token))
     a.drop = drop
     a
   end

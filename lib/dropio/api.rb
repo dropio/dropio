@@ -50,18 +50,18 @@ class Dropio::Api
     self.class.post("/drops/#{drop_name}/assets", :body => {:url => url, :title => title, :description => description, :token => token})
   end
 
-  def create_note(drop_name, contents, title = nil, token = nil)
-    params = {:contents => contents, :title => title, :token => token}
+  def create_note(drop_name, contents, title = nil, description = nil, token = nil)
+    params = {:contents => contents, :title => title, :token => token, :description => description}
     self.class.post("/drops/#{drop_name}/assets", :body => params)
   end
 
-  def add_file(drop_name, file_path, convert_to = nil, pingback_url = nil, comment = nil, token = nil)
+  def add_file(drop_name, file_path, description = nil, convert_to = nil, pingback_url = nil, comment = nil, token = nil)
     url = URI.parse("http://assets.drop.io/upload/")
     r = nil
     File.open(file_path) do |file|
       mime_type = (MIME::Types.type_for(file_path)[0] || MIME::Types["application/octet-stream"][0])
       req = Net::HTTP::Post::Multipart.new url.path,
-      { 'api_key' => self.class.default_params[:api_key], 'drop_name' => drop_name, 'format' => 'json',
+      { 'api_key' => self.class.default_params[:api_key], 'drop_name' => drop_name, 'format' => 'json', 'description' => description,
         'token' => token, 'version' => '2.0', 'convert_to' => convert_to, 'pingback_url' => pingback_url,
         'comment' => comment, 'file' => UploadIO.new(file, mime_type, file_path) }
       http = Net::HTTP.new(url.host, url.port)
@@ -71,8 +71,8 @@ class Dropio::Api
     (r.nil? or r.body.nil? or r.body.empty?) ? [] : HTTParty::Response.new(Crack::JSON.parse(r.body), r.body, r.code, r.message, r.to_hash)
   end
   
-  def add_file_from_url(drop_name, url, convert_to = nil, pingback_url = nil, token = nil)
-    self.class.post("/drops/#{drop_name}/assets", :body => {:token => token, :file_url => url, :convert_to => convert_to, :pingback_url => pingback_url})
+  def add_file_from_url(drop_name, url, description = nil, convert_to = nil, pingback_url = nil, token = nil)
+    self.class.post("/drops/#{drop_name}/assets", :body => {:token => token, :file_url => url, :description => description, :convert_to => convert_to, :pingback_url => pingback_url})
   end
 
   def assets(drop_name, page = 1, order = :oldest, token = nil)

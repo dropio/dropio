@@ -1,5 +1,5 @@
 module Dropio
-  VERSION = '1.0.='
+  VERSION = '1.0.9'
   
   class MissingResourceError < Exception; end
   class AuthorizationError < Exception; end

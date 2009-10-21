@@ -53,18 +53,18 @@ class Dropio::Drop < Dropio::Resource
   end
   
   # Adds a file to the Drop from a given +url+
-  def add_file_from_url(url, convert_to = nil, pingback_url = nil)
-    Dropio::Resource.client.add_file_from_url(self,url, convert_to, pingback_url)
+  def add_file_from_url(url, description = nil, convert_to = nil, pingback_url = nil)
+    Dropio::Resource.client.add_file_from_url(self,url,description, convert_to, pingback_url)
   end
   
   # Adds a file to the Drop given the +file_path+.
-  def add_file(file_path, convert_to = nil, pingback_url = nil, comment = nil)
-    Dropio::Resource.client.add_file(self, file_path, convert_to, pingback_url, comment)
+  def add_file(file_path, description = nil, convert_to = nil, pingback_url = nil, comment = nil)
+    Dropio::Resource.client.add_file(self, file_path, description, convert_to, pingback_url, comment)
   end
   
   # Creates a note with a +title+ and +contents+
-  def create_note(contents, title = nil)
-    Dropio::Resource.client.create_note(self, contents, title)
+  def create_note(contents, title = nil, description = nil)
+    Dropio::Resource.client.create_note(self, contents, title, description)
   end
   
   # Creates a link with a +url+, +title+, and +description+.

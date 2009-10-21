@@ -90,40 +90,40 @@ describe Drop do
     @asset = stub(Asset)
     @asset.should_receive(:drop=).once
     @client.should_receive(:handle).with(:asset,{}).and_return(@asset)
-    @api.should_receive(:add_file_from_url).with(@mydrop.name,"http://myurl.com/myfile.txt", nil, nil, @mydrop.default_token).and_return({})
-    @mydrop.add_file_from_url("http://myurl.com/myfile.txt").should == @asset
+    @api.should_receive(:add_file_from_url).with(@mydrop.name,"http://myurl.com/myfile.txt", "description", nil, nil, @mydrop.default_token).and_return({})
+    @mydrop.add_file_from_url("http://myurl.com/myfile.txt","description").should == @asset
   end
   
   it "should add files from a url with conversion and pingback url" do
     @asset = stub(Asset)
     @asset.should_receive(:drop=).once
     @client.should_receive(:handle).with(:asset,{}).and_return(@asset)
-    @api.should_receive(:add_file_from_url).with(@mydrop.name,"http://myurl.com/myfile.txt", 'H264_HIGH_RES', 'http://drop.io/test/pinged', @mydrop.default_token).and_return({})
-    @mydrop.add_file_from_url("http://myurl.com/myfile.txt", 'H264_HIGH_RES', 'http://drop.io/test/pinged').should == @asset
+    @api.should_receive(:add_file_from_url).with(@mydrop.name,"http://myurl.com/myfile.txt", "description", 'H264_HIGH_RES', 'http://drop.io/test/pinged', @mydrop.default_token).and_return({})
+    @mydrop.add_file_from_url("http://myurl.com/myfile.txt", "description", 'H264_HIGH_RES', 'http://drop.io/test/pinged').should == @asset
   end
   
   it "should add files from a path" do
     @asset = stub(Asset)
     @asset.should_receive(:drop=).once
     @client.should_receive(:handle).with(:asset,{}).and_return(@asset)
-    @api.should_receive(:add_file).with(@mydrop.name,"/mypath/myfile.txt", nil, nil, nil, @mydrop.default_token).and_return({})
-    @mydrop.add_file("/mypath/myfile.txt").should == @asset
+    @api.should_receive(:add_file).with(@mydrop.name,"/mypath/myfile.txt", "description", nil, nil, nil, @mydrop.default_token).and_return({})
+    @mydrop.add_file("/mypath/myfile.txt", "description").should == @asset
   end
   
   it "should add files from a path with pingback url and convertsion target" do
     @asset = stub(Asset)
     @asset.should_receive(:drop=).once
     @client.should_receive(:handle).with(:asset,{}).and_return(@asset)
-    @api.should_receive(:add_file).with(@mydrop.name,"/mypath/myfile.txt", 'H264_HIGH_RES', 'http://drop.io/test/pinged', nil, @mydrop.default_token).and_return({})
-    @mydrop.add_file("/mypath/myfile.txt", 'H264_HIGH_RES', 'http://drop.io/test/pinged').should == @asset
+    @api.should_receive(:add_file).with(@mydrop.name,"/mypath/myfile.txt","description", 'H264_HIGH_RES', 'http://drop.io/test/pinged', nil, @mydrop.default_token).and_return({})
+    @mydrop.add_file("/mypath/myfile.txt","description",'H264_HIGH_RES', 'http://drop.io/test/pinged').should == @asset
   end
   
-  it "should create notes from title and contents" do
+  it "should create notes from title and contents and description" do
     @asset = stub(Asset)
     @asset.should_receive(:drop=).once
     @client.should_receive(:handle).with(:asset,{}).and_return(@asset)
-    @api.should_receive(:create_note).with(@mydrop.name,"contents", "title",@mydrop.default_token).and_return({})
-    @mydrop.create_note("contents","title").should == @asset
+    @api.should_receive(:create_note).with(@mydrop.name,"contents", "title","description",@mydrop.default_token).and_return({})
+    @mydrop.create_note("contents","title", "description").should == @asset
   end
   
   it "should create links from a url, title, and description" do
