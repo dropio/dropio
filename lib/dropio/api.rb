@@ -76,7 +76,7 @@ class Dropio::Api
   end
 
   def assets(drop_name, page = 1, order = :oldest, token = nil)
-    self.class.get("/drops/#{drop_name}/assets", :query => {:token => token, :page => page, :order => order.to_s})
+    self.class.get("/drops/#{drop_name}/assets", :query => {:token => token, :page => page, :order => order.to_s, :show_pagination_details => true})
   end
 
   def asset(drop_name, asset_name, token = nil)
@@ -123,7 +123,7 @@ class Dropio::Api
   end
 
   def comments(drop_name, asset_name, page = 1, token = nil)
-    self.class.get("/drops/#{drop_name}/assets/#{asset_name}/comments", :query => {:token => token, :page => page})
+    self.class.get("/drops/#{drop_name}/assets/#{asset_name}/comments", :query => {:token => token, :page => page, :show_pagination_details => true})
   end
 
   def create_comment(drop_name, asset_name, contents, token = nil)
@@ -156,7 +156,7 @@ class Dropio::Api
   end
   
   def subscriptions(drop_name, page, admin_token)
-    self.class.get("/drops/#{drop_name}/subscriptions", :query => {:token => admin_token, :page => page})
+    self.class.get("/drops/#{drop_name}/subscriptions", :query => {:token => admin_token, :page => page, :show_pagination_details => true})
   end
   
   
