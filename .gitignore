@@ -2,3 +2,5 @@
 coverage
 doc
 pkg
+*.gem
+driver.rb
