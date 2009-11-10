@@ -9,6 +9,10 @@ class Dropio::Client
     handle(:drop, self.service.drop(drop_name, token))
   end
   
+  def manager_drops(manager_api_token, page = 1)
+    handle(:drops, self.service.manager_drops(manager_api_token, page))
+  end
+  
   def generate_drop_url(drop)
     self.service.generate_drop_url(drop.name,drop.default_token)
   end
@@ -195,6 +199,7 @@ class Dropio::Client
     
     case type
     when :drop then return Dropio::Drop.new(response)
+    when :drops then return response['drops'].collect{|s| Dropio::Drop.new(d)}
     when :asset then return Dropio::Asset.new(response)
     when :assets then return response['assets'].collect{|a| Dropio::Asset.new(a)}
     when :comment then return Comment.new(response)

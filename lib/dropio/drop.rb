@@ -20,6 +20,11 @@ class Dropio::Drop < Dropio::Resource
     Dropio::Resource.client.drop(name, token)
   end
   
+  # Finds all the drops associated with a manager account.
+  def self.find_manager_drops(manager_api_token, page = 1)
+    Dropio::Resource.client.manager_drops(manager_api_token, page)
+  end
+  
   # Creates a drop with an +attributes+ hash.
   # Valid attributes: name (string), default_view (string), guests_can_comment (boolean), guests_can_add (boolean), guests_can_delete (boolean), expiration_length (string), password (string), admin_password (string), and premium_code (string)
   # Descriptions can be found here: http://groups.google.com/group/dropio-api/web/full-api-documentation

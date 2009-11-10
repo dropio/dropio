@@ -17,6 +17,10 @@ class Dropio::Api
     self.class.get("/drops/#{drop_name}", :query => {:token => token})
   end
   
+  def manager_drops(manager_api_token, page = 1)
+    self.class.get("/accounts/drops", :query => {:manager_api_token => manager_api_token, :page => page})
+  end
+  
   def generate_drop_url(drop_name, token)
     signed_url(drop_name,token)
   end
