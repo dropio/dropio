@@ -86,6 +86,10 @@ class Dropio::Client
   def generate_asset_url(asset)
     self.service.generate_drop_url(asset.drop.name, asset.name, asset.drop.default_token)
   end
+  
+  def original_file_url(asset)
+    self.service.original_file_url(asset.drop.name, asset.name, asset.drop.default_token)
+  end
 
   def asset_embed_code(asset)
     r = handle(:response, self.service.asset_embed_code(asset.drop.name,asset.name,asset.drop.default_token))

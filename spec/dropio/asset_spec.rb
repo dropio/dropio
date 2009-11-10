@@ -21,7 +21,7 @@ describe Dropio::Asset do
     @asset.should respond_to(:drop, :name, :type, :title, :description, :filesize, :created_at,
                   :thumbnail, :status, :converted, :hidden_url, :pages, :fax_status,
                   :duration, :artist, :track_title, :height, :width, :contents, :url,
-                  :original_filename, :converted_filename)
+                  :original_filename, :converted_filename, :can_download_original)
   end
   
   it "should have comments" do

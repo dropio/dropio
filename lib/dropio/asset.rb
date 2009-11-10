@@ -3,7 +3,7 @@ class Dropio::Asset < Dropio::Resource
   attr_accessor :drop, :name, :type, :title, :description, :filesize, :created_at,
                 :thumbnail, :status, :converted, :hidden_url, :pages, :fax_status,
                 :duration, :artist, :track_title, :height, :width, :contents, :url,
-                :original_filename, :converted_filename
+                :original_filename, :converted_filename, :can_download_original
      
   # Finds a particular Asset by drop and asset name.
   def self.find(drop, name)
@@ -75,6 +75,11 @@ class Dropio::Asset < Dropio::Resource
   # Generates an authenticated URL that will bypass any login action.
   def generate_url
     Dropio::Resource.client.generate_asset_url(self)
+  end
+  
+  # Generates a url if there's access to the original file.
+  def original_file_url
+    Dropio::Resource.client.generate_original_file_url(self) if self.can_download_original
   end
   
 end
