@@ -91,8 +91,8 @@ class Dropio::Api
     signed_url(drop_name, token, asset_name)
   end
   
-  def original_file_url(drop_name, asset_name)
-    Dropio::Config.api_url + "/#{drop_name}/assets/#{asset_name}/download/original?version=2.0&api_key=#{self.class.default_params[:api_key]}&format=json"
+  def generate_original_file_url(drop_name, asset_name, token)
+    Dropio::Config.api_url + "/#{drop_name}/assets/#{asset_name}/download/original?version=2.0&api_key=#{self.class.default_params[:api_key]}&format=json&token=#{token}"
   end
 
   def asset_embed_code(drop_name, asset_name, token = nil)
