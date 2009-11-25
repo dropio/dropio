@@ -11,6 +11,11 @@ class Dropio::Asset < Dropio::Resource
     Dropio::Resource.client.asset(drop,name)
   end
   
+  # Changes the name of an asset.
+  def change_name(new_name)
+    Dropio::Resource.client.change_asset_name(self,new_name)
+  end
+  
   # Returns the comments on this Asset.  Comments are loaded lazily.  The first
   # call to +comments+ will fetch the comments from the server.  They are then
   # cached until the Asset is reloaded.

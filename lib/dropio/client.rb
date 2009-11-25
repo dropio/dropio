@@ -112,6 +112,12 @@ class Dropio::Client
     a.drop = asset.drop
     a
   end
+  
+  def change_asset_name(asset, new_name)
+    handle(:asset, self.service.change_asset_name(asset.drop.name,asset.name,drop.default_token,new_name))
+    asset.name = new_name
+    asset
+  end
 
   def delete_asset(asset)
     r = handle(:response, self.service.delete_asset(asset.drop.name,asset.name,asset.drop.default_token))

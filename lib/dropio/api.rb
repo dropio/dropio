@@ -108,6 +108,11 @@ class Dropio::Api
     params[:token] = token
     self.class.put("/drops/#{drop_name}/assets/#{asset_name}", :body => params)
   end
+  
+  def change_asset_name(drop_name, asset_name, token, new_name)
+    params = {:token => token, :name => new_name}
+    self.class.put("/drops/#{drop_name}/assets/#{asset_name}", :body => params)
+  end
 
   def delete_asset(drop_name, asset_name, token = nil)
     self.class.delete("/drops/#{drop_name}/assets/#{asset_name}", :body => {:token => token})
