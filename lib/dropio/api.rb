@@ -34,6 +34,11 @@ class Dropio::Api
     self.class.put("/drops/#{drop_name}", :body => params)
   end
   
+  def change_drop_name(drop_name, admin_token, new_name)
+    params = {:token => admin_token, :name => new_name}
+    self.class.put("/drops/#{drop_name}", :body => params)
+  end
+  
   def empty_drop(drop_name, admin_token)
     self.class.put("/drops/#{drop_name}/empty", :query => {:token => admin_token})
   end

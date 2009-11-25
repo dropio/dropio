@@ -32,6 +32,11 @@ class Dropio::Drop < Dropio::Resource
     Dropio::Resource.client.create_drop(attributes)
   end
   
+  # Changes the name of a drop. Admin token required. Has to be 7 characters or more unless premium.
+  def change_name(new_name)
+    Dropio::Resource.client.change_drop_name(self,new_name)
+  end
+  
   # Gets the drop's embeddable uploader code
   def upload_code
     Dropio::Resource.client.drop_upload_code(self)

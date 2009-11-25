@@ -20,6 +20,12 @@ class Dropio::Client
   def create_drop(params = {})
     handle(:drop, self.service.create_drop(params))
   end
+  
+  def change_drop_name(drop, new_name)
+    handle(:drop, self.service.change_drop_name(drop.name,drop.admin_token,new_name))
+    drop.name = new_name
+    drop
+  end
 
   def update_drop(drop)
     params = { :description => drop.description, :admin_email => drop.admin_email,
