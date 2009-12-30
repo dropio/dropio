@@ -75,7 +75,7 @@ class Dropio::Asset < Dropio::Resource
   
   # Sends the Asset to a Drop by +drop_name+
   def send_to_drop(drop)
-    Dropio::Resource.client.send_asset_to_drop(self, drop)
+    Dropio::Resource.client.copy_asset(self, drop)
   end
   
   # Generates an authenticated URL that will bypass any login action.

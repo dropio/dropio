@@ -85,7 +85,7 @@ describe Dropio::Asset do
     @target_drop.name = "target_drop"
     @target_drop.guest_token = "guest_token"
     @client.should_receive(:handle).with(:response,{}).and_return({"result" => "Success"})
-    @api.stub!(:send_asset_to_drop).with(@drop.name, @asset.name, @target_drop.name, @target_drop.guest_token, @drop.default_token).and_return({})
+    @api.stub!(:copy_asset).with(@drop.name, @asset.name, @target_drop.name, @target_drop.guest_token, @drop.default_token).and_return({})
     @asset.send_to_drop(@target_drop)
   end
   
