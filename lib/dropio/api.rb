@@ -65,7 +65,7 @@ class Dropio::Api
   end
 
   def add_file(drop_name, file_path, description = nil, convert_to = nil, pingback_url = nil, comment = nil, token = nil)
-    url = URI.parse("http://assets.drop.io/upload/")
+    url = URI.parse(Dropio::Config.upload_url)
     r = nil
     File.open(file_path) do |file|
       mime_type = (MIME::Types.type_for(file_path)[0] || MIME::Types["application/octet-stream"][0])
