@@ -6,6 +6,10 @@ Before using the Dropio library, the application must set an API key.  This key 
 
   Dropio::Config.api_key = "83a05513ddddb73e75c9d8146c115f7fd8e90de6"
 
+You can also get debug information through STDERR by doing:
+
+  Dropio::Config.debug = true
+
 
 == The Drop object
 

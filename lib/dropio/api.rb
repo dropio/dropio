@@ -9,6 +9,7 @@ class Dropio::Api
   headers 'Accept' => 'application/json', 'User-Agent' => USER_AGENT_STRING
 
   def initialize
+    self.class.debug_output $stderr if Dropio::Config.debug
     self.class.default_params :api_key => Dropio::Config.api_key, :version => Dropio::Config.version, :format => "json"
     self.class.base_uri Dropio::Config.api_url
   end

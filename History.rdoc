@@ -1,3 +1,8 @@
+=== 1.7 / 2010-02-08
+
+* Added 0.5.2 as a requirement for httparty
+* Added debug mode in Dropio::Config
+
 === 1.0.1 - 1.0.6=7 / 2009-10-08
 
 * Final button ups.
