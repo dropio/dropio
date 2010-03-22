@@ -75,10 +75,11 @@ class Dropio::Api
         'token' => token, 'version' => '2.0', 'convert_to' => convert_to, 'pingback_url' => pingback_url,
         'comment' => comment, 'file' => UploadIO.new(file, mime_type, file_path) }
       http = Net::HTTP.new(url.host, url.port)
+      http.set_debug_output $stderr if Dropio::Config.debug
       r = http.start{|http| http.request(req)}
     end
 
-    (r.nil? or r.body.nil? or r.body.empty?) ? [] : HTTParty::Response.new(Crack::JSON.parse(r.body), r.body, r.code, r.message, r.to_hash)
+    (r.nil? or r.body.nil? or r.body.empty?) ? r : HTTParty::Response.new(Crack::JSON.parse(r.body), r.body, r.code, r.message, r.to_hash)
   end
   
   def add_file_from_url(drop_name, url, description = nil, convert_to = nil, pingback_url = nil, token = nil)
