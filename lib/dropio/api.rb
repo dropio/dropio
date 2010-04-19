@@ -12,6 +12,7 @@ class Dropio::Api
     self.class.debug_output $stderr if Dropio::Config.debug
     self.class.default_params :api_key => Dropio::Config.api_key, :version => Dropio::Config.version, :format => "json"
     self.class.base_uri Dropio::Config.api_url
+    self.class.default_options[:timeout] = Dropio::Config.timeout
   end
 
   def drop(drop_name, token = nil)

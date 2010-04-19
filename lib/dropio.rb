@@ -1,5 +1,5 @@
 module Dropio
-  VERSION = '1.7.2'
+  VERSION = '1.7.3'
   
   class MissingResourceError < Exception; end
   class AuthorizationError < Exception; end
@@ -8,7 +8,7 @@ module Dropio
   
   class Config
     class << self
-      attr_accessor :api_key, :base_url, :api_url, :upload_url, :version, :debug
+      attr_accessor :api_key, :base_url, :api_url, :upload_url, :version, :debug, :timeout
     end
   end
   
@@ -25,6 +25,7 @@ Dropio::Config.api_url = "http://api.drop.io"
 Dropio::Config.upload_url = "http://assets.drop.io/upload"
 Dropio::Config.version = "2.0"
 Dropio::Config.debug = false
+Dropio::Config.timeout = 60 # Default in Ruby
 
 require 'dropio/api'
 require 'dropio/client'
