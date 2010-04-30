@@ -94,7 +94,7 @@ class Dropio::Client
   end
   
   def generate_asset_url(asset)
-    self.service.generate_drop_url(asset.drop.name, asset.name, asset.drop.default_token)
+    self.service.generate_asset_url(asset.drop.name, asset.name, asset.drop.default_token)
   end
   
   def generate_original_file_url(asset)

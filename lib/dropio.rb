@@ -1,5 +1,5 @@
 module Dropio
-  VERSION = '1.7.3'
+  VERSION = '1.7.4'
   
   class MissingResourceError < Exception; end
   class AuthorizationError < Exception; end
@@ -14,7 +14,6 @@ module Dropio
   
 end
 
-require 'rubygems'
 require 'rbconfig'
 require 'mime/types'
 require 'httparty'
