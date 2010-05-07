@@ -180,6 +180,9 @@ class Dropio::Api
     self.class.get("/drops/#{drop_name}/subscriptions", :query => {:token => admin_token, :page => page, :show_pagination_details => true})
   end
   
+  def delete_subscription(drop_name, subscription_id, admin_token)
+    self.class.delete("/drops/#{drop_name}/subscriptions/#{subscription_id}", :body => {:token => admin_token})
+  end
   
   private
   

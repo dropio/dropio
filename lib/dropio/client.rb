@@ -185,7 +185,8 @@ class Dropio::Client
   end
   
   def create_email_subscription(drop, emails, welcome_message, welcome_subject, welcome_from, message, events)
-    s = handle(:subscription, self.service.create_email_subscription(drop.name, emails, welcome_message, welcome_subject, welcome_from, message, events, drop.default_token))
+    s = handle(:subscriptions, self.service.create_email_subscription(drop.name, emails, welcome_message, welcome_subject, welcome_from, message, events, drop.default_token))
+    s = s.first
     s.drop = drop
     s
   end
@@ -200,6 +201,11 @@ class Dropio::Client
     subscriptions = handle(:subscriptions, self.service.subscriptions(drop.name,page,drop.admin_token))
     subscriptions.each{|s| s.drop = drop}
     subscriptions
+  end
+  
+  def delete_subscription(subscription)
+    r = handle(:response, self.service.delete_subscription(subscription.drop.name,subscription.id,subscription.drop.default_token))
+    r["result"]
   end
   
   private
