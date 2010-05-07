@@ -214,7 +214,7 @@ class Dropio::Client
     when :drops then return response['drops'].collect{|s| Dropio::Drop.new(d)}
     when :asset then return Dropio::Asset.new(response)
     when :assets then return response['assets'].collect{|a| Dropio::Asset.new(a)}
-    when :comment then return Comment.new(response)
+    when :comment then return Dropio::Comment.new(response)
     when :comments then return response['comments'].collect{|c| Dropio::Comment.new(c)}
     when :subscription then return Dropio::Subscription.new(response)
     when :subscriptions then return response['subscriptions'].collect{|s| Dropio::Subscription.new(s)}
