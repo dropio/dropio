@@ -20,7 +20,8 @@ class Dropio::Api
   end
   
   def manager_drops(manager_api_token, page = 1)
-    self.class.get("/accounts/drops", :query => {:manager_api_token => manager_api_token, :page => page})
+    #temporarily locking this to version 2.0 (bug in production prevents this call in 3.0)
+    self.class.get("/accounts/drops", :query => {:version=>'2.0',:manager_api_token => manager_api_token, :page => page})
   end
   
   def generate_drop_url(drop_name, token)
