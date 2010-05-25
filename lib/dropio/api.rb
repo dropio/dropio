@@ -73,7 +73,7 @@ class Dropio::Api
       mime_type = (MIME::Types.type_for(file_path)[0] || MIME::Types["application/octet-stream"][0])
       req = Net::HTTP::Post::Multipart.new url.path,
       { 'api_key' => self.class.default_params[:api_key], 'drop_name' => drop_name, 'format' => 'json', 'description' => description,
-        'token' => token, 'version' => '2.0', 'convert_to' => convert_to, 'pingback_url' => pingback_url,
+        'token' => token, 'version' => Dropio::Config.version, 'convert_to' => convert_to, 'pingback_url' => pingback_url,
         'comment' => comment, 'file' => UploadIO.new(file, mime_type, file_path) }
       http = Net::HTTP.new(url.host, url.port)
       http.set_debug_output $stderr if Dropio::Config.debug
@@ -100,7 +100,7 @@ class Dropio::Api
   end
   
   def generate_original_file_url(drop_name, asset_name, token)
-    Dropio::Config.api_url + "/drops/#{drop_name}/assets/#{asset_name}/download/original?version=2.0&api_key=#{self.class.default_params[:api_key]}&format=json&token=#{token}"
+    Dropio::Config.api_url + "/drops/#{drop_name}/assets/#{asset_name}/download/original?version=#{Dropio::Config.version}&api_key=#{self.class.default_params[:api_key]}&format=json&token=#{token}"
   end
 
   def asset_embed_code(drop_name, asset_name, token = nil)
