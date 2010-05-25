@@ -1,5 +1,5 @@
 module Dropio
-  VERSION = '1.7.7'
+  VERSION = '3.0.0'
   
   class MissingResourceError < Exception; end
   class AuthorizationError < Exception; end
@@ -22,7 +22,7 @@ require 'net/http/post/multipart'
 Dropio::Config.base_url = "http://drop.io"
 Dropio::Config.api_url = "http://api.drop.io"
 Dropio::Config.upload_url = "http://assets.drop.io/upload"
-Dropio::Config.version = "2.0"
+Dropio::Config.version = "3.0"
 Dropio::Config.debug = false
 Dropio::Config.timeout = 60 # Default in Ruby
 
