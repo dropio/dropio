@@ -80,7 +80,7 @@ class Dropio::Api
       r = http.start{|http| http.request(req)}
     end
 
-    (r.nil? or r.body.nil? or r.body.empty?) ? r : HTTParty::Response.new(Crack::JSON.parse(r.body), r.body, r.code, r.message, r.to_hash)
+    (r.nil? or r.body.nil? or r.body.empty?) ? r : HTTParty::Response.new(r,Crack::JSON.parse(r.body))
   end
   
   def add_file_from_url(drop_name, url, description = nil, convert_to = nil, pingback_url = nil, token = nil)
