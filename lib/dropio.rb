@@ -8,7 +8,7 @@ module Dropio
   
   class Config
     class << self
-      attr_accessor :api_key, :base_url, :api_url, :upload_url, :version, :debug, :timeout
+      attr_accessor :api_key, :api_secret, :base_url, :api_url, :upload_url, :version, :debug, :timeout
     end
   end
   

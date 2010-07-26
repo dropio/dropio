@@ -16,12 +16,11 @@ class Dropio::Api
   end
 
   def drop(drop_name, token = nil)
-    self.class.get("/drops/#{drop_name}", :query => {:token => token})
+    self.class.get("/drops/#{drop_name}", :query => sign_if_needed({:token => token}))
   end
   
   def manager_drops(manager_api_token, page = 1)
-    # Locked to version 2.0 as there's a bug in 3.0
-    self.class.get("/accounts/drops", :query => {:version=> '2.0', :manager_api_token => manager_api_token, :page => page})
+    self.class.get("/accounts/drops", :query => sign_if_needed({:manager_api_token => manager_api_token, :page => page}))
   end
   
   def generate_drop_url(drop_name, token)
@@ -29,42 +28,42 @@ class Dropio::Api
   end
 
   def create_drop(params = {})
-    self.class.post("/drops",:body => params)
+    self.class.post("/drops",:body => sign_if_needed(params))
   end
 
   def update_drop(drop_name, admin_token, params = {})
     params[:token] = admin_token
-    self.class.put("/drops/#{drop_name}", :body => params)
+    self.class.put("/drops/#{drop_name}", :body => sign_if_needed(params))
   end
   
   def change_drop_name(drop_name, admin_token, new_name)
     params = {:token => admin_token, :name => new_name}
-    self.class.put("/drops/#{drop_name}", :body => params)
+    self.class.put("/drops/#{drop_name}", :body => sign_if_needed(params))
   end
   
   def empty_drop(drop_name, admin_token)
-    self.class.put("/drops/#{drop_name}/empty", :query => {:token => admin_token})
+    self.class.put("/drops/#{drop_name}/empty", :query => sign_if_needed({:token => admin_token}))
   end
 
   def delete_drop(drop_name, admin_token)
-    self.class.delete("/drops/#{drop_name}", :query => {:token => admin_token})
+    self.class.delete("/drops/#{drop_name}", :query => sign_if_needed({:token => admin_token}))
   end
   
   def promote_nick(drop_name, nick, admin_token)
-    self.class.post("/drops/#{drop_name}", :query => {:nick => nick, :token => admin_token})
+    self.class.post("/drops/#{drop_name}", :query => sign_if_needed({:nick => nick, :token => admin_token}))
   end
   
   def drop_upload_code(drop_name, token = nil)
-    self.class.get("/drops/#{drop_name}/upload_code", :query => {:token => token})
+    self.class.get("/drops/#{drop_name}/upload_code", :query => sign_if_needed({:token => token}))
   end
 
   def create_link(drop_name, url, title = nil, description = nil, token = nil)
-    self.class.post("/drops/#{drop_name}/assets", :body => {:url => url, :title => title, :description => description, :token => token})
+    self.class.post("/drops/#{drop_name}/assets", :body => sign_if_needed({:url => url, :title => title, :description => description, :token => token}))
   end
 
   def create_note(drop_name, contents, title = nil, description = nil, token = nil)
     params = {:contents => contents, :title => title, :token => token, :description => description}
-    self.class.post("/drops/#{drop_name}/assets", :body => params)
+    self.class.post("/drops/#{drop_name}/assets", :body => sign_if_needed(params))
   end
 
   def add_file(drop_name, file_path, description = nil, convert_to = nil, pingback_url = nil, comment = nil, token = nil)
@@ -73,9 +72,9 @@ class Dropio::Api
     File.open(file_path) do |file|
       mime_type = (MIME::Types.type_for(file_path)[0] || MIME::Types["application/octet-stream"][0])
       req = Net::HTTP::Post::Multipart.new url.path,
-      { 'api_key' => self.class.default_params[:api_key], 'drop_name' => drop_name, 'format' => 'json', 'description' => description,
+      sign_if_needed({ 'api_key' => self.class.default_params[:api_key], 'drop_name' => drop_name, 'format' => 'json', 'description' => description,
         'token' => token, 'version' => Dropio::Config.version, 'convert_to' => convert_to, 'pingback_url' => pingback_url,
-        'comment' => comment, 'file' => UploadIO.new(file, mime_type, file_path) }
+        'comment' => comment, 'file' => UploadIO.new(file, mime_type, file_path) })
       http = Net::HTTP.new(url.host, url.port)
       http.set_debug_output $stderr if Dropio::Config.debug
       r = http.start{|http| http.request(req)}
@@ -85,107 +84,146 @@ class Dropio::Api
   end
   
   def add_file_from_url(drop_name, url, description = nil, convert_to = nil, pingback_url = nil, token = nil)
-    self.class.post("/drops/#{drop_name}/assets", :body => {:token => token, :file_url => url, :description => description, :convert_to => convert_to, :pingback_url => pingback_url})
+    self.class.post("/drops/#{drop_name}/assets", :body => sign_if_needed({:token => token, :file_url => url, :description => description, :convert_to => convert_to, :pingback_url => pingback_url}))
   end
 
   def assets(drop_name, page = 1, order = :oldest, token = nil)
-    self.class.get("/drops/#{drop_name}/assets", :query => {:token => token, :page => page, :order => order.to_s, :show_pagination_details => true})
+    self.class.get("/drops/#{drop_name}/assets", :query => sign_if_needed({:token => token, :page => page, :order => order.to_s, :show_pagination_details => true}))
   end
 
   def asset(drop_name, asset_name, token = nil)
-    self.class.get("/drops/#{drop_name}/assets/#{asset_name}", :query => {:token => token})
+    self.class.get("/drops/#{drop_name}/assets/#{asset_name}", :query => sign_if_needed({:token => token}))
   end
   
   def generate_asset_url(drop_name, asset_name, token)
     signed_url(drop_name, token, asset_name)
   end
   
-  def generate_original_file_url(drop_name, asset_name, token)
-    Dropio::Config.api_url + "/drops/#{drop_name}/assets/#{asset_name}/download/original?version=#{Dropio::Config.version}&api_key=#{self.class.default_params[:api_key]}&format=json&token=#{token}"
+  def generate_original_file_url(drop_name, asset_name, time_to_live = 600)
+    #TODO - signed download URLs
+    #this is now available via the API response itself
+    download_url = Dropio::Config.api_url + "/drops/#{drop_name}/assets/#{asset_name}/download/original?"
+    params = {:version => Dropio::Config.version, :api_key=>self.class.default_params[:api_key], :format=>'json'}
+    params = sign_if_needed(params)
+    paramstring = ''
+    params.each do |k, v|
+      paramstring << "#{k}=#{v}&"
+    end
+    paramstring.chop!
+    download_url += paramstring
   end
 
   def asset_embed_code(drop_name, asset_name, token = nil)
-    self.class.get("/drops/#{drop_name}/assets/#{asset_name}/embed_code", :query => {:token => token})
+    self.class.get("/drops/#{drop_name}/assets/#{asset_name}/embed_code", :query => sign_if_needed({:token => token}))
   end
 
   def update_asset(drop_name, asset_name, params = {}, token = nil)
     params[:token] = token
-    self.class.put("/drops/#{drop_name}/assets/#{asset_name}", :body => params)
+    self.class.put("/drops/#{drop_name}/assets/#{asset_name}", :body => sign_if_needed(params))
   end
   
   def change_asset_name(drop_name, asset_name, token, new_name)
     params = {:token => token, :name => new_name}
-    self.class.put("/drops/#{drop_name}/assets/#{asset_name}", :body => params)
+    self.class.put("/drops/#{drop_name}/assets/#{asset_name}", :body => sign_if_needed(params))
   end
 
   def delete_asset(drop_name, asset_name, token = nil)
-    self.class.delete("/drops/#{drop_name}/assets/#{asset_name}", :body => {:token => token})
+    self.class.delete("/drops/#{drop_name}/assets/#{asset_name}", :body => sign_if_needed({:token => token}))
   end
 
   def send_asset_to_drop(drop_name, asset_name, target_drop, drop_token = nil, token = nil)
-    self.class.post("/drops/#{drop_name}/assets/#{asset_name}/send_to", :body => {:medium => "drop", :drop_name => target_drop, :token => token, :drop_token => drop_token})
+    self.class.post("/drops/#{drop_name}/assets/#{asset_name}/send_to", :body => sign_if_needed({:medium => "drop", :drop_name => target_drop, :token => token, :drop_token => drop_token}))
   end
   
   def send_asset_to_fax(drop_name, asset_name, fax_number, token = nil)
-    self.class.post("/drops/#{drop_name}/assets/#{asset_name}/send_to", :body => {:medium => "fax", :fax_number => fax_number, :token => token})
+    self.class.post("/drops/#{drop_name}/assets/#{asset_name}/send_to", :body => sign_if_needed({:medium => "fax", :fax_number => fax_number, :token => token}))
   end
   
   def send_asset_to_emails(drop_name, asset_name, emails, message = nil, token = nil)
-    self.class.post("/drops/#{drop_name}/assets/#{asset_name}/send_to", :body => {:medium => "emails", :emails => emails, message => message, :token => token})
+    self.class.post("/drops/#{drop_name}/assets/#{asset_name}/send_to", :body => sign_if_needed({:medium => "emails", :emails => emails, message => message, :token => token}))
   end
   
   def copy_asset(drop_name, asset_name, target_drop, target_drop_token, token = nil)
     params = {:token => token, :drop_name => target_drop, :drop_token => target_drop_token}
-    self.class.post("/drops/#{drop_name}/assets/#{asset_name}/copy", :body => params)
+    self.class.post("/drops/#{drop_name}/assets/#{asset_name}/copy", :body => sign_if_needed(params))
   end
   
   def move_asset(drop_name, asset_name, target_drop, target_drop_token, token = nil)
     params = {:token => token, :drop_name => target_drop, :drop_token => target_drop_token}
-    self.class.post("/drops/#{drop_name}/assets/#{asset_name}/move", :body => params)
+    self.class.post("/drops/#{drop_name}/assets/#{asset_name}/move", :body => sign_if_needed(params))
   end
 
   def comments(drop_name, asset_name, page = 1, token = nil)
-    self.class.get("/drops/#{drop_name}/assets/#{asset_name}/comments", :query => {:token => token, :page => page, :show_pagination_details => true})
+    self.class.get("/drops/#{drop_name}/assets/#{asset_name}/comments", :query => sign_if_needed({:token => token, :page => page, :show_pagination_details => true}))
   end
 
   def create_comment(drop_name, asset_name, contents, token = nil)
-    self.class.post("/drops/#{drop_name}/assets/#{asset_name}/comments",:body => {:contents => contents, :token => token})
+    self.class.post("/drops/#{drop_name}/assets/#{asset_name}/comments",:body => sign_if_needed({:contents => contents, :token => token}))
   end
 
   def comment(drop_name, asset_name, comment_id, token = nil)
-    self.class.get("/drops/#{drop_name}/assets/#{asset_name}/comments/#{comment_id}", :query => {:token => token})
+    self.class.get("/drops/#{drop_name}/assets/#{asset_name}/comments/#{comment_id}", :query => sign_if_needed({:token => token}))
   end
 
   def update_comment(drop_name, asset_name, comment_id, contents, admin_token)
-    self.class.put("/drops/#{drop_name}/assets/#{asset_name}/comments/#{comment_id}", :body => {:contents => contents, :token => admin_token})
+    self.class.put("/drops/#{drop_name}/assets/#{asset_name}/comments/#{comment_id}", :body => sign_if_needed({:contents => contents, :token => admin_token}))
   end
 
   def delete_comment(drop_name, asset_name, comment_id, admin_token)
-    self.class.delete("/drops/#{drop_name}/assets/#{asset_name}/comments/#{comment_id}", :body => {:token => admin_token})
+    self.class.delete("/drops/#{drop_name}/assets/#{asset_name}/comments/#{comment_id}", :body => sign_if_needed({:token => admin_token}))
   end
 
   def create_twitter_subscription(drop_name, username, password, message = nil, events = {}, token = nil)
-    self.class.post("/drops/#{drop_name}/subscriptions", :body => { :token => token, :type => "twitter", :username => username, :password => password, :message => message}.merge(events))
+    self.class.post("/drops/#{drop_name}/subscriptions", :body => sign_if_needed({ :token => token, :type => "twitter", :username => username, :password => password, :message => message}.merge(events)))
   end
   
   def create_pingback_subscription(drop_name, url, events = {}, token = nil)
-    self.class.post("/drops/#{drop_name}/subscriptions", :body => { :token => token, :type => "pingback", :url => url}.merge(events))
+    self.class.post("/drops/#{drop_name}/subscriptions", :body => sign_if_needed({ :token => token, :type => "pingback", :url => url}.merge(events)))
   end
   
   def create_email_subscription(drop_name, emails, message = nil, welcome_message = nil, welcome_subject = nil, welcome_from = nil, events = {}, token = nil)
     params = {:token => token, :type => "email", :emails => emails, :message => message, :welcome_from => welcome_from , :welcome_subject => welcome_subject, :welcome_message => welcome_message }.merge(events)
-    self.class.post("/drops/#{drop_name}/subscriptions", :body => params)
+    self.class.post("/drops/#{drop_name}/subscriptions", :body => sign_if_needed(params))
   end
   
   def subscriptions(drop_name, page, admin_token)
-    self.class.get("/drops/#{drop_name}/subscriptions", :query => {:token => admin_token, :page => page, :show_pagination_details => true})
+    self.class.get("/drops/#{drop_name}/subscriptions", :query => sign_if_needed({:token => admin_token, :page => page, :show_pagination_details => true}))
   end
   
   def delete_subscription(drop_name, subscription_id, admin_token)
-    self.class.delete("/drops/#{drop_name}/subscriptions/#{subscription_id}", :body => {:token => admin_token})
+    self.class.delete("/drops/#{drop_name}/subscriptions/#{subscription_id}", :body => sign_if_needed({:token => admin_token}))
   end
   
   private
+  
+  def sign_if_needed(params = {})
+    if Dropio::Config.api_secret
+      params = add_required_params(params)
+      params = sign_request(params)
+      params
+    else
+      params
+    end
+  end
+  
+  def add_required_params(params = {})
+    #10 minute window
+    params[:timestamp] = (Time.now.to_i + 600).to_s
+    params
+  end
+  
+  def sign_request(params={})
+    params_for_sig = params.clone
+    params_for_sig.delete :token
+    params.delete :token
+    params_for_sig[:api_key] = Dropio::Config.api_key.to_s
+    params_for_sig[:version] = Dropio::Config.version.to_s
+    params_for_sig[:format] ||= 'json'
+    paramstring = ''
+    params_for_sig.keys.sort_by {|s| s.to_s}.each {|key| paramstring +=  key.to_s + '=' +  params_for_sig[key].to_s}
+    params[:signature] = Digest::SHA1.hexdigest(paramstring + Dropio::Config.api_secret)
+    params
+  end
   
   def signed_url(drop_name, token, asset_name = nil)
     # 10 minute window.

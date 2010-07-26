@@ -84,8 +84,8 @@ class Dropio::Asset < Dropio::Resource
   end
   
   # Generates a url if there's access to the original file.
-  def original_file_url
-    Dropio::Resource.client.generate_original_file_url(self) if self.can_download_original
+  def original_file_url(time_to_live = 600)
+    Dropio::Resource.client.generate_original_file_url(self)
   end
   
 end
