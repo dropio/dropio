@@ -194,7 +194,25 @@ class Dropio::Api
     self.class.delete("/drops/#{drop_name}/subscriptions/#{subscription_id}", :body => sign_if_needed({:token => admin_token}))
   end
   
+  def get_signature(params={})
+    #returns a signature for the passed params, without any modifcation to the params
+    params = sign_request(params)
+    params[:signature]
+  end
+  
   private
+  
+  def sign_request(params={})
+    #returns all params, including signature and any required params for signing (currently only timestamp)
+    params_for_sig = params.clone
+    params_for_sig[:api_key] = Dropio::Config.api_key.to_s
+    params_for_sig[:version] = Dropio::Config.version.to_s
+    params_for_sig[:format] ||= 'json'
+    paramstring = ''
+    params_for_sig.keys.sort_by {|s| s.to_s}.each {|key| paramstring +=  key.to_s + '=' +  params_for_sig[key].to_s}
+    params[:signature] = Digest::SHA1.hexdigest(paramstring + Dropio::Config.api_secret)
+    params
+  end
   
   def sign_if_needed(params = {})
     if Dropio::Config.api_secret
@@ -209,19 +227,6 @@ class Dropio::Api
   def add_required_params(params = {})
     #10 minute window
     params[:timestamp] = (Time.now.to_i + 600).to_s
-    params
-  end
-  
-  def sign_request(params={})
-    params_for_sig = params.clone
-    params_for_sig.delete :token
-    params.delete :token
-    params_for_sig[:api_key] = Dropio::Config.api_key.to_s
-    params_for_sig[:version] = Dropio::Config.version.to_s
-    params_for_sig[:format] ||= 'json'
-    paramstring = ''
-    params_for_sig.keys.sort_by {|s| s.to_s}.each {|key| paramstring +=  key.to_s + '=' +  params_for_sig[key].to_s}
-    params[:signature] = Digest::SHA1.hexdigest(paramstring + Dropio::Config.api_secret)
     params
   end
   
