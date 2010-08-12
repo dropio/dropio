@@ -207,7 +207,13 @@ class Dropio::Api
     params_for_sig = params.clone
     params_for_sig[:api_key] = Dropio::Config.api_key.to_s
     params_for_sig[:version] = Dropio::Config.version.to_s
-    params_for_sig[:format] ||= 'json'
+    
+    if params[:signature_mode] != "OPEN"
+      #RPC always includes format here, so in NORMAL and STRICT mode we need to include it in our sig if not specified
+      params_for_sig[:format] ||= 'json'
+      params[:format] ||= 'json'
+    end
+   
     paramstring = ''
     params_for_sig.keys.sort_by {|s| s.to_s}.each {|key| paramstring +=  key.to_s + '=' +  params_for_sig[key].to_s}
     params[:signature] = Digest::SHA1.hexdigest(paramstring + Dropio::Config.api_secret)
