@@ -1,4 +1,8 @@
-$: << 'lib'
+require 'rubygems'
+require 'bundler'
+Bundler.setup :development, :test
+
+$: << File.expand_path('./lib')
 require 'dropio'
 
 ### Echoe
@@ -6,6 +10,7 @@ begin
   require 'echoe'
 
   Echoe.new('dropio', Dropio::VERSION) do |echoe|
+    echoe.retain_gemspec = true
     echoe.changelog = "History.rdoc"
     
     echoe.summary = "A Ruby client library for the Drop.io API (http://api.drop.io)"
@@ -14,8 +19,8 @@ begin
     echoe.url     = "http://github.com/dropio/dropio"
     
     # TODO have this generated from Gemfile or vice versa
-    echoe.runtime_dependencies     = %w( mime-types json httparty multipart-post )
-    echoe.development_dependencies = %w( rspec diff-lcs fakeweb )
+    echoe.runtime_dependencies     = ["mime-types", "json", "httparty 0.6.1", "multipart-post"]
+    echoe.development_dependencies = ["rspec", "diff-lcs", "fakeweb"]
     
     echoe.ignore_pattern = "tmtags"
     # Use this rdoc_pattern when building docs locally or publishing docs.
@@ -24,7 +29,7 @@ begin
   end
   
   # Until we find a way to undefine rake tasks...
-  %w{coverage clobber_coverage}.each { |name| Rake::Task[name].comment = "(don't use)" }
+  # %w{coverage clobber_coverage}.each { |name| Rake::Task[name].comment = "(don't use)" }
   
   # default depends on test, but we don't have a test task.  Define a trivial one.
   task :test

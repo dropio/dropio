@@ -4,10 +4,11 @@ source :rubygems
 
 gem "mime-types"
 gem "json"
-gem "httparty"
+gem "httparty", "0.6.1"
 gem "multipart-post"
 
 group :development, :test do
+  gem "echoe"
   gem "rake"
   gem "rspec"
   gem "diff-lcs"
