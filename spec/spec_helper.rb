@@ -3,7 +3,7 @@ require 'bundler'
 Bundler.setup :default, :test
 
 require 'spec'
-# require 'spec/test/unit'
+require 'spec/test/unit'
 require 'fakeweb'
 
 FakeWeb.allow_net_connect = false
