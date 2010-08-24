@@ -13,7 +13,8 @@ class Dropio::Job < Dropio::Resource
       :job_type => job_type,
       :using => using,
       :inputs => inputs,
-      :outputs => outputs
+      :outputs => outputs,
+      :pingback_url => pingback_url
     })
   end
  
