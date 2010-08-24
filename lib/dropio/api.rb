@@ -73,7 +73,7 @@ class Dropio::Api
       mime_type = (MIME::Types.type_for(file_path)[0] || MIME::Types["application/octet-stream"][0])
       req = Net::HTTP::Post::Multipart.new url.path,
       { 'api_key' => self.class.default_params[:api_key], 'drop_name' => drop_name, 'format' => 'json', 'description' => description,
-        'token' => token, 'version' => Dropio::Config.version, 'convert_to' => convert_to, 'pingback_url' => pingback_url,
+        'token' => token, 'version' => Dropio::Config.version, 'convert_to' => convert_to, 'conversion' => convert_to, 'pingback_url' => pingback_url,
         'comment' => comment, 'file' => UploadIO.new(file, mime_type, file_path) }
       http = Net::HTTP.new(url.host, url.port)
       http.set_debug_output $stderr if Dropio::Config.debug
@@ -182,6 +182,14 @@ class Dropio::Api
   
   def delete_subscription(drop_name, subscription_id, admin_token)
     self.class.delete("/drops/#{drop_name}/subscriptions/#{subscription_id}", :body => {:token => admin_token})
+  end
+  
+  def job(id, drop_name, asset_name_or_id, token=nil)
+    self.class.get("/drops/#{drop_name}/assets/#{asset_name_or_id}/jobs/#{id}", :query => {:token => token})
+  end
+
+  def create_job(job = {})
+    self.class.post("/jobs",:body => job)
   end
   
   private

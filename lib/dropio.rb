@@ -33,3 +33,5 @@ require 'dropio/drop'
 require 'dropio/asset'
 require 'dropio/comment'
 require 'dropio/subscription'
+require 'dropio/job'
+

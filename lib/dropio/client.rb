@@ -208,6 +208,14 @@ class Dropio::Client
     r["result"]
   end
   
+  def job(id, drop_name, asset_name_or_id, token=nil)
+    handle(:job, self.service.job(id, drop_name, asset_name_or_id, token))
+  end
+  
+  def create_job(job = {})
+    handle(:job, self.service.create_job(job))
+  end
+  
   private
   
   def handle(type, response)
@@ -224,6 +232,7 @@ class Dropio::Client
     when :comments then return response['comments'].collect{|c| Dropio::Comment.new(c)}
     when :subscription then return Dropio::Subscription.new(response)
     when :subscriptions then return response['subscriptions'].collect{|s| Dropio::Subscription.new(s)}
+    when :job then return Dropio::Job.new(response)
     when :response then return parse_response(response)
     end
   end

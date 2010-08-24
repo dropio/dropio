@@ -12,7 +12,7 @@ begin
     echoe.url = "http://github.com/dropio/dropio"
     echoe.changelog = "History.rdoc"
     echoe.ignore_pattern = "tmtags"
-    echoe.runtime_dependencies = ["mime-types", "json"]
+    echoe.runtime_dependencies = ["mime-types", "json","multipart-post 1.0.1"]
     
     # Use this rdoc_pattern when building docs locally or publishing docs.
     # echoe.rdoc_pattern = Regexp.union(echoe.rdoc_pattern, /\.rdoc$/)
