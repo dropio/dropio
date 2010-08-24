@@ -6,17 +6,21 @@ begin
   require 'echoe'
 
   Echoe.new('dropio', Dropio::VERSION) do |echoe|
-    echoe.summary = "A Ruby client library for the Drop.io API (http://api.drop.io)"
-    echoe.author = ["Jake Good"]
-    echoe.email = ["jake@dropio.com"]
-    echoe.url = "http://github.com/dropio/dropio"
     echoe.changelog = "History.rdoc"
-    echoe.ignore_pattern = "tmtags"
-    echoe.runtime_dependencies = ["mime-types", "json"]
     
+    echoe.summary = "A Ruby client library for the Drop.io API (http://api.drop.io)"
+    echoe.author  = ["Jake Good"]
+    echoe.email   = ["jake@dropio.com"]
+    echoe.url     = "http://github.com/dropio/dropio"
+    
+    # TODO have this generated from Gemfile or vice versa
+    echoe.runtime_dependencies     = %w( mime-types json httparty multipart-post )
+    echoe.development_dependencies = %w( rspec diff-lcs fakeweb )
+    
+    echoe.ignore_pattern = "tmtags"
     # Use this rdoc_pattern when building docs locally or publishing docs.
     # echoe.rdoc_pattern = Regexp.union(echoe.rdoc_pattern, /\.rdoc$/)
-    echoe.rdoc_pattern = /\.rdoc$/
+    echoe.rdoc_pattern   = /\.rdoc$/
   end
   
   # Until we find a way to undefine rake tasks...
@@ -61,4 +65,3 @@ namespace :docs do
     sh "open file://#{doc_index}"
   end
 end
-
