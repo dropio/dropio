@@ -22,33 +22,31 @@ class Dropio::Client
   end
   
   def change_drop_name(drop, new_name)
-    handle(:drop, self.service.change_drop_name(drop.name,drop.admin_token,new_name))
+    handle(:drop, self.service.change_drop_name(drop.name,new_name))
     drop.name = new_name
     drop
   end
 
   def update_drop(drop)
     params = { :description => drop.description, :admin_email => drop.admin_email,
-               :email_key => drop.email_key, :default_view => drop.default_view,
-               :chat_password => drop.chat_password, :guests_can_comment => drop.guests_can_comment,
-               :guests_can_add => drop.guests_can_add, :guests_can_delete => drop.guests_can_delete,
-               :expiration_length => drop.expiration_length, :password => drop.password,
-               :admin_password => drop.admin_password, :premium_code => drop.premium_code }
-    handle(:drop, self.service.update_drop(drop.name,drop.admin_token,params))
+               :email_key => drop.email_key, :chat_password => drop.chat_password, 
+               :expiration_length => drop.expiration_length, :password => drop.password, 
+               :admin_password => drop.admin_password }
+    handle(:drop, self.service.update_drop(drop.name,params))
   end
   
   def empty_drop(drop)
-    r = handle(:response, self.service.empty_drop(drop.name,drop.admin_token))
+    r = handle(:response, self.service.empty_drop(drop.name))
     r["result"]
   end
 
   def delete_drop(drop)
-    r = handle(:response, self.service.delete_drop(drop.name,drop.admin_token))
+    r = handle(:response, self.service.delete_drop(drop.name))
     r["result"]
   end
   
   def promote_nick(drop,nick)
-    r = handle(:response, self.service.promote_nick(drop.name,nick,drop.admin_token))
+    r = handle(:response, self.service.promote_nick(drop.name,nick))
     r["result"]
   end
   
@@ -69,8 +67,8 @@ class Dropio::Client
     a
   end
 
-  def add_file(drop, file_path, description = nil, convert_to = nil, pingback_url = nil, comment = nil)
-    a = handle(:asset, self.service.add_file(drop.name, file_path, description, convert_to, pingback_url, comment, drop.default_token))
+  def add_file(drop, file_path, description = nil, convert_to = nil, pingback_url = nil)
+    a = handle(:asset, self.service.add_file(drop.name, file_path, description, convert_to, pingback_url))
     a.drop = drop
     a
   end
@@ -129,16 +127,6 @@ class Dropio::Client
     r["result"]
   end
   
-  def send_asset_to_fax(asset, fax_number)
-    r = handle(:response, self.service.send_asset_to_fax(asset.drop.name, asset.name, fax_number, asset.drop.default_token))
-    r["result"]
-  end
-  
-  def send_asset_to_emails(asset, emails, message)
-    r = handle(:response, self.service.send_asset_to_emails(asset.drop.name, asset.name, emails, message, asset.drop.default_token))
-    r["result"]
-  end
-  
   def copy_asset(asset,target_drop)
     r = handle(:response, self.service.copy_asset(asset.drop.name,asset.name,target_drop.name,target_drop.default_token,asset.drop.default_token))
     r["result"]
@@ -149,48 +137,6 @@ class Dropio::Client
     r["result"]
   end
 
-  def comments(asset, page = 1)
-    comments = handle(:comments, self.service.comments(asset.drop.name,asset.name,page,asset.drop.default_token))
-    comments.each{|c| c.asset = asset}
-    comments
-  end
-
-  def create_comment(asset, contents)
-    c = handle(:comment, self.service.create_comment(asset.drop.name,asset.name,contents,asset.drop.default_token))
-    c.asset = asset
-    c
-  end
-
-  def comment(asset, comment_id)
-    c = handle(:comment, self.service.comment(asset.drop.name,asset.name,comment_id,asset.drop.default_token))
-    c.asset = asset
-    c
-  end
-
-  def update_comment(comment)
-    c = handle(:comment, self.service.update_comment(comment.asset.drop.name,comment.asset.name,comment.id,comment.contents,comment.asset.drop.admin_token))
-    c.asset = comment.asset
-    c
-  end
-
-  def delete_comment(comment)
-    r = handle(:response, self.service.delete_comment(comment.asset.drop.name,comment.asset.name,comment.id,comment.asset.drop.admin_token))
-    r["result"]
-  end
-  
-  def create_twitter_subscription(drop, username,password, message, events)
-    s = handle(:subscription, self.service.create_twitter_subscription(drop.name, username, password, message, events, drop.default_token))
-    s.drop = drop
-    s
-  end
-  
-  def create_email_subscription(drop, emails, welcome_message, welcome_subject, welcome_from, message, events)
-    s = handle(:subscriptions, self.service.create_email_subscription(drop.name, emails, welcome_message, welcome_subject, welcome_from, message, events, drop.default_token))
-    s = s.first
-    s.drop = drop
-    s
-  end
-  
   def create_pingback_subscription(drop, url, events)
     s = handle(:subscription, self.service.create_pingback_subscription(drop.name, url, events, drop.default_token))
     s.drop = drop
@@ -198,7 +144,7 @@ class Dropio::Client
   end
   
   def subscriptions(drop, page = 1)
-    subscriptions = handle(:subscriptions, self.service.subscriptions(drop.name,page,drop.admin_token))
+    subscriptions = handle(:subscriptions, self.service.subscriptions(drop.name,page))
     subscriptions.each{|s| s.drop = drop}
     subscriptions
   end
@@ -220,8 +166,6 @@ class Dropio::Client
     when :drops then return response['drops'].collect{|s| Dropio::Drop.new(d)}
     when :asset then return Dropio::Asset.new(response)
     when :assets then return response['assets'].collect{|a| Dropio::Asset.new(a)}
-    when :comment then return Dropio::Comment.new(response)
-    when :comments then return response['comments'].collect{|c| Dropio::Comment.new(c)}
     when :subscription then return Dropio::Subscription.new(response)
     when :subscriptions then return response['subscriptions'].collect{|s| Dropio::Subscription.new(s)}
     when :response then return parse_response(response)

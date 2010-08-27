@@ -31,26 +31,25 @@ class Dropio::Api
     self.class.post("/drops",:body => sign_if_needed(params))
   end
 
-  def update_drop(drop_name, admin_token, params = {})
-    params[:token] = admin_token
+  def update_drop(drop_name, params = {})
     self.class.put("/drops/#{drop_name}", :body => sign_if_needed(params))
   end
   
-  def change_drop_name(drop_name, admin_token, new_name)
-    params = {:token => admin_token, :name => new_name}
+  def change_drop_name(drop_name, new_name)
+    params = {:name => new_name}
     self.class.put("/drops/#{drop_name}", :body => sign_if_needed(params))
   end
   
-  def empty_drop(drop_name, admin_token)
-    self.class.put("/drops/#{drop_name}/empty", :query => sign_if_needed({:token => admin_token}))
+  def empty_drop(drop_name)
+    self.class.put("/drops/#{drop_name}/empty", :query => {})
   end
 
-  def delete_drop(drop_name, admin_token)
-    self.class.delete("/drops/#{drop_name}", :query => sign_if_needed({:token => admin_token}))
+  def delete_drop(drop_name)
+    self.class.delete("/drops/#{drop_name}", :query => {})
   end
   
-  def promote_nick(drop_name, nick, admin_token)
-    self.class.post("/drops/#{drop_name}", :query => sign_if_needed({:nick => nick, :token => admin_token}))
+  def promote_nick(drop_name, nick)
+    self.class.post("/drops/#{drop_name}", :query => sign_if_needed({:nick => nick}))
   end
   
   def drop_upload_code(drop_name, token = nil)
@@ -66,15 +65,15 @@ class Dropio::Api
     self.class.post("/drops/#{drop_name}/assets", :body => sign_if_needed(params))
   end
 
-  def add_file(drop_name, file_path, description = nil, convert_to = nil, pingback_url = nil, comment = nil, token = nil)
+  def add_file(drop_name, file_path, description = nil, convert_to = nil, pingback_url = nil)
     url = URI.parse(Dropio::Config.upload_url)
     r = nil
     File.open(file_path) do |file|
       mime_type = (MIME::Types.type_for(file_path)[0] || MIME::Types["application/octet-stream"][0])
       req = Net::HTTP::Post::Multipart.new url.path,
       sign_if_needed({ 'api_key' => self.class.default_params[:api_key], 'drop_name' => drop_name, 'format' => 'json', 'description' => description,
-        'token' => token, 'version' => Dropio::Config.version, 'convert_to' => convert_to, 'pingback_url' => pingback_url,
-        'comment' => comment, 'file' => UploadIO.new(file, mime_type, file_path) })
+        'version' => Dropio::Config.version, 'convert_to' => convert_to, 'pingback_url' => pingback_url,
+        'file' => UploadIO.new(file, mime_type, file_path) })
       http = Net::HTTP.new(url.host, url.port)
       http.set_debug_output $stderr if Dropio::Config.debug
       r = http.start{|http| http.request(req)}
@@ -135,14 +134,6 @@ class Dropio::Api
     self.class.post("/drops/#{drop_name}/assets/#{asset_name}/send_to", :body => sign_if_needed({:medium => "drop", :drop_name => target_drop, :token => token, :drop_token => drop_token}))
   end
   
-  def send_asset_to_fax(drop_name, asset_name, fax_number, token = nil)
-    self.class.post("/drops/#{drop_name}/assets/#{asset_name}/send_to", :body => sign_if_needed({:medium => "fax", :fax_number => fax_number, :token => token}))
-  end
-  
-  def send_asset_to_emails(drop_name, asset_name, emails, message = nil, token = nil)
-    self.class.post("/drops/#{drop_name}/assets/#{asset_name}/send_to", :body => sign_if_needed({:medium => "emails", :emails => emails, message => message, :token => token}))
-  end
-  
   def copy_asset(drop_name, asset_name, target_drop, target_drop_token, token = nil)
     params = {:token => token, :drop_name => target_drop, :drop_token => target_drop_token}
     self.class.post("/drops/#{drop_name}/assets/#{asset_name}/copy", :body => sign_if_needed(params))
@@ -153,45 +144,16 @@ class Dropio::Api
     self.class.post("/drops/#{drop_name}/assets/#{asset_name}/move", :body => sign_if_needed(params))
   end
 
-  def comments(drop_name, asset_name, page = 1, token = nil)
-    self.class.get("/drops/#{drop_name}/assets/#{asset_name}/comments", :query => sign_if_needed({:token => token, :page => page, :show_pagination_details => true}))
-  end
-
-  def create_comment(drop_name, asset_name, contents, token = nil)
-    self.class.post("/drops/#{drop_name}/assets/#{asset_name}/comments",:body => sign_if_needed({:contents => contents, :token => token}))
-  end
-
-  def comment(drop_name, asset_name, comment_id, token = nil)
-    self.class.get("/drops/#{drop_name}/assets/#{asset_name}/comments/#{comment_id}", :query => sign_if_needed({:token => token}))
-  end
-
-  def update_comment(drop_name, asset_name, comment_id, contents, admin_token)
-    self.class.put("/drops/#{drop_name}/assets/#{asset_name}/comments/#{comment_id}", :body => sign_if_needed({:contents => contents, :token => admin_token}))
-  end
-
-  def delete_comment(drop_name, asset_name, comment_id, admin_token)
-    self.class.delete("/drops/#{drop_name}/assets/#{asset_name}/comments/#{comment_id}", :body => sign_if_needed({:token => admin_token}))
-  end
-
-  def create_twitter_subscription(drop_name, username, password, message = nil, events = {}, token = nil)
-    self.class.post("/drops/#{drop_name}/subscriptions", :body => sign_if_needed({ :token => token, :type => "twitter", :username => username, :password => password, :message => message}.merge(events)))
-  end
-  
   def create_pingback_subscription(drop_name, url, events = {}, token = nil)
     self.class.post("/drops/#{drop_name}/subscriptions", :body => sign_if_needed({ :token => token, :type => "pingback", :url => url}.merge(events)))
   end
   
-  def create_email_subscription(drop_name, emails, message = nil, welcome_message = nil, welcome_subject = nil, welcome_from = nil, events = {}, token = nil)
-    params = {:token => token, :type => "email", :emails => emails, :message => message, :welcome_from => welcome_from , :welcome_subject => welcome_subject, :welcome_message => welcome_message }.merge(events)
-    self.class.post("/drops/#{drop_name}/subscriptions", :body => sign_if_needed(params))
+  def subscriptions(drop_name, page)
+    self.class.get("/drops/#{drop_name}/subscriptions", :query => sign_if_needed({:page => page, :show_pagination_details => true}))
   end
   
-  def subscriptions(drop_name, page, admin_token)
-    self.class.get("/drops/#{drop_name}/subscriptions", :query => sign_if_needed({:token => admin_token, :page => page, :show_pagination_details => true}))
-  end
-  
-  def delete_subscription(drop_name, subscription_id, admin_token)
-    self.class.delete("/drops/#{drop_name}/subscriptions/#{subscription_id}", :body => sign_if_needed({:token => admin_token}))
+  def delete_subscription(drop_name, subscription_id)
+    self.class.delete("/drops/#{drop_name}/subscriptions/#{subscription_id}", :body => {})
   end
   
   def get_signature(params={})

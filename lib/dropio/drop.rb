@@ -1,13 +1,12 @@
 class Dropio::Drop < Dropio::Resource
   
-  attr_accessor :name, :email, :voicemail, :conference, :fax, :rss, :guest_token, :description,
-                :admin_token, :expires_at, :expiration_length, :guests_can_comment, :guests_can_add, :guests_can_delete,
-                :max_bytes, :current_bytes, :hidden_upload_url, :asset_count, :chat_password, :default_view,
-                :password, :admin_password, :premium_code, :admin_email, :email_key
+  attr_accessor :name, :email, :guest_token, :description, :expires_at, :expiration_length, 
+                :max_bytes, :current_bytes, :asset_count, :chat_password, :password, 
+                :admin_password, :admin_email, :email_key
      
   # Gets the default token to be used, prefers the admin token.           
   def default_token
-    self.admin_token || self.guest_token
+    self.guest_token
   end
   
   # Gets a list of assets associated with the Drop. Paginated at 
@@ -26,13 +25,13 @@ class Dropio::Drop < Dropio::Resource
   end
   
   # Creates a drop with an +attributes+ hash.
-  # Valid attributes: name (string), default_view (string), guests_can_comment (boolean), guests_can_add (boolean), guests_can_delete (boolean), expiration_length (string), password (string), admin_password (string), and premium_code (string)
+  # Valid attributes: name (string), expiration_length (string), password (string), and admin_password (string)
   # Descriptions can be found here: http://groups.google.com/group/dropio-api/web/full-api-documentation
   def self.create(attributes = {})
     Dropio::Resource.client.create_drop(attributes)
   end
   
-  # Changes the name of a drop. Admin token required. Has to be 7 characters or more unless premium.
+  # Changes the name of a drop.
   def change_name(new_name)
     Dropio::Resource.client.change_drop_name(self,new_name)
   end
@@ -68,8 +67,8 @@ class Dropio::Drop < Dropio::Resource
   end
   
   # Adds a file to the Drop given the +file_path+.
-  def add_file(file_path, description = nil, convert_to = nil, pingback_url = nil, comment = nil)
-    Dropio::Resource.client.add_file(self, file_path, description, convert_to, pingback_url, comment)
+  def add_file(file_path, description = nil, convert_to = nil, pingback_url = nil)
+    Dropio::Resource.client.add_file(self, file_path, description, convert_to, pingback_url)
   end
   
   # Creates a note with a +title+ and +contents+
@@ -85,16 +84,6 @@ class Dropio::Drop < Dropio::Resource
   # Creates a subscription to receive POSTs from drop.io.
   def create_pingback_subscription(url, events = {})
     Dropio::Resource.client.create_pingback_subscription(self,url,events)
-  end
-  
-  # Creates a Twitter Subscription
-  def create_twitter_subscription(username,password,message = nil, events = {})
-   Dropio::Resource.client.create_twitter_subscription(self,username,password,message,events)
-  end
-  
-  # Creates an email Subscription
-  def create_email_subscription(email, message = nil, welcome_message = nil, welcome_subject = nil, welcome_from = nil, events = {})
-    Dropio::Resource.client.create_email_subscription(self,email,message,welcome_message,welcome_subject,welcome_from, events)
   end
   
   # Gets a list of Subscription objects.

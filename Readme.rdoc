@@ -2,7 +2,7 @@
 
 = drop.io API library for Ruby
 
-Before using the Dropio library, the application must set an API key.  This key will be used for all requests to the server.  To get an API key, go to http://api.drop.io.  Then make sure you set the API key before you use the API:
+Before using the Dropio library, the application must set an API key.  This key will be used for all requests to the server.  To get an API key, go to http://backbone.drop.io.  Then make sure you set the API key before you use the API:
 
   Dropio::Config.api_key = "83a05513ddddb73e75c9d8146c115f7fd8e90de6"
 

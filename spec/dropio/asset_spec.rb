@@ -19,25 +19,9 @@ describe Dropio::Asset do
   
   it "should have the attributes of an Asset" do
     @asset.should respond_to(:drop, :name, :type, :title, :description, :filesize, :created_at,
-                  :thumbnail, :status, :converted, :hidden_url, :pages, :fax_status,
-                  :duration, :artist, :track_title, :height, :width, :contents, :url,
-                  :original_filename, :converted_filename, :can_download_original, :large_thumbnail)
-  end
-  
-  it "should have comments" do
-    @comment = stub(Comment)
-    @comment.should_receive(:asset=).once
-    @client.should_receive(:handle).with(:comments,{}).and_return([@comment])
-    @api.stub!(:comments).with(@drop.name, @asset.name, 1, @drop.default_token).and_return({})
-    @asset.comments.should == [@comment]
-  end
-  
-  it "should create comments" do
-    @comment = stub(Comment)
-    @comment.should_receive(:asset=).once
-    @client.should_receive(:handle).with(:comment,{}).and_return(@comment)
-    @api.stub!(:create_comment).with(@drop.name, @asset.name, "Totally rad asset, bro!",@drop.default_token).and_return({})
-    @asset.create_comment("Totally rad asset, bro!").should == @comment
+                  :thumbnail, :status, :converted, :hidden_url, :pages, :duration, :artist, 
+                  :track_title, :height, :width, :contents, :url, :original_filename, :converted_filename, 
+                  :large_thumbnail)
   end
   
   it "should save itself" do
@@ -52,32 +36,6 @@ describe Dropio::Asset do
     @client.should_receive(:handle).with(:response,{}).and_return({"result" => "Success"})
     @api.stub!(:delete_asset).with(@drop.name, @asset.name,@drop.default_token).and_return({})
     @asset.destroy!
-  end
-  
-  it "should be faxable if and only if it's a document" do
-    @asset.type = "Document"
-    @asset.should be_faxable
-    @asset.type = "Video"
-    @asset.should_not be_faxable
-  end
-  
-  it "should fax itself to a phone number" do
-    @asset.type = "Document"
-    
-    @client.should_receive(:handle).with(:response,{}).and_return({"result" => "Success"})
-    @api.stub!(:send_asset_to_fax).with(@drop.name, @asset.name,"234-567-8901",@drop.default_token).and_return({})
-    @asset.send_to_fax("234-567-8901")
-  end
-  
-  it "should email itself to a comma separated list of emails with an optional message" do
-    @asset.type = "Document"
-    @client.should_receive(:handle).with(:response,{}).and_return({"result" => "Success"})
-    @api.stub!(:send_asset_to_emails).with(@drop.name, @asset.name,"jake@dropio.com, jacob@dropio.com", "Awesome stuff!", @drop.default_token).and_return({})
-    @asset.send_to_emails("jake@dropio.com, jacob@dropio.com","Awesome stuff!")
-    
-    @client.should_receive(:handle).with(:response,{}).and_return({"result" => "Success"})
-    @api.stub!(:send_asset_to_emails).with(@drop.name, @asset.name,"jake@dropio.com, jacob@dropio.com", nil, @drop.default_token).and_return({})
-    @asset.send_to_emails("jake@dropio.com, jacob@dropio.com")
   end
   
   it "should send itself to another drop." do
@@ -107,13 +65,6 @@ describe Dropio::Asset do
     @asset.move_to(@target_drop)
   end
   
-  it "should not fax itself if it's not faxable" do
-    @asset.type = "Video"
-    @api.should_not_receive(:send_asset_to_fax)
-    # TODO: Make this a specific error.
-    lambda { @asset.send_to_fax("234-567-8901") }.should raise_error
-  end
-  
   it "should find itself" do
     @client.should_receive(:handle).with(:asset,{}).and_return(@asset)
     @api.should_receive(:asset).with(@drop.name, @asset.name, @drop.default_token).and_return({})
@@ -121,7 +72,7 @@ describe Dropio::Asset do
   end
   
   it "should generate a signed url" do
-    @api.should_receive(:generate_drop_url).with(@drop.name,@asset.name,@drop.default_token)  
+    @api.should_receive(:generate_asset_url).with(@drop.name,@asset.name,@drop.default_token)
     @asset.generate_url
   end
   

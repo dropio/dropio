@@ -11,14 +11,13 @@ describe Drop do
     Dropio::Resource.client.should == @client
     Dropio::Resource.client.service.should == @api
     
-    @mydrop = Dropio::Drop.new(:name => "test_drop",:admin_token => "admin_token")
+    @mydrop = Dropio::Drop.new(:name => "test_drop")
   end
   
   it "should have the attributes of a Drop" do
-    Drop.new.should respond_to(:name, :email, :voicemail, :conference, :fax, :rss, :guest_token, :description,
-                  :admin_token, :expires_at, :expiration_length, :guests_can_comment, :guests_can_add, :guests_can_delete,
-                  :max_bytes, :current_bytes, :hidden_upload_url, :asset_count, :chat_password, :default_view, 
-                  :password, :admin_password, :premium_code, :admin_email, :email_key)
+    Drop.new.should respond_to(:name, :email, :guest_token, :description, :expires_at, 
+                  :expiration_length, :max_bytes, :current_bytes, :asset_count, :chat_password, 
+                  :password, :admin_password, :admin_email, :email_key)
   end
   
   it "should find drops by name" do
@@ -31,11 +30,6 @@ describe Drop do
     @client.should_receive(:handle).with(:drop,{}).and_return(@mydrop)
     @api.should_receive(:drop).with("mydrop", "d85a6").and_return({})
     Drop.find("mydrop", "d85a6").should == @mydrop
-  end
-  
-  it "should have a default token and it should default to the admin" do
-    @mydrop.admin_token = "tester"
-    @mydrop.default_token.should == "tester"
   end
   
   it "should find a set of related assets" do
@@ -60,29 +54,28 @@ describe Drop do
   
   it "should be able to empty itself" do
     @client.should_receive(:handle).with(:response,{}).and_return({})
-    @api.should_receive(:empty_drop).with(@mydrop.name,@mydrop.admin_token).and_return({})
+    @api.should_receive(:empty_drop).with(@mydrop.name).and_return({})
     @mydrop.empty
   end
   
   it "should be able to promote a nick" do
     @client.should_receive(:handle).with(:response,{}).and_return({"result" => "Success"})
-    @api.should_receive(:promote_nick).with(@mydrop.name,"jake",@mydrop.admin_token).and_return({})
+    @api.should_receive(:promote_nick).with(@mydrop.name,"jake").and_return({})
     @mydrop.promote("jake")
   end
   
   it "should save itself" do
     @client.should_receive(:handle).with(:drop,{}).and_return(@mydrop)
-    expected_hash = {:password=>"test_password", :expiration_length=>nil, :admin_password=>nil, :guests_can_comment=>nil, 
-                     :premium_code=>nil, :guests_can_add=>nil, :chat_password=>nil, :guests_can_delete=>nil, 
-                     :admin_email=>nil, :default_view=>nil, :email_key=>nil, :description=>nil}
-    @api.should_receive(:update_drop).with(@mydrop.name,@mydrop.admin_token,expected_hash).and_return({})
+    expected_hash = {:password=>"test_password", :expiration_length=>nil, :admin_password=>nil,  
+                     :chat_password=>nil, :admin_email=>nil, :email_key=>nil, :description=>nil}
+    @api.should_receive(:update_drop).with(@mydrop.name,expected_hash).and_return({})
     @mydrop.password = "test_password"
     @mydrop.save
   end
   
   it "should destroy itself" do
     @client.should_receive(:handle).with(:response,{}).and_return({"result" => "Success"})
-    @api.should_receive(:delete_drop).with(@mydrop.name,@mydrop.admin_token).and_return({})
+    @api.should_receive(:delete_drop).with(@mydrop.name).and_return({})
     @mydrop.destroy!
   end
   
@@ -106,7 +99,7 @@ describe Drop do
     @asset = stub(Asset)
     @asset.should_receive(:drop=).once
     @client.should_receive(:handle).with(:asset,{}).and_return(@asset)
-    @api.should_receive(:add_file).with(@mydrop.name,"/mypath/myfile.txt", "description", nil, nil, nil, @mydrop.default_token).and_return({})
+    @api.should_receive(:add_file).with(@mydrop.name,"/mypath/myfile.txt", "description", nil, nil).and_return({})
     @mydrop.add_file("/mypath/myfile.txt", "description").should == @asset
   end
   
@@ -114,7 +107,7 @@ describe Drop do
     @asset = stub(Asset)
     @asset.should_receive(:drop=).once
     @client.should_receive(:handle).with(:asset,{}).and_return(@asset)
-    @api.should_receive(:add_file).with(@mydrop.name,"/mypath/myfile.txt","description", 'H264_HIGH_RES', 'http://drop.io/test/pinged', nil, @mydrop.default_token).and_return({})
+    @api.should_receive(:add_file).with(@mydrop.name,"/mypath/myfile.txt","description", 'H264_HIGH_RES', 'http://drop.io/test/pinged').and_return({})
     @mydrop.add_file("/mypath/myfile.txt","description",'H264_HIGH_RES', 'http://drop.io/test/pinged').should == @asset
   end
   
@@ -134,22 +127,6 @@ describe Drop do
     @mydrop.create_link("http://drop.io","drop.io","The best!").should == @asset
   end
   
-  it "should be able to create a twitter subscription" do
-    @sub = stub(Subscription)
-    @sub.should_receive(:drop=).once
-    @client.should_receive(:handle).with(:subscription,{}).and_return(@sub)
-    @api.should_receive(:create_twitter_subscription).with(@mydrop.name,"mytwitter","pass",nil,{},@mydrop.default_token).and_return({})
-    @mydrop.create_twitter_subscription("mytwitter","pass")
-  end
-
-  it "should be able to create email subscriptions" do
-    @sub = stub(Subscription)
-    @sub.should_receive(:drop=).once
-    @client.should_receive(:handle).with(:subscription,{}).and_return(@sub)
-    @api.should_receive(:create_email_subscription).with(@mydrop.name,"jake@dropio.com","My welcome message",nil,nil,nil,{},@mydrop.default_token).and_return({})
-    @mydrop.create_email_subscription("jake@dropio.com","My welcome message")
-  end
-  
   it "should be able to create pingback subscriptions" do
     @sub = stub(Subscription)
     @sub.should_receive(:drop=).once
@@ -162,7 +139,7 @@ describe Drop do
     @sub = stub(Subscription)
     @sub.should_receive(:drop=).once
     @client.should_receive(:handle).with(:subscriptions,{}).and_return([@sub])
-    @api.stub!(:subscriptions).with(@mydrop.name, 1, @mydrop.admin_token).and_return({})
+    @api.stub!(:subscriptions).with(@mydrop.name, 1).and_return({})
     @mydrop.subscriptions.should == [@sub]
   end
   

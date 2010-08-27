@@ -6,9 +6,9 @@ begin
   require 'echoe'
 
   Echoe.new('dropio', Dropio::VERSION) do |echoe|
-    echoe.summary = "A Ruby client library for the Drop.io API (http://api.drop.io)"
-    echoe.author = ["Jake Good"]
-    echoe.email = ["jake@dropio.com"]
+    echoe.summary = "A Ruby client library for the Drop.io Rich Media Backbone (RMB) API (http://backbone.drop.io)"
+    echoe.author = ["Jake Good", "Eric Skiff", "Kunal Shah"]
+    echoe.email = ["jake@dropio.com", "eric@dropio.com", "kunal@dropio.com"]
     echoe.url = "http://github.com/dropio/dropio"
     echoe.changelog = "History.rdoc"
     echoe.ignore_pattern = "tmtags"
