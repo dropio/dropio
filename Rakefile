@@ -3,7 +3,7 @@ require 'bundler'
 Bundler.setup :development, :test
 
 $: << File.expand_path('./lib')
-require 'dropio'
+require 'dropio/version'
 
 ### Echoe
 begin

@@ -1,6 +1,6 @@
+require 'dropio/version'
+
 module Dropio
-  VERSION = '1.7.8'
-  
   class Error < StandardError; end
   
   class MissingResourceError < Error; end
@@ -15,11 +15,6 @@ module Dropio
   end
   
 end
-
-require 'rbconfig'
-require 'mime/types'
-require 'httparty'
-require 'net/http/post/multipart'
 
 Dropio::Config.base_url   = "http://drop.io"
 Dropio::Config.api_url    = "http://api.drop.io"
