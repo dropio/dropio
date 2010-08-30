@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.description = %q{A Ruby client library for the Drop.io API (http://api.drop.io)}
   s.email = ["jake@dropio.com"]
   s.extra_rdoc_files = ["History.rdoc", "Readme.rdoc", "Todo.rdoc"]
-  s.files = ["Gemfile", "History.rdoc", "LICENSE.txt", "Manifest", "Rakefile", "Readme.rdoc", "Todo.rdoc", "dropio.gemspec", "lib/dropio.rb", "lib/dropio/api.rb", "lib/dropio/asset.rb", "lib/dropio/client.rb", "lib/dropio/comment.rb", "lib/dropio/drop.rb", "lib/dropio/resource.rb", "lib/dropio/subscription.rb", "lib/dropio/version.rb", "spec/dropio/api_spec.rb", "spec/dropio/asset_spec.rb", "spec/dropio/client_spec.rb", "spec/dropio/comment_spec.rb", "spec/dropio/drop_spec.rb", "spec/dropio/subscription_spec.rb", "spec/dropio_spec.rb", "spec/spec.opts", "spec/spec_helper.rb"]
+  s.files = ["Gemfile", "History.rdoc", "LICENSE.txt", "Manifest", "Rakefile", "Readme.rdoc", "Todo.rdoc", "dropio.gemspec", "lib/dropio.rb", "lib/dropio/api.rb", "lib/dropio/asset.rb", "lib/dropio/client.rb", "lib/dropio/comment.rb", "lib/dropio/drop.rb", "lib/dropio/job.rb", "lib/dropio/resource.rb", "lib/dropio/subscription.rb", "lib/dropio/version.rb", "spec/dropio/api_spec.rb", "spec/dropio/asset_spec.rb", "spec/dropio/client_spec.rb", "spec/dropio/comment_spec.rb", "spec/dropio/drop_spec.rb", "spec/dropio/subscription_spec.rb", "spec/dropio_spec.rb", "spec/spec.opts", "spec/spec_helper.rb"]
   s.homepage = %q{http://github.com/dropio/dropio}
   s.rdoc_options = ["--line-numbers", "--inline-source", "--title", "Dropio", "--main", "Readme.rdoc"]
   s.require_paths = ["lib"]
@@ -26,7 +26,7 @@ Gem::Specification.new do |s|
       s.add_runtime_dependency(%q<mime-types>, [">= 0"])
       s.add_runtime_dependency(%q<json>, [">= 0"])
       s.add_runtime_dependency(%q<httparty>, ["= 0.6.1"])
-      s.add_runtime_dependency(%q<multipart-post>, [">= 0"])
+      s.add_runtime_dependency(%q<multipart-post>, ["= 1.0.1"])
       s.add_development_dependency(%q<rspec>, [">= 0"])
       s.add_development_dependency(%q<diff-lcs>, [">= 0"])
       s.add_development_dependency(%q<fakeweb>, [">= 0"])
@@ -34,7 +34,7 @@ Gem::Specification.new do |s|
       s.add_dependency(%q<mime-types>, [">= 0"])
       s.add_dependency(%q<json>, [">= 0"])
       s.add_dependency(%q<httparty>, ["= 0.6.1"])
-      s.add_dependency(%q<multipart-post>, [">= 0"])
+      s.add_dependency(%q<multipart-post>, ["= 1.0.1"])
       s.add_dependency(%q<rspec>, [">= 0"])
       s.add_dependency(%q<diff-lcs>, [">= 0"])
       s.add_dependency(%q<fakeweb>, [">= 0"])
@@ -43,7 +43,7 @@ Gem::Specification.new do |s|
     s.add_dependency(%q<mime-types>, [">= 0"])
     s.add_dependency(%q<json>, [">= 0"])
     s.add_dependency(%q<httparty>, ["= 0.6.1"])
-    s.add_dependency(%q<multipart-post>, [">= 0"])
+    s.add_dependency(%q<multipart-post>, ["= 1.0.1"])
     s.add_dependency(%q<rspec>, [">= 0"])
     s.add_dependency(%q<diff-lcs>, [">= 0"])
     s.add_dependency(%q<fakeweb>, [">= 0"])
