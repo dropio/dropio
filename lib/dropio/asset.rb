@@ -29,7 +29,19 @@ class Dropio::Asset < Dropio::Resource
   # Destroys the Asset on drop.io.  Don't try to use an Asset after destroying it.
   def destroy!
     Dropio::Resource.client.delete_asset(self)
-    nil
+    return nil
+  end
+  
+  # Destroys the given role on an Asset
+  def destroy_role!(role)
+    Dropio::Resource.client.delete_role(self, role)
+    return nil
+  end
+  
+  # Destroys the given role at the specified location on an Asset
+  def destroy_location!(role, location)
+    Dropio::Resource.client.delete_role(self, role, location)
+    return nil
   end
   
   # Copies the Asset to the given drop. The +token+ is the target drop's token if required to add files.

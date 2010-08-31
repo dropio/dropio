@@ -65,15 +65,26 @@ class Dropio::Api
     self.class.post("/drops/#{drop_name}/assets", :body => sign_if_needed(params))
   end
 
-  def add_file(drop_name, file_path, description = nil, convert_to = nil, pingback_url = nil)
-    url = URI.parse(Dropio::Config.upload_url)
-    r = nil
+  def add_file(drop_name, file_path, description = nil, convert_to = nil, pingback_url = nil, output_locations = nil)
+    url  = URI.parse(Dropio::Config.upload_url)
+    locs = output_locations.is_a?(Array) ? output_locations.join(',') : output_locations
+    r    = nil
+
     File.open(file_path) do |file|
       mime_type = (MIME::Types.type_for(file_path)[0] || MIME::Types["application/octet-stream"][0])
-      req = Net::HTTP::Post::Multipart.new url.path,
-      sign_if_needed({ 'api_key' => self.class.default_params[:api_key], 'drop_name' => drop_name, 'format' => 'json', 'description' => description,
-        'version' => Dropio::Config.version, 'convert_to' => convert_to, 'pingback_url' => pingback_url,
-        'file' => UploadIO.new(file, mime_type, file_path) })
+
+      params = sign_if_needed({
+        'api_key'           => self.class.default_params[:api_key],
+        'drop_name'         => drop_name,
+        'format'            => 'json',
+        'description'       => description,
+        'version'           => Dropio::Config.version,
+        'convert_to'        => convert_to,
+        'pingback_url'      => pingback_url,
+        'output_locations'  => locs
+      }).merge('file'  => UploadIO.new(file, mime_type, file_path))
+
+      req  = Net::HTTP::Post::Multipart.new(url.path, params)
       http = Net::HTTP.new(url.host, url.port)
       http.set_debug_output $stderr if Dropio::Config.debug
       r = http.start{|http| http.request(req)}
@@ -126,8 +137,12 @@ class Dropio::Api
     self.class.put("/drops/#{drop_name}/assets/#{asset_name}", :body => sign_if_needed(params))
   end
 
-  def delete_asset(drop_name, asset_name, token = nil)
-    self.class.delete("/drops/#{drop_name}/assets/#{asset_name}", :body => sign_if_needed({:token => token}))
+  def delete_asset(drop_name, asset_name)
+    self.class.delete("/drops/#{drop_name}/assets/#{asset_name}", :body => sign_if_needed({}))
+  end
+
+  def delete_role(drop_name, asset_name, role, location=nil)
+    self.class.delete("/drops/#{drop_name}/assets/#{asset_name}", :body => sign_if_needed({:role => role, :output_location => location}))
   end
 
   def send_asset_to_drop(drop_name, asset_name, target_drop, drop_token = nil, token = nil)

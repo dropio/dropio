@@ -67,8 +67,8 @@ class Dropio::Client
     a
   end
 
-  def add_file(drop, file_path, description = nil, convert_to = nil, pingback_url = nil)
-    a = handle(:asset, self.service.add_file(drop.name, file_path, description, convert_to, pingback_url))
+  def add_file(drop, file_path, description = nil, convert_to = nil, pingback_url = nil, output_locations = nil)
+    a = handle(:asset, self.service.add_file(drop.name, file_path, description, convert_to, pingback_url, output_locations))
     a.drop = drop
     a
   end
@@ -118,7 +118,12 @@ class Dropio::Client
   end
 
   def delete_asset(asset)
-    r = handle(:response, self.service.delete_asset(asset.drop.name,asset.name,asset.drop.default_token))
+    r = handle(:response, self.service.delete_asset(asset.drop.name,asset.name))
+    r["result"]
+  end
+
+  def delete_role(asset, role, location=nil)
+    r = handle(:response, self.service.delete_role(asset.drop.name,asset.name,role,location))
     r["result"]
   end
 

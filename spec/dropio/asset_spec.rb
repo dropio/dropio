@@ -34,8 +34,20 @@ describe Dropio::Asset do
   
   it "should destroy itself" do
     @client.should_receive(:handle).with(:response,{}).and_return({"result" => "Success"})
-    @api.stub!(:delete_asset).with(@drop.name, @asset.name,@drop.default_token).and_return({})
+    @api.stub!(:delete_asset).with(@drop.name, @asset.name).and_return({})
     @asset.destroy!
+  end
+
+  it "should destroy roles" do
+    @client.should_receive(:handle).with(:response,{}).and_return({"result" => "Success"})
+    @api.stub!(:delete_role).with(@drop.name, @asset.name, "thumbnail", nil).and_return({})
+    @asset.destroy_role!("thumbnail")
+  end
+
+  it "should destroy roles at locations" do
+    @client.should_receive(:handle).with(:response,{}).and_return({"result" => "Success"})
+    @api.stub!(:delete_role).with(@drop.name, @asset.name, "thumbnail", "DropioS3").and_return({})
+    @asset.destroy_location!("thumbnail","DropioS3")
   end
   
   it "should send itself to another drop." do
