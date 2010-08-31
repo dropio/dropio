@@ -1,5 +1,9 @@
-$: << 'lib'
-require 'dropio'
+require 'rubygems'
+require 'bundler'
+Bundler.setup :development, :test
+
+$: << File.expand_path('./lib')
+require 'dropio/version'
 
 ### Echoe
 begin
@@ -7,20 +11,24 @@ begin
 
   Echoe.new('dropio', Dropio::VERSION) do |echoe|
     echoe.summary = "A Ruby client library for the Drop.io Rich Media Backbone (RMB) API (http://backbone.drop.io)"
-    echoe.author = ["Jake Good", "Eric Skiff", "Kunal Shah"]
-    echoe.email = ["jake@dropio.com", "eric@dropio.com", "kunal@dropio.com"]
+    echoe.author = ["Jake Good", "Eric Skiff", "Kunal Shah", "Seth Thomas Rasmussen"]
+    echoe.email = ["jake@dropio.com", "eric@dropio.com", "kunal@dropio.com", "seth@dropio.com"]
     echoe.url = "http://github.com/dropio/dropio"
+    echoe.retain_gemspec = true
     echoe.changelog = "History.rdoc"
-    echoe.ignore_pattern = "tmtags"
-    echoe.runtime_dependencies = ["mime-types", "json"]
     
+    # TODO have this generated from Gemfile or vice versa
+    echoe.runtime_dependencies     = ["mime-types", "json", "httparty 0.6.1", "multipart-post"]
+    echoe.development_dependencies = ["rspec", "diff-lcs", "fakeweb"]
+    
+    echoe.ignore_pattern = "tmtags"
     # Use this rdoc_pattern when building docs locally or publishing docs.
     # echoe.rdoc_pattern = Regexp.union(echoe.rdoc_pattern, /\.rdoc$/)
-    echoe.rdoc_pattern = /\.rdoc$/
+    echoe.rdoc_pattern   = /\.rdoc$/
   end
   
   # Until we find a way to undefine rake tasks...
-  %w{coverage clobber_coverage}.each { |name| Rake::Task[name].comment = "(don't use)" }
+  # %w{coverage clobber_coverage}.each { |name| Rake::Task[name].comment = "(don't use)" }
   
   # default depends on test, but we don't have a test task.  Define a trivial one.
   task :test
@@ -61,4 +69,3 @@ namespace :docs do
     sh "open file://#{doc_index}"
   end
 end
-

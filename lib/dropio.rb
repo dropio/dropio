@@ -1,10 +1,12 @@
+require 'dropio/version'
+
 module Dropio
-  VERSION = '3.0.0'
+  class Error < StandardError; end
   
-  class MissingResourceError < Exception; end
-  class AuthorizationError < Exception; end
-  class RequestError < Exception; end
-  class ServerError < Exception; end
+  class MissingResourceError < Error; end
+  class AuthorizationError   < Error; end
+  class RequestError         < Error; end
+  class ServerError          < Error; end
   
   class Config
     class << self
@@ -14,17 +16,12 @@ module Dropio
   
 end
 
-require 'rbconfig'
-require 'mime/types'
-require 'httparty'
-require 'net/http/post/multipart'
-
-Dropio::Config.base_url = "http://drop.io"
-Dropio::Config.api_url = "http://api.drop.io"
+Dropio::Config.base_url   = "http://drop.io"
+Dropio::Config.api_url    = "http://api.drop.io"
 Dropio::Config.upload_url = "http://assets.drop.io/upload"
-Dropio::Config.version = "3.0"
-Dropio::Config.debug = false
-Dropio::Config.timeout = 60 # Default in Ruby
+Dropio::Config.version    = "3.0"
+Dropio::Config.debug      = false
+Dropio::Config.timeout    = 60 # Default in Ruby
 
 require 'dropio/api'
 require 'dropio/client'

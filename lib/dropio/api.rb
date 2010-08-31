@@ -1,4 +1,7 @@
 require 'rbconfig'
+require 'mime/types'
+require 'httparty'
+require 'net/http/post/multipart'
 
 class Dropio::Api
   include HTTParty
