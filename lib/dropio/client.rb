@@ -168,7 +168,7 @@ class Dropio::Client
     
     case type
     when :drop then return Dropio::Drop.new(response)
-    when :drops then return response['drops'].collect{|s| Dropio::Drop.new(d)}
+    when :drops then return response['drops'].collect{|d| Dropio::Drop.new(d)}
     when :asset then return Dropio::Asset.new(response)
     when :assets then return response['assets'].collect{|a| Dropio::Asset.new(a)}
     when :subscription then return Dropio::Subscription.new(response)
