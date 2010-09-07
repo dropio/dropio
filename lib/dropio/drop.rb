@@ -19,9 +19,9 @@ class Dropio::Drop < Dropio::Resource
     Dropio::Resource.client.drop(name, token)
   end
   
-  # Finds all the drops associated with a manager account.
-  def self.find_manager_drops(manager_api_token, page = 1)
-    Dropio::Resource.client.manager_drops(manager_api_token, page)
+  # Finds all the drops associated with an API account by page
+  def self.find_all(page = 1)
+    Dropio::Resource.client.all_drops(page)
   end
   
   # Creates a drop with an +attributes+ hash.

@@ -9,8 +9,8 @@ class Dropio::Client
     handle(:drop, self.service.drop(drop_name, token))
   end
   
-  def manager_drops(manager_api_token, page = 1)
-    handle(:drops, self.service.manager_drops(manager_api_token, page))
+  def all_drops(page = 1)
+    handle(:drops, self.service.all_drops(page))
   end
   
   def generate_drop_url(drop)

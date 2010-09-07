@@ -20,6 +20,12 @@ describe Drop do
                   :password, :admin_password, :admin_email, :email_key)
   end
   
+  it "should find drops by api account" do
+   @client.should_receive(:handle).with(:drops,[@mydrop]).and_return([@mydrop])
+    @api.should_receive(:all_drops).with(1).and_return([@mydrop])
+    Drop.find_all.should == [@mydrop]
+  end
+  
   it "should find drops by name" do
     @client.should_receive(:handle).with(:drop,{}).and_return(@mydrop)
     @api.should_receive(:drop).with("mydrop", nil).and_return({})
