@@ -1,10 +1,8 @@
 class Dropio::Asset < Dropio::Resource
   
-  attr_accessor :drop, :name, :type, :title, :description, :filesize, :created_at,
-                :thumbnail, :status, :converted, :hidden_url, :pages, :duration, 
-                :artist, :track_title, :height, :width, :contents, :url,
-                :original_filename, :converted_filename, :can_download_original,
-                :large_thumbnail, :roles, :locations
+  attr_accessor :drop, :name, :type, :title, :description, :filesize, :created_at, :status, 
+                :pages, :duration, :artist, :track_title, :height, :width, :contents, :url,
+                :roles, :locations
      
   # Finds a particular Asset by drop and asset name.
   def self.find(drop, name)

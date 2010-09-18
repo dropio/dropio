@@ -19,9 +19,8 @@ describe Dropio::Asset do
   
   it "should have the attributes of an Asset" do
     @asset.should respond_to(:drop, :name, :type, :title, :description, :filesize, :created_at,
-                  :thumbnail, :status, :converted, :hidden_url, :pages, :duration, :artist, 
-                  :track_title, :height, :width, :contents, :url, :original_filename, :converted_filename, 
-                  :large_thumbnail)
+                             :status, :pages, :duration, :artist, 
+                             :track_title, :height, :width, :contents, :url)
   end
   
   it "should save itself" do
