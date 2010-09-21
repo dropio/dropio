@@ -1,6 +1,6 @@
 class Dropio::Asset < Dropio::Resource
   
-  attr_accessor :drop, :name, :type, :title, :description, :filesize, :created_at, :status, 
+  attr_accessor :id, :drop, :name, :type, :title, :description, :filesize, :created_at, :status, 
                 :pages, :duration, :artist, :track_title, :height, :width, :contents, :url,
                 :roles, :locations
      

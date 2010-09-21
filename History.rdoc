@@ -1,3 +1,9 @@
+=== 3.0 / 2010-09-21
+
+* Bump httparty requirement to 0.6.
+* Remove methods referencing deprecated 3.0 API calls
+* Add conversion API methods
+
 === 1.7 / 2010-02-08
 
 * Added 0.5.2 as a requirement for httparty

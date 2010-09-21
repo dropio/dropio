@@ -82,7 +82,7 @@ class Dropio::Api
         'format'            => 'json',
         'description'       => description,
         'version'           => Dropio::Config.version,
-        'convert_to'        => convert_to,
+        'conversion'        => convert_to,
         'pingback_url'      => pingback_url,
         'output_locations'  => locs
       }).merge('file'  => UploadIO.new(file, mime_type, file_path))
@@ -178,6 +178,14 @@ class Dropio::Api
     #returns a signature for the passed params, without any modifcation to the params
     params = sign_request(params)
     params[:signature]
+  end
+  
+  def job(id, drop_name, asset_name_or_id, token=nil)
+    self.class.get("/drops/#{drop_name}/assets/#{asset_name_or_id}/jobs/#{id}", :query => {:token => token})
+  end
+
+  def create_job(job = {})
+    self.class.post("/jobs",:body => job)
   end
   
   private
