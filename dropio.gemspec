@@ -7,7 +7,7 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(">= 1.2") if s.respond_to? :required_rubygems_version=
   s.authors = ["Jake Good, Eric Skiff, Kunal Shah, Seth Thomas Rasmussen"]
   s.date = %q{2010-09-21}
-  s.description = %q{A Ruby client library for the Drop.io Rich Media Backbone (RMB) API (http://backbone.drop.io)}
+  s.description = %q{A Ruby client library for the Drop.io Rich Media Backbone (RMB) API (http://backbone.drop.io). Please send all feedback to contact@dropio.com}
   s.email = ["jake@dropio.com", "eric@dropio.com", "kunal@dropio.com", "seth@dropio.com"]
   s.extra_rdoc_files = ["History.rdoc", "Readme.rdoc", "Todo.rdoc"]
   s.files = ["Gemfile", "History.rdoc", "LICENSE.txt", "Manifest", "Rakefile", "Readme.rdoc", "Todo.rdoc", "dropio.gemspec", "lib/dropio.rb", "lib/dropio/api.rb", "lib/dropio/asset.rb", "lib/dropio/client.rb", "lib/dropio/drop.rb", "lib/dropio/job.rb", "lib/dropio/resource.rb", "lib/dropio/subscription.rb", "lib/dropio/version.rb", "spec/dropio/api_spec.rb", "spec/dropio/asset_spec.rb", "spec/dropio/client_spec.rb", "spec/dropio/drop_spec.rb", "spec/dropio/subscription_spec.rb", "spec/dropio_spec.rb", "spec/spec.opts", "spec/spec_helper.rb"]
