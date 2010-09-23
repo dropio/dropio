@@ -76,17 +76,22 @@ class Dropio::Api
     File.open(file_path) do |file|
       mime_type = (MIME::Types.type_for(file_path)[0] || MIME::Types["application/octet-stream"][0])
 
-      params = sign_if_needed({
-        'api_key'           => self.class.default_params[:api_key],
-        'drop_name'         => drop_name,
-        'format'            => 'json',
-        'description'       => description,
+      params = {
+        "api_key" => self.class.default_params[:api_key],
+        "format" => 'json',
         'version'           => Dropio::Config.version,
-        'conversion'        => convert_to,
-        'pingback_url'      => pingback_url,
-        'output_locations'  => locs
-      }).merge('file'  => UploadIO.new(file, mime_type, file_path))
-
+        'file'  => UploadIO.new(file, mime_type, file_path)
+      }
+      
+      params = sign_if_needed(params)
+      # stuff passed in by a user. Done like this as if you pass a parameter without a value it can cause an issue (with the output_locations anyway)
+      # although this will be fixed in the API, we shouldn't be doing it anyway.
+      params['drop_name'] = drop_name if drop_name
+      params['description'] = description if description
+      params['conversion'] = convert_to if convert_to
+      params['pingback_url'] = pingback_url if pingback_url
+      params['output_locations'] = locs if locs
+      
       req  = Net::HTTP::Post::Multipart.new(url.path, params)
       http = Net::HTTP.new(url.host, url.port)
       http.set_debug_output $stderr if Dropio::Config.debug
