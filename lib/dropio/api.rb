@@ -192,6 +192,7 @@ class Dropio::Api
   def create_job(job = {})
     self.class.post("/jobs",:body => job)
   end
+  alias_method :convert, :create_job
   
   private
   
