@@ -66,7 +66,7 @@ class Dropio::Api
     dropio_post("/drops/#{drop_name}/assets", params)
   end
 
-  def add_file(drop_name, file_path, description = nil, convert_to = nil, pingback_url = nil, output_locations = nil)
+  def add_file(drop_name, file_path, description = nil, conversion = nil, pingback_url = nil, output_locations = nil)
     url  = URI.parse(Dropio::Config.upload_url)
     locs = output_locations.is_a?(Array) ? output_locations.join(',') : output_locations
     r    = nil
@@ -75,20 +75,22 @@ class Dropio::Api
       mime_type = (MIME::Types.type_for(file_path)[0] || MIME::Types["application/octet-stream"][0])
 
       params = {
-        "api_key" => Dropio::Config.api_key.to_s,
-        "format" => 'json',
-        'version'           => Dropio::Config.version,
-        'file'  => UploadIO.new(file, mime_type, file_path)
+        :api_key => Dropio::Config.api_key.to_s,
+        :format => 'json',
+        :version           => Dropio::Config.version
       }
       
-      params = sign_if_needed(params)
       # stuff passed in by a user. Done like this as if you pass a parameter without a value it can cause an issue (with the output_locations anyway)
       # although this will be fixed in the API, we shouldn't be doing it anyway.
-      params['drop_name'] = drop_name if drop_name
-      params['description'] = description if description
-      params['conversion'] = convert_to if convert_to
-      params['pingback_url'] = pingback_url if pingback_url
-      params['output_locations'] = locs if locs
+      params[:drop_name] = drop_name if drop_name
+      params[:description] = description if description
+      params[:pingback_url] = pingback_url if pingback_url
+      params[:output_locations] = locs if locs
+      params[:conversion] = conversion if conversion
+      params[:signature_mode] = "STRICT"
+      #sign the params at this point
+      params = sign_if_needed(params)
+      params[:file]  = UploadIO.new(file, mime_type, file_path)
       
       req  = Net::HTTP::Post::Multipart.new(url.path, params)
       http = Net::HTTP.new(url.host, url.port)
@@ -205,7 +207,7 @@ class Dropio::Api
       params_for_sig[:format] ||= 'json'
       params[:format] ||= 'json'
     end
-   
+    
     paramstring = ''
     params_for_sig.keys.sort_by {|s| s.to_s}.each {|key| paramstring +=  key.to_s + '=' +  params_for_sig[key].to_s}
     params[:signature] = Digest::SHA1.hexdigest(paramstring + Dropio::Config.api_secret)
@@ -231,7 +233,6 @@ class Dropio::Api
   def add_default_params(params = {})
     default_params = {:api_key => Dropio::Config.api_key.to_s, :version => Dropio::Config.version.to_s, :format => "json" }
     params = params.merge(default_params)
-    puts "YAAAAA - adding to params " + params.inspect
     params
   end
   
