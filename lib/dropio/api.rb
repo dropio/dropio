@@ -6,7 +6,6 @@ require 'net/http/post/multipart'
 class Dropio::Api
   include HTTParty
   format :json
-  http_proxy '127.0.0.1', 8888
   
   RUBY_VERSION = %w{MAJOR MINOR TEENY}.map { |k| Config::CONFIG[k] }.join(".")
   USER_AGENT_STRING = "DropioAPI-Ruby/#{Dropio::VERSION} (Ruby #{RUBY_VERSION} #{Config::CONFIG["host"]}; +http://github.com/dropio/dropio/tree/)"
