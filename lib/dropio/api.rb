@@ -6,24 +6,23 @@ require 'net/http/post/multipart'
 class Dropio::Api
   include HTTParty
   format :json
+  http_proxy '127.0.0.1', 8888
   
   RUBY_VERSION = %w{MAJOR MINOR TEENY}.map { |k| Config::CONFIG[k] }.join(".")
   USER_AGENT_STRING = "DropioAPI-Ruby/#{Dropio::VERSION} (Ruby #{RUBY_VERSION} #{Config::CONFIG["host"]}; +http://github.com/dropio/dropio/tree/)"
-  headers 'Accept' => 'application/json', 'User-Agent' => USER_AGENT_STRING
-
+  headers 'Accept' => 'application/json', 'User-Agent' => USER_AGENT_STRING, "content-type" => 'application/json'
   def initialize
     self.class.debug_output $stderr if Dropio::Config.debug
-    self.class.default_params :api_key => Dropio::Config.api_key, :version => Dropio::Config.version, :format => "json"
     self.class.base_uri Dropio::Config.api_url
     self.class.default_options[:timeout] = Dropio::Config.timeout
   end
 
   def drop(drop_name, token = nil)
-    self.class.get("/drops/#{drop_name}", :query => sign_if_needed({:token => token}))
+    dropio_get("/drops/#{drop_name}", {:token => token})
   end
   
   def all_drops(page = 1)
-    self.class.get("/accounts/drops", :query => sign_if_needed({:page => page}))
+    dropio_get("/accounts/drops", {:page => page})
   end
   
   def generate_drop_url(drop_name, token)
@@ -31,41 +30,41 @@ class Dropio::Api
   end
 
   def create_drop(params = {})
-    self.class.post("/drops",:body => sign_if_needed(params))
+    dropio_post("/drops",params)
   end
 
   def update_drop(drop_name, params = {})
-    self.class.put("/drops/#{drop_name}", :body => sign_if_needed(params))
+    dropio_put("/drops/#{drop_name}", params)
   end
   
   def change_drop_name(drop_name, new_name)
     params = {:name => new_name}
-    self.class.put("/drops/#{drop_name}", :body => sign_if_needed(params))
+    dropio_put("/drops/#{drop_name}", params)
   end
   
   def empty_drop(drop_name)
-    self.class.put("/drops/#{drop_name}/empty", :query => {})
+    dropio_put("/drops/#{drop_name}/empty", {})
   end
 
   def delete_drop(drop_name)
-    self.class.delete("/drops/#{drop_name}", :query => {})
+    dropio_delete("/drops/#{drop_name}", {})
   end
   
   def promote_nick(drop_name, nick)
-    self.class.post("/drops/#{drop_name}", :query => sign_if_needed({:nick => nick}))
+    dropio_post("/drops/#{drop_name}", {:nick => nick})
   end
   
   def drop_upload_code(drop_name, token = nil)
-    self.class.get("/drops/#{drop_name}/upload_code", :query => sign_if_needed({:token => token}))
+    dropio_get("/drops/#{drop_name}/upload_code", {:token => token})
   end
 
   def create_link(drop_name, url, title = nil, description = nil, token = nil)
-    self.class.post("/drops/#{drop_name}/assets", :body => sign_if_needed({:url => url, :title => title, :description => description, :token => token}))
+    dropio_post("/drops/#{drop_name}/assets", {:url => url, :title => title, :description => description, :token => token})
   end
 
   def create_note(drop_name, contents, title = nil, description = nil, token = nil)
     params = {:contents => contents, :title => title, :token => token, :description => description}
-    self.class.post("/drops/#{drop_name}/assets", :body => sign_if_needed(params))
+    dropio_post("/drops/#{drop_name}/assets", params)
   end
 
   def add_file(drop_name, file_path, description = nil, convert_to = nil, pingback_url = nil, output_locations = nil)
@@ -77,7 +76,7 @@ class Dropio::Api
       mime_type = (MIME::Types.type_for(file_path)[0] || MIME::Types["application/octet-stream"][0])
 
       params = {
-        "api_key" => self.class.default_params[:api_key],
+        "api_key" => Dropio::Config.api_key.to_s,
         "format" => 'json',
         'version'           => Dropio::Config.version,
         'file'  => UploadIO.new(file, mime_type, file_path)
@@ -102,15 +101,15 @@ class Dropio::Api
   end
   
   def add_file_from_url(drop_name, url, description = nil, convert_to = nil, pingback_url = nil, token = nil)
-    self.class.post("/drops/#{drop_name}/assets", :body => sign_if_needed({:token => token, :file_url => url, :description => description, :convert_to => convert_to, :pingback_url => pingback_url}))
+    dropio_post("/drops/#{drop_name}/assets", {:token => token, :file_url => url, :description => description, :convert_to => convert_to, :pingback_url => pingback_url})
   end
 
   def assets(drop_name, page = 1, order = :oldest, token = nil)
-    self.class.get("/drops/#{drop_name}/assets", :query => sign_if_needed({:token => token, :page => page, :order => order.to_s, :show_pagination_details => true}))
+    dropio_get("/drops/#{drop_name}/assets", {:token => token, :page => page, :order => order.to_s, :show_pagination_details => true})
   end
 
   def asset(drop_name, asset_name, token = nil)
-    self.class.get("/drops/#{drop_name}/assets/#{asset_name}", :query => sign_if_needed({:token => token}))
+    dropio_get("/drops/#{drop_name}/assets/#{asset_name}", {:token => token})
   end
   
   def generate_asset_url(drop_name, asset_name, token)
@@ -121,7 +120,7 @@ class Dropio::Api
     #TODO - signed download URLs
     #this is now available via the API response itself
     download_url = Dropio::Config.api_url + "/drops/#{drop_name}/assets/#{asset_name}/download/original?"
-    params = {:version => Dropio::Config.version, :api_key=>self.class.default_params[:api_key], :format=>'json'}
+    params = {:version => Dropio::Config.version, :api_key=>Dropio::Config.api_key.to_s, :format=>'json'}
     params = sign_if_needed(params)
     paramstring = ''
     params.each do |k, v|
@@ -132,51 +131,51 @@ class Dropio::Api
   end
 
   def asset_embed_code(drop_name, asset_name, token = nil)
-    self.class.get("/drops/#{drop_name}/assets/#{asset_name}/embed_code", :query => sign_if_needed({:token => token}))
+    dropio_get("/drops/#{drop_name}/assets/#{asset_name}/embed_code", {:token => token})
   end
 
   def update_asset(drop_name, asset_name, params = {}, token = nil)
     params[:token] = token
-    self.class.put("/drops/#{drop_name}/assets/#{asset_name}", :body => sign_if_needed(params))
+    dropio_put("/drops/#{drop_name}/assets/#{asset_name}", params)
   end
   
   def change_asset_name(drop_name, asset_name, token, new_name)
     params = {:token => token, :name => new_name}
-    self.class.put("/drops/#{drop_name}/assets/#{asset_name}", :body => sign_if_needed(params))
+    dropio_put("/drops/#{drop_name}/assets/#{asset_name}", params)
   end
 
   def delete_asset(drop_name, asset_name)
-    self.class.delete("/drops/#{drop_name}/assets/#{asset_name}", :body => sign_if_needed({}))
+    dropio_delete("/drops/#{drop_name}/assets/#{asset_name}", {})
   end
 
   def delete_role(drop_name, asset_name, role, location=nil)
-    self.class.delete("/drops/#{drop_name}/assets/#{asset_name}", :body => sign_if_needed({:role => role, :output_location => location}))
+    dropio_delete("/drops/#{drop_name}/assets/#{asset_name}", {:role => role, :output_location => location})
   end
 
   def send_asset_to_drop(drop_name, asset_name, target_drop, drop_token = nil, token = nil)
-    self.class.post("/drops/#{drop_name}/assets/#{asset_name}/send_to", :body => sign_if_needed({:medium => "drop", :drop_name => target_drop, :token => token, :drop_token => drop_token}))
+    dropio_post("/drops/#{drop_name}/assets/#{asset_name}/send_to", {:medium => "drop", :drop_name => target_drop, :token => token, :drop_token => drop_token})
   end
   
   def copy_asset(drop_name, asset_name, target_drop, target_drop_token, token = nil)
     params = {:token => token, :drop_name => target_drop, :drop_token => target_drop_token}
-    self.class.post("/drops/#{drop_name}/assets/#{asset_name}/copy", :body => sign_if_needed(params))
+    dropio_post("/drops/#{drop_name}/assets/#{asset_name}/copy", params)
   end
   
   def move_asset(drop_name, asset_name, target_drop, target_drop_token, token = nil)
     params = {:token => token, :drop_name => target_drop, :drop_token => target_drop_token}
-    self.class.post("/drops/#{drop_name}/assets/#{asset_name}/move", :body => sign_if_needed(params))
+    dropio_post("/drops/#{drop_name}/assets/#{asset_name}/move", params)
   end
 
   def create_pingback_subscription(drop_name, url, events = {}, token = nil)
-    self.class.post("/drops/#{drop_name}/subscriptions", :body => sign_if_needed({ :token => token, :type => "pingback", :url => url}.merge(events)))
+    dropio_post("/drops/#{drop_name}/subscriptions", :body => { :token => token, :type => "pingback", :url => url}.merge(events))
   end
   
   def subscriptions(drop_name, page)
-    self.class.get("/drops/#{drop_name}/subscriptions", :query => sign_if_needed({:page => page, :show_pagination_details => true}))
+    dropio_get("/drops/#{drop_name}/subscriptions", :query => {:page => page, :show_pagination_details => true})
   end
   
   def delete_subscription(drop_name, subscription_id)
-    self.class.delete("/drops/#{drop_name}/subscriptions/#{subscription_id}", :body => {})
+    dropio_delete("/drops/#{drop_name}/subscriptions/#{subscription_id}", {})
   end
   
   def get_signature(params={})
@@ -186,11 +185,11 @@ class Dropio::Api
   end
   
   def job(id, drop_name, asset_name_or_id, token=nil)
-    self.class.get("/drops/#{drop_name}/assets/#{asset_name_or_id}/jobs/#{id}", :query => {:token => token})
+    dropio_get("/drops/#{drop_name}/assets/#{asset_name_or_id}/jobs/#{id}", {:token => token})
   end
 
   def create_job(job = {})
-    self.class.post("/jobs",:body => job)
+    dropio_post("/jobs",job)
   end
   alias_method :convert, :create_job
   
@@ -216,18 +215,41 @@ class Dropio::Api
   
   def sign_if_needed(params = {})
     if Dropio::Config.api_secret
-      params = add_required_params(params)
+      params = add_required_signing_params(params)
       params = sign_request(params)
       params
     else
       params
     end
   end
-  
-  def add_required_params(params = {})
+    
+  def add_required_signing_params(params = {})
     #10 minute window
     params[:timestamp] = (Time.now.to_i + 600).to_s
     params
+  end
+  
+  def add_default_params(params = {})
+    default_params = {:api_key => Dropio::Config.api_key.to_s, :version => Dropio::Config.version.to_s, :format => "json" }
+    params = params.merge(default_params)
+    puts "YAAAAA - adding to params " + params.inspect
+    params
+  end
+  
+  def dropio_get(action, params={})
+    self.class.get(action, :query => add_default_params(sign_if_needed(params)))
+  end
+  
+  def dropio_post(action, params={})
+    self.class.post(action, :body => add_default_params(sign_if_needed(params)).to_json)
+  end
+  
+  def dropio_put(action, params={})
+    self.class.put(action, :body => add_default_params(sign_if_needed(params)).to_json)
+  end
+  
+  def dropio_delete(action,params={})
+    self.class.delete(action, :body => add_default_params(sign_if_needed(params)).to_json)
   end
   
   def signed_url(drop_name, token, asset_name = nil)
