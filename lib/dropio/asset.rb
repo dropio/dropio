@@ -5,8 +5,8 @@ class Dropio::Asset < Dropio::Resource
                 :roles, :locations
      
   # Finds a particular Asset by drop and asset name.
-  def self.find(drop, name)
-    Dropio::Resource.client.asset(drop,name)
+  def self.find(drop, id)
+    Dropio::Resource.client.asset(drop, id)
   end
   
   # Changes the name of an asset.

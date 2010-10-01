@@ -85,60 +85,60 @@ class Dropio::Client
     assets
   end
 
-  def asset(drop, asset_name)
-    a = handle(:asset, self.service.asset(drop.name,asset_name,drop.default_token))
+  def asset(drop, asset_id)
+    a = handle(:asset, self.service.asset(drop.name, asset_id, drop.default_token))
     a.drop = drop
     a
   end
 
   def generate_asset_url(asset)
-    self.service.generate_asset_url(asset.drop.name, asset.name, asset.drop.default_token)
+    self.service.generate_asset_url(asset.drop.name, asset.id, asset.drop.default_token)
   end
 
   def generate_original_file_url(asset)
-    self.service.generate_original_file_url(asset.drop.name, asset.name, asset.drop.default_token)
+    self.service.generate_original_file_url(asset.drop.name, asset.id, asset.drop.default_token)
   end
 
   def asset_embed_code(asset)
-    r = handle(:response, self.service.asset_embed_code(asset.drop.name,asset.name,asset.drop.default_token))
+    r = handle(:response, self.service.asset_embed_code(asset.drop.name, asset.id, asset.drop.default_token))
     r["embed_code"]
   end
 
   def update_asset(asset)
     params = { :title => asset.title, :description => asset.description, :url => asset.url, :contents => asset.contents }
-    a = handle(:asset, self.service.update_asset(asset.drop.name,asset.name,params,asset.drop.default_token))
+    a = handle(:asset, self.service.update_asset(asset.drop.name, asset.id, params, asset.drop.default_token))
     a.drop = asset.drop
     a
   end
 
   def change_asset_name(asset, new_name)
-    handle(:asset, self.service.change_asset_name(asset.drop.name,asset.name,drop.default_token,new_name))
+    handle(:asset, self.service.change_asset_name(asset.drop.name, asset.id, drop.default_token, new_name))
     asset.name = new_name
     asset
   end
 
   def delete_asset(asset)
-    r = handle(:response, self.service.delete_asset(asset.drop.name,asset.id))
+    r = handle(:response, self.service.delete_asset(asset.drop.name, asset.id))
     r["result"]
   end
 
   def delete_role(asset, role, location=nil)
-    r = handle(:response, self.service.delete_role(asset.drop.name,asset.name,role,location))
+    r = handle(:response, self.service.delete_role(asset.drop.name, asset.id, role, location))
     r["result"]
   end
 
   def send_asset_to_drop(asset, target_drop)
-    r = handle(:response, self.service.send_asset_to_drop(asset.drop.name, asset.name, target_drop.name, target_drop.default_token, asset.drop.default_token))
+    r = handle(:response, self.service.send_asset_to_drop(asset.drop.name, asset.id, target_drop.name, target_drop.default_token, asset.drop.default_token))
     r["result"]
   end
 
   def copy_asset(asset,target_drop)
-    r = handle(:response, self.service.copy_asset(asset.drop.name,asset.name,target_drop.name,target_drop.default_token,asset.drop.default_token))
+    r = handle(:response, self.service.copy_asset(asset.drop.name, asset.id, target_drop.name, target_drop.default_token, asset.drop.default_token))
     r["result"]
   end
 
   def move_asset(asset,target_drop)
-    r = handle(:response, self.service.move_asset(asset.drop.name,asset.name,target_drop.name,target_drop.default_token,asset.drop.default_token))
+    r = handle(:response, self.service.move_asset(asset.drop.name, asset.id, target_drop.name, target_drop.default_token, asset.drop.default_token))
     r["result"]
   end
 
@@ -149,13 +149,13 @@ class Dropio::Client
   end
 
   def subscriptions(drop, page = 1)
-    subscriptions = handle(:subscriptions, self.service.subscriptions(drop.name,page))
+    subscriptions = handle(:subscriptions, self.service.subscriptions(drop.name, page))
     subscriptions.each{|s| s.drop = drop}
     subscriptions
   end
 
   def delete_subscription(subscription)
-    r = handle(:response, self.service.delete_subscription(subscription.drop.name,subscription.id,subscription.drop.default_token))
+    r = handle(:response, self.service.delete_subscription(subscription.drop.name, subscription.id, subscription.drop.default_token))
     r["result"]
   end
 

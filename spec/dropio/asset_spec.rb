@@ -27,7 +27,7 @@ describe Dropio::Asset do
     @client.should_receive(:handle).with(:asset,{}).and_return(@asset)
     expected_hash = {:url=> "http://drop.io", :contents=>nil, :description=>nil, :title=>nil}
     @asset.url = expected_hash[:url]
-    @api.stub!(:update_asset).with(@drop.name, @asset.name, expected_hash,@drop.default_token).and_return({})
+    @api.stub!(:update_asset).with(@drop.name, @asset.id, expected_hash,@drop.default_token).and_return({})
     @asset.save
   end
 
@@ -39,13 +39,13 @@ describe Dropio::Asset do
 
   it "should destroy roles" do
     @client.should_receive(:handle).with(:response,{}).and_return({"result" => "Success"})
-    @api.stub!(:delete_role).with(@drop.name, @asset.name, "thumbnail", nil).and_return({})
+    @api.stub!(:delete_role).with(@drop.name, @asset.id, "thumbnail", nil).and_return({})
     @asset.destroy_role!("thumbnail")
   end
 
   it "should destroy roles at locations" do
     @client.should_receive(:handle).with(:response,{}).and_return({"result" => "Success"})
-    @api.stub!(:delete_role).with(@drop.name, @asset.name, "thumbnail", "DropioS3").and_return({})
+    @api.stub!(:delete_role).with(@drop.name, @asset.id, "thumbnail", "DropioS3").and_return({})
     @asset.destroy_location!("thumbnail","DropioS3")
   end
 
@@ -54,7 +54,7 @@ describe Dropio::Asset do
     @target_drop.name = "target_drop"
     @target_drop.guest_token = "guest_token"
     @client.should_receive(:handle).with(:response,{}).and_return({"result" => "Success"})
-    @api.stub!(:copy_asset).with(@drop.name, @asset.name, @target_drop.name, @target_drop.guest_token, @drop.default_token).and_return({})
+    @api.stub!(:copy_asset).with(@drop.name, @asset.id, @target_drop.name, @target_drop.guest_token, @drop.default_token).and_return({})
     @asset.send_to_drop(@target_drop)
   end
 
@@ -63,7 +63,7 @@ describe Dropio::Asset do
     @target_drop.name = "target_drop"
     @target_drop.guest_token = "guest_token"
     @client.should_receive(:handle).with(:response,{}).and_return({"result" => "Success"})
-    @api.stub!(:copy_asset).with(@drop.name, @asset.name, @target_drop.name, @target_drop.guest_token, @drop.default_token).and_return({})
+    @api.stub!(:copy_asset).with(@drop.name, @asset.id, @target_drop.name, @target_drop.guest_token, @drop.default_token).and_return({})
     @asset.copy_to(@target_drop)
   end
 
@@ -72,7 +72,7 @@ describe Dropio::Asset do
     @target_drop.name = "target_drop"
     @target_drop.guest_token = "guest_token"
     @client.should_receive(:handle).with(:response,{}).and_return({"result" => "Success"})
-    @api.stub!(:move_asset).with(@drop.name, @asset.name, @target_drop.name, @target_drop.guest_token, @drop.default_token).and_return({})
+    @api.stub!(:move_asset).with(@drop.name, @asset.id, @target_drop.name, @target_drop.guest_token, @drop.default_token).and_return({})
     @asset.move_to(@target_drop)
   end
 
@@ -83,13 +83,13 @@ describe Dropio::Asset do
   end
 
   it "should generate a signed url" do
-    @api.should_receive(:generate_asset_url).with(@drop.name,@asset.name,@drop.default_token)
+    @api.should_receive(:generate_asset_url).with(@drop.name, @asset.id, @drop.default_token)
     @asset.generate_url
   end
 
   it "should get it's embed_code" do
     @client.should_receive(:handle).with(:response,{}).and_return({"response" => {"embed_code" => "my_embed_code"}})
-    @api.should_receive(:asset_embed_code).with(@drop.name,@asset.name,@drop.default_token).and_return({})
+    @api.should_receive(:asset_embed_code).with(@drop.name, @asset.id, @drop.default_token).and_return({})
     @asset.embed_code
   end
 
