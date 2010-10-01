@@ -78,8 +78,8 @@ describe Dropio::Asset do
 
   it "should find itself" do
     @client.should_receive(:handle).with(:asset,{}).and_return(@asset)
-    @api.should_receive(:asset).with(@drop.name, @asset.name, @drop.default_token).and_return({})
-    Asset.find(@drop,@asset.name).should == @asset
+    @api.should_receive(:asset).with(@drop.name, @asset.id, @drop.default_token).and_return({})
+    Asset.find(@drop, @asset.id).should == @asset
   end
 
   it "should generate a signed url" do
@@ -87,10 +87,15 @@ describe Dropio::Asset do
     @asset.generate_url
   end
 
-  it "should get it's embed_code" do
+  it "should have an original file url" do
+    @api.should_receive(:generate_original_file_url).with(@drop.name, @asset.id, @drop.default_token)
+    @asset.original_file_url
+  end
+
+  it "should get its embed_code" do
     @client.should_receive(:handle).with(:response,{}).and_return({"response" => {"embed_code" => "my_embed_code"}})
     @api.should_receive(:asset_embed_code).with(@drop.name, @asset.id, @drop.default_token).and_return({})
     @asset.embed_code
   end
-
+  
 end
