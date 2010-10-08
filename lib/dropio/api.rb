@@ -2,6 +2,8 @@ require 'rbconfig'
 require 'mime/types'
 require 'httparty'
 require 'net/http/post/multipart'
+require 'json'
+require 'active_support/ordered_hash'
 
 class Dropio::Api
   include HTTParty
@@ -9,7 +11,7 @@ class Dropio::Api
   
   RUBY_VERSION = %w{MAJOR MINOR TEENY}.map { |k| Config::CONFIG[k] }.join(".")
   USER_AGENT_STRING = "DropioAPI-Ruby/#{Dropio::VERSION} (Ruby #{RUBY_VERSION} #{Config::CONFIG["host"]}; +http://github.com/dropio/dropio/tree/)"
-  headers 'Accept' => 'application/json', 'User-Agent' => USER_AGENT_STRING, "content-type" => 'application/json'
+  headers 'Accept' => 'application/json', 'User-Agent' => USER_AGENT_STRING, "Content-Type" => 'application/json'
   def initialize
     self.class.debug_output $stderr if Dropio::Config.debug
     self.class.base_uri Dropio::Config.api_url
@@ -196,7 +198,7 @@ class Dropio::Api
   
   private
   
-  def sign_request(params={})
+  def sign_request(params={}, request="POST")
     #returns all params, including signature and any required params for signing (currently only timestamp)
     params_for_sig = params.clone
     params_for_sig[:api_key] = Dropio::Config.api_key.to_s
@@ -208,16 +210,18 @@ class Dropio::Api
       params[:format] ||= 'json'
     end
     
-    paramstring = ''
-    params_for_sig.keys.sort_by {|s| s.to_s}.each {|key| paramstring +=  key.to_s + '=' +  params_for_sig[key].to_s}
-    params[:signature] = Digest::SHA1.hexdigest(paramstring + Dropio::Config.api_secret)
+    #Sort the clean params and put them into an ordered hash for to_json 
+    orderedparams = sort_hash_recursively(params_for_sig)
+    #compute the expected signature
+    #puts "\r\nSigning this string: " + orderedparams.to_json + "\r\n" if Dropio::Config.debug
+    params[:signature] = Digest::SHA1.hexdigest(orderedparams.to_json + Dropio::Config.api_secret)
     params
   end
   
-  def sign_if_needed(params = {})
+  def sign_if_needed(params = {}, method="POST")
     if Dropio::Config.api_secret
       params = add_required_signing_params(params)
-      params = sign_request(params)
+      params = sign_request(params, method)
       params
     else
       params
@@ -237,21 +241,40 @@ class Dropio::Api
   end
   
   def dropio_get(action, params={})
-    self.class.get(action, :query => add_default_params(sign_if_needed(params)))
+    self.class.get(action, :query => add_default_params(sign_if_needed(params, "GET")))
   end
   
   def dropio_post(action, params={})
-    self.class.post(action, :body => add_default_params(sign_if_needed(params)).to_json)
+    self.class.post(action, :body => add_default_params(sign_if_needed(params, "POST")).to_json)
   end
   
   def dropio_put(action, params={})
-    self.class.put(action, :body => add_default_params(sign_if_needed(params)).to_json)
+    self.class.put(action, :body => add_default_params(sign_if_needed(params, "PUT")).to_json)
   end
   
   def dropio_delete(action,params={})
-    self.class.delete(action, :body => add_default_params(sign_if_needed(params)).to_json)
+    self.class.delete(action, :body => add_default_params(sign_if_needed(params, "DELETE")).to_json)
   end
   
+  def sort_hash_recursively(oldhash = {}, depth = 0)
+    return false if depth > 4
+    #oldhash.stringify_keys!
+    sortedhash = ActiveSupport::OrderedHash.new
+    oldhash.keys.sort_by {|s| s.to_s}.each {|key| 
+    if oldhash[key].is_a? Hash
+    sortedhash[key] = sort_hash_recursively(oldhash[key], depth + 1)
+    elsif oldhash[key].is_a? Array
+    oldhash[key].map! do |element|
+    element = sort_hash_recursively(element, depth + 1)
+    end
+    sortedhash[key] = oldhash[key]
+    else
+    sortedhash[key] = oldhash[key]
+    end
+    }
+    return sortedhash
+  end
+    
   def signed_url(drop_name, token, asset_name = nil)
     # 10 minute window.
     expires = (Time.now.utc + 10*60).to_i
