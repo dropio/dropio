@@ -42,12 +42,12 @@ class Dropio::Asset < Dropio::Resource
     return nil
   end
   
-  # Copies the Asset to the given drop. The +token+ is the target drop's token if required to add files.
+  # Copies the Asset to the given drop.
   def copy_to(target_drop)
     Dropio::Resource.client.copy_asset(self, target_drop)
   end
   
-  # Moves the Asset to the given drop. The +token+ is the target drop's token if required to add files.
+  # Moves the Asset to the given drop.
   def move_to(target_drop)
     Dropio::Resource.client.move_asset(self, target_drop)
   end

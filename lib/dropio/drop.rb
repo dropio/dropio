@@ -1,22 +1,17 @@
 class Dropio::Drop < Dropio::Resource
   
-  attr_accessor :name, :email, :guest_token, :description, :expires_at, :expiration_length, 
+  attr_accessor :name, :email, :description, :expires_at, :expiration_length, 
                 :max_bytes, :current_bytes, :asset_count, :chat_password, :password, 
                 :admin_password, :admin_email, :email_key
-     
-  # Gets the default token to be used, prefers the admin token.           
-  def default_token
-    self.guest_token
-  end
   
   # Gets a list of assets associated with the Drop. Paginated at 
   def assets(page = 1, order = :oldest)
     Dropio::Resource.client.assets(self, page, order)
   end
   
-  # Finds a drop with +name+ and optional authorization +token+
-  def self.find(name, token = nil)
-    Dropio::Resource.client.drop(name, token)
+  # Finds a drop with +name+
+  def self.find(name)
+    Dropio::Resource.client.drop(name)
   end
   
   # Finds all the drops associated with an API account by page

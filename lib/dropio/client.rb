@@ -5,8 +5,8 @@ class Dropio::Client
     self.service = Dropio::Api.new
   end
   
-  def drop(drop_name, token = nil)
-    handle(:drop, self.service.drop(drop_name, token))
+  def drop(drop_name)
+    handle(:drop, self.service.drop(drop_name))
   end
   
   def all_drops(page = 1)
@@ -14,7 +14,7 @@ class Dropio::Client
   end
   
   def generate_drop_url(drop)
-    self.service.generate_drop_url(drop.name,drop.default_token)
+    self.service.generate_drop_url(drop.name)
   end
 
   def create_drop(params = {})
@@ -51,18 +51,18 @@ class Dropio::Client
   end
   
   def drop_upload_code(drop)
-    r = handle(:response, self.service.drop_upload_code(drop.name,drop.default_token))
+    r = handle(:response, self.service.drop_upload_code(drop.name))
     r["upload_code"]
   end
 
   def create_link(drop, url, title = nil, description = nil)
-    a = handle(:asset, self.service.create_link(drop.name, url, title, description, drop.default_token))
+    a = handle(:asset, self.service.create_link(drop.name, url, title, description))
     a.drop = drop
     a
   end
 
   def create_note(drop, contents, title = nil, description = nil)
-    a = handle(:asset, self.service.create_note(drop.name, contents, title, description, drop.default_token))
+    a = handle(:asset, self.service.create_note(drop.name, contents, title, description))
     a.drop = drop
     a
   end
@@ -74,45 +74,45 @@ class Dropio::Client
   end
   
   def add_file_from_url(drop, url, description = nil, convert_to = nil, pingback_url = nil)
-    a = handle(:asset, self.service.add_file_from_url(drop.name, url, description, convert_to, pingback_url, drop.default_token))
+    a = handle(:asset, self.service.add_file_from_url(drop.name, url, description, convert_to, pingback_url))
     a.drop = drop
     a
   end
 
   def assets(drop, page = 1, order = :oldest)
-    assets = handle(:assets, self.service.assets(drop.name,page,order,drop.default_token))
+    assets = handle(:assets, self.service.assets(drop.name,page,order))
     assets.each{|a| a.drop = drop}
     assets
   end
 
   def asset(drop, asset_name)
-    a = handle(:asset, self.service.asset(drop.name,asset_name,drop.default_token))
+    a = handle(:asset, self.service.asset(drop.name,asset_name))
     a.drop = drop
     a
   end
   
   def generate_asset_url(asset)
-    self.service.generate_asset_url(asset.drop.name, asset.name, asset.drop.default_token)
+    self.service.generate_asset_url(asset.drop.name, asset.name)
   end
   
   def generate_original_file_url(asset)
-    self.service.generate_original_file_url(asset.drop.name, asset.name, asset.drop.default_token)
+    self.service.generate_original_file_url(asset.drop.name, asset.name)
   end
 
   def asset_embed_code(asset)
-    r = handle(:response, self.service.asset_embed_code(asset.drop.name,asset.name,asset.drop.default_token))
+    r = handle(:response, self.service.asset_embed_code(asset.drop.name,asset.name))
     r["embed_code"]
   end
 
   def update_asset(asset)
     params = { :title => asset.title, :description => asset.description, :url => asset.url, :contents => asset.contents }
-    a = handle(:asset, self.service.update_asset(asset.drop.name,asset.name,params,asset.drop.default_token))
+    a = handle(:asset, self.service.update_asset(asset.drop.name,asset.name,params))
     a.drop = asset.drop
     a
   end
   
   def change_asset_name(asset, new_name)
-    handle(:asset, self.service.change_asset_name(asset.drop.name,asset.name,drop.default_token,new_name))
+    handle(:asset, self.service.change_asset_name(asset.drop.name,asset.name,new_name))
     asset.name = new_name
     asset
   end
@@ -128,22 +128,22 @@ class Dropio::Client
   end
 
   def send_asset_to_drop(asset, target_drop)
-    r = handle(:response, self.service.send_asset_to_drop(asset.drop.name, asset.name, target_drop.name, target_drop.default_token, asset.drop.default_token))
+    r = handle(:response, self.service.send_asset_to_drop(asset.drop.name, asset.name, target_drop.name))
     r["result"]
   end
   
   def copy_asset(asset,target_drop)
-    r = handle(:response, self.service.copy_asset(asset.drop.name,asset.name,target_drop.name,target_drop.default_token,asset.drop.default_token))
+    r = handle(:response, self.service.copy_asset(asset.drop.name,asset.name,target_drop.name))
     r["result"]
   end
 
   def move_asset(asset,target_drop)
-    r = handle(:response, self.service.move_asset(asset.drop.name,asset.name,target_drop.name,target_drop.default_token,asset.drop.default_token))
+    r = handle(:response, self.service.move_asset(asset.drop.name,asset.name,target_drop.name))
     r["result"]
   end
 
   def create_pingback_subscription(drop, url, events)
-    s = handle(:subscription, self.service.create_pingback_subscription(drop.name, url, events, drop.default_token))
+    s = handle(:subscription, self.service.create_pingback_subscription(drop.name, url, events))
     s.drop = drop
     s
   end
@@ -155,12 +155,12 @@ class Dropio::Client
   end
   
   def delete_subscription(subscription)
-    r = handle(:response, self.service.delete_subscription(subscription.drop.name,subscription.id,subscription.drop.default_token))
+    r = handle(:response, self.service.delete_subscription(subscription.drop.name,subscription.id))
     r["result"]
   end
   
-  def job(id, drop_name, asset_name_or_id, token=nil)
-    handle(:job, self.service.job(id, drop_name, asset_name_or_id, token))
+  def job(id, drop_name, asset_name_or_id)
+    handle(:job, self.service.job(id, drop_name, asset_name_or_id))
   end
   
   def create_job(job = {})

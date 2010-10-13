@@ -3,8 +3,8 @@ class Dropio::Job < Dropio::Resource
   attr_accessor :id, :job_type, :using, :inputs, :outputs, :pingback_url, :state
   
   # Finds a job for a drop and asset
-  def self.find(id,drop_name,asset_name_or_id, token=nil)
-    Dropio::Resource.client.job(id, drop_name, asset_name_or_id, token)
+  def self.find(id,drop_name,asset_name_or_id)
+    Dropio::Resource.client.job(id, drop_name, asset_name_or_id)
   end
 
   # Creates a job

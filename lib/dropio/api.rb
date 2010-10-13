@@ -18,16 +18,16 @@ class Dropio::Api
     self.class.default_options[:timeout] = Dropio::Config.timeout
   end
 
-  def drop(drop_name, token = nil)
-    dropio_get("/drops/#{drop_name}", {:token => token})
+  def drop(drop_name)
+    dropio_get("/drops/#{drop_name}", {})
   end
   
   def all_drops(page = 1)
     dropio_get("/accounts/drops", {:page => page})
   end
   
-  def generate_drop_url(drop_name, token)
-    signed_url(drop_name,token)
+  def generate_drop_url(drop_name)
+    signed_url(drop_name)
   end
 
   def create_drop(params = {})
@@ -55,16 +55,16 @@ class Dropio::Api
     dropio_post("/drops/#{drop_name}", {:nick => nick})
   end
   
-  def drop_upload_code(drop_name, token = nil)
-    dropio_get("/drops/#{drop_name}/upload_code", {:token => token})
+  def drop_upload_code(drop_name)
+    dropio_get("/drops/#{drop_name}/upload_code", {})
   end
 
-  def create_link(drop_name, url, title = nil, description = nil, token = nil)
-    dropio_post("/drops/#{drop_name}/assets", {:url => url, :title => title, :description => description, :token => token})
+  def create_link(drop_name, url, title = nil, description = nil)
+    dropio_post("/drops/#{drop_name}/assets", {:url => url, :title => title, :description => description})
   end
 
-  def create_note(drop_name, contents, title = nil, description = nil, token = nil)
-    params = {:contents => contents, :title => title, :token => token, :description => description}
+  def create_note(drop_name, contents, title = nil, description = nil)
+    params = {:contents => contents, :title => title, :description => description}
     dropio_post("/drops/#{drop_name}/assets", params)
   end
 
@@ -103,20 +103,20 @@ class Dropio::Api
     (r.nil? or r.body.nil? or r.body.empty?) ? r : HTTParty::Response.new(r,Crack::JSON.parse(r.body))
   end
   
-  def add_file_from_url(drop_name, url, description = nil, convert_to = nil, pingback_url = nil, token = nil)
-    dropio_post("/drops/#{drop_name}/assets", {:token => token, :file_url => url, :description => description, :convert_to => convert_to, :pingback_url => pingback_url})
+  def add_file_from_url(drop_name, url, description = nil, convert_to = nil, pingback_url = nil)
+    dropio_post("/drops/#{drop_name}/assets", {:file_url => url, :description => description, :convert_to => convert_to, :pingback_url => pingback_url})
   end
 
-  def assets(drop_name, page = 1, order = :oldest, token = nil)
-    dropio_get("/drops/#{drop_name}/assets", {:token => token, :page => page, :order => order.to_s, :show_pagination_details => true})
+  def assets(drop_name, page = 1, order = :oldest)
+    dropio_get("/drops/#{drop_name}/assets", {:page => page, :order => order.to_s, :show_pagination_details => true})
   end
 
-  def asset(drop_name, asset_name, token = nil)
-    dropio_get("/drops/#{drop_name}/assets/#{asset_name}", {:token => token})
+  def asset(drop_name, asset_name)
+    dropio_get("/drops/#{drop_name}/assets/#{asset_name}", {})
   end
   
-  def generate_asset_url(drop_name, asset_name, token)
-    signed_url(drop_name, token, asset_name)
+  def generate_asset_url(drop_name, asset_name)
+    signed_url(drop_name, asset_name)
   end
   
   def generate_original_file_url(drop_name, asset_name, time_to_live = 600)
@@ -133,17 +133,13 @@ class Dropio::Api
     download_url += paramstring
   end
 
-  def asset_embed_code(drop_name, asset_name, token = nil)
-    dropio_get("/drops/#{drop_name}/assets/#{asset_name}/embed_code", {:token => token})
-  end
 
-  def update_asset(drop_name, asset_name, params = {}, token = nil)
-    params[:token] = token
+  def update_asset(drop_name, asset_name, params = {})
     dropio_put("/drops/#{drop_name}/assets/#{asset_name}", params)
   end
   
-  def change_asset_name(drop_name, asset_name, token, new_name)
-    params = {:token => token, :name => new_name}
+  def change_asset_name(drop_name, asset_name, new_name)
+    params = {:name => new_name}
     dropio_put("/drops/#{drop_name}/assets/#{asset_name}", params)
   end
 
@@ -155,22 +151,22 @@ class Dropio::Api
     dropio_delete("/drops/#{drop_name}/assets/#{asset_name}", {:role => role, :output_location => location})
   end
 
-  def send_asset_to_drop(drop_name, asset_name, target_drop, drop_token = nil, token = nil)
-    dropio_post("/drops/#{drop_name}/assets/#{asset_name}/send_to", {:medium => "drop", :drop_name => target_drop, :token => token, :drop_token => drop_token})
+  def send_asset_to_drop(drop_name, asset_name, target_drop)
+    dropio_post("/drops/#{drop_name}/assets/#{asset_name}/send_to", {:medium => "drop", :drop_name => target_drop})
   end
   
-  def copy_asset(drop_name, asset_name, target_drop, target_drop_token, token = nil)
-    params = {:token => token, :drop_name => target_drop, :drop_token => target_drop_token}
+  def copy_asset(drop_name, asset_name, target_drop)
+    params = {:drop_name => target_drop}
     dropio_post("/drops/#{drop_name}/assets/#{asset_name}/copy", params)
   end
   
-  def move_asset(drop_name, asset_name, target_drop, target_drop_token, token = nil)
-    params = {:token => token, :drop_name => target_drop, :drop_token => target_drop_token}
+  def move_asset(drop_name, asset_name, target_drop)
+    params = {:drop_name => target_drop}
     dropio_post("/drops/#{drop_name}/assets/#{asset_name}/move", params)
   end
 
-  def create_pingback_subscription(drop_name, url, events = {}, token = nil)
-    dropio_post("/drops/#{drop_name}/subscriptions", :body => { :token => token, :type => "pingback", :url => url}.merge(events))
+  def create_pingback_subscription(drop_name, url, events = {})
+    dropio_post("/drops/#{drop_name}/subscriptions", :body => {:type => "pingback", :url => url}.merge(events))
   end
   
   def subscriptions(drop_name, page)
@@ -187,8 +183,8 @@ class Dropio::Api
     params[:signature]
   end
   
-  def job(id, drop_name, asset_name_or_id, token=nil)
-    dropio_get("/drops/#{drop_name}/assets/#{asset_name_or_id}/jobs/#{id}", {:token => token})
+  def job(id, drop_name, asset_name_or_id)
+    dropio_get("/drops/#{drop_name}/assets/#{asset_name_or_id}/jobs/#{id}", {})
   end
 
   def create_job(job = {})
@@ -213,7 +209,7 @@ class Dropio::Api
     #Sort the clean params and put them into an ordered hash for to_json 
     orderedparams = sort_hash_recursively(params_for_sig)
     #compute the expected signature
-    #puts "\r\nSigning this string: " + orderedparams.to_json + "\r\n" if Dropio::Config.debug
+    puts "\r\nSigning this string: " + orderedparams.to_json + "\r\n" if Dropio::Config.debug
     params[:signature] = Digest::SHA1.hexdigest(orderedparams.to_json + Dropio::Config.api_secret)
     params
   end
@@ -260,28 +256,21 @@ class Dropio::Api
     return false if depth > 4
     #oldhash.stringify_keys!
     sortedhash = ActiveSupport::OrderedHash.new
-    oldhash.keys.sort_by {|s| s.to_s}.each {|key| 
+    oldhash.keys.sort_by {|s| s.to_s}.each {|key|
     if oldhash[key].is_a? Hash
-    sortedhash[key] = sort_hash_recursively(oldhash[key], depth + 1)
+        sortedhash[key] = sort_hash_recursively(oldhash[key], depth + 1)
     elsif oldhash[key].is_a? Array
-    oldhash[key].map! do |element|
-    element = sort_hash_recursively(element, depth + 1)
-    end
-    sortedhash[key] = oldhash[key]
+        oldhash[key].map! do |element|
+            element = sort_hash_recursively(element, depth + 1)
+        end
+        sortedhash[key] = oldhash[key]
+    elsif (depth == 0 && (oldhash[key].is_a?(Integer)) || (oldhash[key].is_a?(TrueClass)) || (oldhash[key].is_a?(FalseClass)))
+        sortedhash[key] = oldhash[key].to_s
     else
-    sortedhash[key] = oldhash[key]
+        sortedhash[key] = oldhash[key]
     end
     }
     return sortedhash
   end
-    
-  def signed_url(drop_name, token, asset_name = nil)
-    # 10 minute window.
-    expires = (Time.now.utc + 10*60).to_i
-    path = Dropio::Config.base_url + "/#{drop_name}"
-    path += "/asset/#{asset_name}" if asset_name
-    path += "/from_api"
-    sig = Digest::SHA1.hexdigest("#{expires}+#{token}+#{drop_name}")
-    path + "?expires=#{expires}&signature=#{sig}"
-  end
+  
 end
