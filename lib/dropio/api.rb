@@ -8,7 +8,7 @@ require 'active_support/ordered_hash'
 class Dropio::Api
   include HTTParty
   format :json
-  
+
   RUBY_VERSION = %w{MAJOR MINOR TEENY}.map { |k| Config::CONFIG[k] }.join(".")
   USER_AGENT_STRING = "DropioAPI-Ruby/#{Dropio::VERSION} (Ruby #{RUBY_VERSION} #{Config::CONFIG["host"]}; +http://github.com/dropio/dropio/tree/)"
   headers 'Accept' => 'application/json', 'User-Agent' => USER_AGENT_STRING, "Content-Type" => 'application/json'
@@ -21,11 +21,11 @@ class Dropio::Api
   def drop(drop_name)
     dropio_get("/drops/#{drop_name}", {})
   end
-  
+
   def all_drops(page = 1)
     dropio_get("/accounts/drops", {:page => page})
   end
-  
+
   def generate_drop_url(drop_name)
     signed_url(drop_name)
   end
@@ -37,12 +37,12 @@ class Dropio::Api
   def update_drop(drop_name, params = {})
     dropio_put("/drops/#{drop_name}", params)
   end
-  
+
   def change_drop_name(drop_name, new_name)
     params = {:name => new_name}
     dropio_put("/drops/#{drop_name}", params)
   end
-  
+
   def empty_drop(drop_name)
     dropio_put("/drops/#{drop_name}/empty", {})
   end
@@ -50,11 +50,11 @@ class Dropio::Api
   def delete_drop(drop_name)
     dropio_delete("/drops/#{drop_name}", {})
   end
-  
+
   def promote_nick(drop_name, nick)
     dropio_post("/drops/#{drop_name}", {:nick => nick})
   end
-  
+
   def drop_upload_code(drop_name)
     dropio_get("/drops/#{drop_name}/upload_code", {})
   end
@@ -81,7 +81,7 @@ class Dropio::Api
         :format => 'json',
         :version           => Dropio::Config.version
       }
-      
+
       # stuff passed in by a user. Done like this as if you pass a parameter without a value it can cause an issue (with the output_locations anyway)
       # although this will be fixed in the API, we shouldn't be doing it anyway.
       params[:drop_name] = drop_name if drop_name
@@ -93,7 +93,7 @@ class Dropio::Api
       #sign the params at this point
       params = sign_if_needed(params)
       params[:file]  = UploadIO.new(file, mime_type, file_path)
-      
+
       req  = Net::HTTP::Post::Multipart.new(url.path, params)
       http = Net::HTTP.new(url.host, url.port)
       http.set_debug_output $stderr if Dropio::Config.debug
@@ -102,7 +102,7 @@ class Dropio::Api
 
     (r.nil? or r.body.nil? or r.body.empty?) ? r : HTTParty::Response.new(r,Crack::JSON.parse(r.body))
   end
-  
+
   def add_file_from_url(drop_name, url, description = nil, convert_to = nil, pingback_url = nil)
     dropio_post("/drops/#{drop_name}/assets", {:file_url => url, :description => description, :convert_to => convert_to, :pingback_url => pingback_url})
   end
@@ -118,11 +118,11 @@ class Dropio::Api
   def generate_asset_url(drop_name, asset_name)
     signed_url(drop_name, asset_name)
   end
-  
-  def generate_original_file_url(drop_name, asset_name, time_to_live = 600)
+
+  def generate_original_file_url(drop_name, asset_id, time_to_live = 600)
     #TODO - signed download URLs
     #this is now available via the API response itself
-    download_url = Dropio::Config.api_url + "/drops/#{drop_name}/assets/#{asset_name}/download/original?"
+    download_url = Dropio::Config.api_url + "/drops/#{drop_name}/assets/#{asset_id}/download/original?"
     params = {:version => Dropio::Config.version, :api_key=>Dropio::Config.api_key.to_s, :format=>'json'}
     params = sign_if_needed(params)
     paramstring = ''
@@ -133,7 +133,6 @@ class Dropio::Api
     download_url += paramstring
   end
 
-
   def update_asset(drop_name, asset_name, params = {})
     dropio_put("/drops/#{drop_name}/assets/#{asset_name}", params)
   end
@@ -143,12 +142,12 @@ class Dropio::Api
     dropio_put("/drops/#{drop_name}/assets/#{asset_name}", params)
   end
 
-  def delete_asset(drop_name, asset_name)
-    dropio_delete("/drops/#{drop_name}/assets/#{asset_name}", {})
+  def delete_asset(drop_name, asset_id)
+    dropio_delete("/drops/#{drop_name}/assets/#{asset_id}", {})
   end
 
-  def delete_role(drop_name, asset_name, role, location=nil)
-    dropio_delete("/drops/#{drop_name}/assets/#{asset_name}", {:role => role, :output_location => location})
+  def delete_role(drop_name, asset_id, role, location=nil)
+    dropio_delete("/drops/#{drop_name}/assets/#{asset_id}", {:role => role, :output_location => location})
   end
 
   def send_asset_to_drop(drop_name, asset_name, target_drop)
@@ -168,21 +167,21 @@ class Dropio::Api
   def create_pingback_subscription(drop_name, url, events = {})
     dropio_post("/drops/#{drop_name}/subscriptions", :body => {:type => "pingback", :url => url}.merge(events))
   end
-  
+
   def subscriptions(drop_name, page)
     dropio_get("/drops/#{drop_name}/subscriptions", :query => {:page => page, :show_pagination_details => true})
   end
-  
+
   def delete_subscription(drop_name, subscription_id)
     dropio_delete("/drops/#{drop_name}/subscriptions/#{subscription_id}", {})
   end
-  
+
   def get_signature(params={})
     #returns a signature for the passed params, without any modifcation to the params
     params = sign_request(params)
     params[:signature]
   end
-  
+
   def job(id, drop_name, asset_name_or_id)
     dropio_get("/drops/#{drop_name}/assets/#{asset_name_or_id}/jobs/#{id}", {})
   end
@@ -191,15 +190,15 @@ class Dropio::Api
     dropio_post("/jobs",job)
   end
   alias_method :convert, :create_job
-  
+
   private
-  
+
   def sign_request(params={}, request="POST")
     #returns all params, including signature and any required params for signing (currently only timestamp)
     params_for_sig = params.clone
     params_for_sig[:api_key] = Dropio::Config.api_key.to_s
     params_for_sig[:version] = Dropio::Config.version.to_s
-    
+
     if params[:signature_mode] != "OPEN"
       #RPC always includes format here, so in NORMAL and STRICT mode we need to include it in our sig if not specified
       params_for_sig[:format] ||= 'json'
@@ -223,31 +222,31 @@ class Dropio::Api
       params
     end
   end
-    
+
   def add_required_signing_params(params = {})
     #10 minute window
     params[:timestamp] = (Time.now.to_i + 600).to_s
     params
   end
-  
+
   def add_default_params(params = {})
     default_params = {:api_key => Dropio::Config.api_key.to_s, :version => Dropio::Config.version.to_s, :format => "json" }
     params = params.merge(default_params)
     params
   end
-  
+
   def dropio_get(action, params={})
     self.class.get(action, :query => add_default_params(sign_if_needed(params, "GET")))
   end
-  
+
   def dropio_post(action, params={})
     self.class.post(action, :body => add_default_params(sign_if_needed(params, "POST")).to_json)
   end
-  
+
   def dropio_put(action, params={})
     self.class.put(action, :body => add_default_params(sign_if_needed(params, "PUT")).to_json)
   end
-  
+
   def dropio_delete(action,params={})
     self.class.delete(action, :body => add_default_params(sign_if_needed(params, "DELETE")).to_json)
   end
